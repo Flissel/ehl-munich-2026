@@ -1,19 +1,23 @@
-"""The Dataset as a folder tree and graph in Rowboat's knowledge.
+"""The Dataset in Rowboat's knowledge, in Rowboat's own schema: one top-level folder per note type.
 
-    python demo/visu/brand.py [--vault ~/.rowboat/knowledge] [--refresh]
+    python demo/visu/brand.py [--vault ~/.rowboat/knowledge] [--refresh] [--register]
 
-    Brands/ -> <Brand>/ -> Models/ -> <model>/ -> Components, VFC, ID, Country, Engine, Source, Feedback,
-                                                  Sales, Studies, Options
+    Brands/           BMW                         -> Models
+    Models/           1er F70, 5er G60, ...       -> Brand, Components, Feature Classes, Data workbook
+    Components/       the 56 parts of the 3D car  -> Models, Feature Classes; editable heat + option tables
+    Feature Classes/  VFC level 2 classes that colour a component -> Components, Models
+    Data/BMW Dataset.xlsx   one workbook for analysis (Feedback, Heat, Sales, Studies, Options)
 
-Every folder has a hub note with the folder's name, so the graph mirrors the folders. Every value comes from
-Dataset/ (feedback, sales and study workbooks) and outputs/markdown/options (price lists); comment texts never
-go into the vault (spec D8). Component notes carry the part_id of the 3D car and editable tables (heat map,
-options) that `vault.py sync --watch` hands to Torque's Concept 3D. Notes are created only when missing;
---refresh rewrites notes that still carry managed_by: ehl-visu. A second brand gets its own Brands/<Brand>/.
+Rowboat colours its graph by top-level folder and its note agents know types from config/notes.json, so the
+hierarchy lives in the links, not in nested folders (--register adds the four types to notes.json). Details
+that are columns rather than things (country, market, engine, source, feedback type, VFC level 3) live in the
+workbook. Every value comes from Dataset/ and outputs/markdown/options; comment texts never go into the vault
+(spec D8). Notes are created only when missing; --refresh rewrites notes that still carry managed_by: ehl-visu.
 """
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import re
 import sys
@@ -21,7 +25,7 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
-from openpyxl import load_workbook
+from openpyxl import Workbook, load_workbook
 
 import feedback
 import options
@@ -32,10 +36,12 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 DATASET = REPO / "Dataset"
 OPTIONS_MD = REPO / "outputs" / "markdown" / "options" / "processed"
-ROOT = "Brands"
-BRAND = "BMW"
+GRAPH = HERE.parent / "torque" / "dist" / "visu" / "graph.json"
 MARKER = "managed_by: ehl-visu"
-# Model folders. The 3D car stands for every model with feedback (for now it is shown as the 1er).
+BRAND = "BMW"
+FOLDERS = {"brand": "Brands", "model": "Models", "part": "Components", "class": "Feature Classes", "data": "Data"}
+WORKBOOK = f"{FOLDERS['data']}/BMW Dataset.xlsx"
+# The 3D car is a placeholder that stands for every model with feedback.
 MODELS = {
     "F70": {"folder": "1er F70", "name": "BMW 1 Series", "series": "1 Series", "sheet": "F70", "feedback": True,
             "studies": {"Europe": ("CN_EU_2025", 3)}},
@@ -51,35 +57,48 @@ COUNT_COLS = ["Comments", "Mentions", "Likes", "Difficult to use", "Defects", "W
 HEAT_COLS = ["Model", "Market", "Heat", "Comments", "Mentions", "Likes", "Difficult to use", "Defects", "Wants", "Positive %"]
 OPT_COLS = ["Model", "Option", "Code", "Price EUR", "Availability"]
 MARKET_LABEL = {"EU": "Europe", "CN": "China", "US": "USA", "RoW": "Rest of World"}
-SOURCE_HINT = {"Source A": "owner reviews, many countries", "Source B": "customer care logs, US",
-               "Source C": "quality survey, US", "Source D": "appeal survey, US"}
+SOURCE_HINT = {"Source A": "owner reviews", "Source B": "customer care logs", "Source C": "quality survey",
+               "Source D": "appeal survey"}
 NO_CLASS = "no_class_found"
 
+# Rowboat note types (config/notes.json) for the four folders, so Rowboat's agents write them the same way.
+NOTE_TYPES = [
+    {"type": "Brands", "folder": FOLDERS["brand"],
+     "template": "# {Brand}\n\n## Info\n**Type:** Brand\n\n## Connected to\n- [[Models/{Model}]]\n\n## Key facts\n{Models, comments, sales.}",
+     "extractionGuide": "Look for: car brand (e.g. BMW, Audi) and its models"},
+    {"type": "Models", "folder": FOLDERS["model"],
+     "template": "# {Model folder name, e.g. 5er G60}\n\n## Info\n**Type:** Model\n**Brand:** [[Brands/{Brand}]]\n"
+                 "**Derivate (e-code):** {code}\n\n## Connected to\n- [[Components/{Part}]]\n- [[Feature Classes/{Class}]]\n\n"
+                 "## Key facts\n{Comments, markets, engines, sources, sales, studies, options as tables.}",
+     "extractionGuide": "Look for: car model, e-code, sales, customer studies, option list facts"},
+    {"type": "Components", "folder": FOLDERS["part"],
+     "template": "# {Part name}\n\n## Info\n**Type:** Component\n**Part ID:** {part_id of the 3D car}\n\n## Connected to\n"
+                 "- [[Models/{Model}]]\n- [[Feature Classes/{Class}]]\n\n## Key facts\n### Customer feedback heat map\n"
+                 "| Model | Market | Heat | Comments | Mentions | Likes | Difficult to use | Defects | Wants | Positive % |\n\n"
+                 "### Options today\n| Model | Option | Code | Price EUR | Availability |",
+     "extractionGuide": "Look for: car part, its customer feedback per model and market, options with prices. Keep part_id "
+                        "in the front matter and the table columns unchanged (Torque Concept 3D reads them)"},
+    {"type": "Feature Classes", "folder": FOLDERS["class"],
+     "template": "# {VFC level 2 name}\n\n## Info\n**Type:** Feature class (VFC level 2)\n\n## Connected to\n"
+                 "- [[Components/{Part}]]\n- [[Models/{Model}]]\n\n## Key facts\n{Comments per model, VFC level 3 aspects.}",
+     "extractionGuide": "Look for: vehicle feature class from customer feedback classification, the parts it concerns"},
+]
 
-# --------------------------------------------------------------------------- paths
+
 def safe(name: str) -> str:
     return re.sub(r'[\\/:*?"<>|]', "-", name).strip(" .")
 
 
-def model_dir(code: str) -> str:
-    return f"{ROOT}/{BRAND}/Models/{MODELS[code]['folder']}"
-
-
-def hub(path: str) -> str:
-    """The hub note of a folder: <folder>/<folder name>."""
-    return f"{path}/{path.rsplit('/', 1)[-1]}"
-
-
 def model_note(code: str) -> str:
-    return hub(model_dir(code))
+    return f"{FOLDERS['model']}/{MODELS[code]['folder']}"
 
 
-def part_note(code: str, part: dict) -> str:
-    return f"{model_dir(code)}/Components/{part['side']}/{part['area']}/{safe(part['name'])}"
+def part_note(part: dict) -> str:
+    return f"{FOLDERS['part']}/{safe(part['name'])}"
 
 
-def vfc_note(code: str, cls: str) -> str:
-    return f"{model_dir(code)}/VFC/{safe(cls)}"
+def class_note(cls: str) -> str:
+    return f"{FOLDERS['class']}/{safe(cls)}"
 
 
 def models_with_feedback() -> list[str]:
@@ -94,32 +113,27 @@ def load_rows() -> dict[str, list[dict]]:
         it = ws.iter_rows(values_only=True)
         head = [str(h) for h in next(it)]
         out[code] = [{k: ("" if v is None else str(v).strip()) for k, v in zip(head, r)} for r in it]
-        log.info("%s: %d rows", code, len(out[code]))
     return out
 
 
-def load_sales() -> dict[str, list[list]]:
-    wb = load_workbook(DATASET / "sales_volumes.xlsx", read_only=True, data_only=True)
+def load_sheets(name: str) -> dict[str, list[list]]:
+    wb = load_workbook(DATASET / name, read_only=True, data_only=True)
     return {ws.title: [list(r) for r in ws.iter_rows(values_only=True)] for ws in wb.worksheets}
 
 
-def load_studies() -> dict[str, list[list]]:
-    wb = load_workbook(DATASET / "F70_G60_G68_G70_customer_studies.xlsx", read_only=True, data_only=True)
-    return {ws.title: [list(r) for r in ws.iter_rows(values_only=True)] for ws in wb.worksheets}
-
-
-def study_rows(sheets: dict, sheet: str, col: int) -> tuple[list[str], list[list]]:
-    rows = sheets[sheet]
-    if sheet == "CN_EU_2025":  # topic row, then "Mean" row with one column per market and model
-        out, topic = [], None
+def study_rows(sheets: dict, sheet: str, col: int) -> list[list]:
+    """[topic or question, value]: CN_EU = mean 0-10 per topic; US = answer distribution per question."""
+    rows, out = sheets[sheet], []
+    if sheet == "CN_EU_2025":
+        topic = None
         for r in rows[3:]:
             if r[0] and r[0] != "Mean":
                 topic = str(r[0]).strip()
             elif r[0] == "Mean" and topic and r[col] is not None:
                 out.append([topic, round(float(r[col]), 2)])
-        return ["Topic", "Mean (0 to 10)"], out
-    out, q, dist = [], None, []
-    for r in rows + [[None, None]]:  # US: question row, then answers with % of column
+        return out
+    q, dist = None, []
+    for r in rows + [[None, None]]:
         if r[0] and not r[1]:
             if q and dist:
                 out.append([q, " · ".join(dist)])
@@ -128,19 +142,17 @@ def study_rows(sheets: dict, sheet: str, col: int) -> tuple[list[str], list[list
             dist.append(f"{str(r[0]).strip()} {round(100 * float(r[col]))} %")
     if q and dist:
         out.append([q, " · ".join(dist)])
-    return ["Question", "Answers (% of owners)"], out
+    return out
 
 
 def counts(rows: list[dict], key: str) -> list[list]:
-    """Per value: unique comments, rows (mentions) and rows per feedback type, most comments first."""
     ids, n, t = defaultdict(set), Counter(), defaultdict(Counter)
     for r in rows:
         v = r.get(key) or "(empty)"
         ids[v].add(r["ID"])
         n[v] += 1
         t[v][r["Feedback Type"] if r["Feedback Type"] in TYPES else ""] += 1
-    order = sorted(ids, key=lambda v: (-len(ids[v]), v))
-    return [[v, len(ids[v]), n[v], *[t[v][x] for x in TYPES], t[v][""]] for v in order]
+    return [[v, len(ids[v]), n[v], *[t[v][x] for x in TYPES], t[v][""]] for v in sorted(ids, key=lambda v: (-len(ids[v]), v))]
 
 
 # --------------------------------------------------------------------------- markdown
@@ -149,192 +161,173 @@ def link(note: str, label: str | None = None) -> str:
 
 
 def table(cols: list[str], rows: list[list]) -> list[str]:
-    cell = lambda v: "" if v is None else str(v).replace("|", "/").replace("\n", " ")
+    # "|" separates table cells, so links inside a table carry no label ([[note|label]] -> [[note]]).
+    unlabel = lambda t: re.sub(r"\[\[([^\]|]+)\|[^\]]*\]\]", r"[[\1]]", t)
+    cell = lambda v: "" if v is None else unlabel(str(v)).replace("|", "/").replace("\n", " ")
     return ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)] + ["| " + " | ".join(cell(v) for v in r) + " |" for r in rows]
 
 
-class Notes(dict):
-    def __init__(self, today: str):
-        super().__init__()
-        self.today = today
-
-    def add(self, rel: str, title: str, kind: str, info: list[str], connected: list[str], facts: list[str],
-            front: list[str] = ()) -> None:
-        self[rel] = "\n".join(["---", "source: dataset", MARKER, f"node: {kind}", *front, f"updated: {self.today}", "---",
-                               f"# {title}", "", "## Info", f"**Type:** {kind}", *info, "", "## Connected to",
-                               *[f"- {c}" for c in dict.fromkeys(connected)], "", "## Key facts", *facts, ""])
+def render(title: str, kind: str, info: list[str], connected: list[str], facts: list[str], front: list[str], today: str) -> str:
+    return "\n".join(["---", "source: dataset", MARKER, f"node: {kind}", *front, f"updated: {today}", "---", f"# {title}", "",
+                      "## Info", f"**Type:** {kind}", *info, "", "## Connected to", *[f"- {c}" for c in dict.fromkeys(connected)],
+                      "", "## Key facts", *facts, ""])
 
 
-# --------------------------------------------------------------------------- tree
-def build(graph: dict, today: str) -> Notes:
-    rows, sales, studies = load_rows(), load_sales(), load_studies()
+def build(graph: dict, today: str) -> tuple[dict[str, str], dict[str, list[list]]]:
+    rows, sales, studies = load_rows(), load_sheets("sales_volumes.xlsx"), load_sheets("F70_G60_G68_G70_customer_studies.xlsx")
     ds = feedback.get_dataset()
     if ds.error:
         raise SystemExit(ds.error)
-    notes = Notes(today)
-    brand_dir, models_dir = f"{ROOT}/{BRAND}", f"{ROOT}/{BRAND}/Models"
-    notes.add(hub(ROOT), ROOT, "Brands", [], [link(hub(brand_dir))], ["", f"- {BRAND}"])
-    notes.add(hub(brand_dir), BRAND, "Brand", ["**Brand:** BMW (column Brand)"], [link(hub(ROOT)), link(hub(models_dir))],
-              ["", f"- {len(MODELS)} models: {', '.join(m['folder'] for m in MODELS.values())}"])
-    model_rows = []
-    for code, m in MODELS.items():
-        r = rows.get(code, [])
-        total = sum(x[3] or 0 for x in sales.get(m["sheet"], [])[1:] if x and x[1])
-        model_rows.append([link(model_note(code), m["folder"]), len({x["ID"] for x in r}) or "", len(r) or "", total])
-    notes.add(hub(models_dir), "Models", "Models", [f"**Brand:** {link(hub(brand_dir), BRAND)}"],
-              [link(hub(brand_dir))] + [link(model_note(c)) for c in MODELS],
-              ["", *table(["Model", "Comments", "Mentions", "Sales 2025 (sheet)"], model_rows),
-               "", "- G60 and G68 share the sales sheet G60_G68 (the same numbers appear in both)."])
-    opts_all = {c: options.parse(OPTIONS_MD / f"{c.lower()}_options_features.md", linked_only=False)
-                for c in MODELS if (OPTIONS_MD / f"{c.lower()}_options_features.md").is_file()}
-    for code, m in MODELS.items():
-        build_model(notes, code, m, rows.get(code, []), sales, studies, ds, graph, opts_all.get(code, []))
-    return notes
-
-
-def build_model(notes: Notes, code: str, m: dict, r: list[dict], sales: dict, studies: dict, ds, graph: dict,
-                opts: list[dict]) -> None:
-    base, mnote = model_dir(code), model_note(code)
-    front = [f"model: {code}"]
-    subs = (["Components", "VFC", "ID", "Country", "Engine", "Source", "Feedback"] if r else []) + \
-           ["Sales", "Studies"] + (["Options"] if opts else [])
-    info = [f"**Brand:** {link(hub(f'{ROOT}/{BRAND}'), BRAND)}", f"**Derivate (e-code):** {code}",
-            f"**Sales description:** {m['name']}", f"**Sales sheet:** {m['sheet']}"]
-    info.append(f"**Comments:** {len({x['ID'] for x in r}):,} unique IDs, {len(r):,} rows" if r
-                else "**Comments:** none in the Dataset (study and sales only)")
-    if r:
-        info.append("**3D car:** shown as this model in Torque's Concept 3D (placeholder model for now)")
-    notes.add(mnote, m["folder"], "Model", info, [link(hub(f"{ROOT}/{BRAND}/Models"))] + [link(hub(f"{base}/{s}")) for s in subs],
-              ["", f"- Sub nodes: {', '.join(subs)}."], front)
-    sub_hub = lambda s, info_, conn, facts: notes.add(hub(f"{base}/{s}"), s, s, [f"**Model:** {link(mnote, m['folder'])}", *info_],
-                                                      [link(mnote), *conn], facts, front)
-    # Sales
-    srows = [[x[0], x[1], *x[2:5]] for x in sales.get(m["sheet"], [])[1:] if x and x[0]]
-    sub_hub("Sales", ["Sales volumes per market (Dataset/sales_volumes.xlsx)."], [],
-            ["", *table(["Market", "Code", "2024", "2025", "2030 plan"], srows)]
-            + (["", "- Sheet G60_G68 reports G60 and G68 together."] if m["sheet"] == "G60_G68" else []))
-    # Studies
-    study_notes = []
-    for region, (sheet, col) in m["studies"].items():
-        rel = f"{base}/Studies/Study {region} 2025"
-        cols, data = study_rows(studies, sheet, col)
-        notes.add(rel, f"Study {region} 2025", "Study", [f"**Model:** {link(mnote, m['folder'])}",
-                  f"**Source:** Dataset/F70_G60_G68_G70_customer_studies.xlsx, sheet {sheet}"],
-                  [link(hub(f"{base}/Studies"))], ["", *table(cols, data)], front)
-        study_notes.append(rel)
-    sub_hub("Studies", ["Customer studies 2025 for this model."], [link(n) for n in study_notes], [""])
-    # Options
-    if opts:
-        parts_by_id = graph["parts"]
-        orows = [[o["category"], o["name"], o["availability"], o["package"] if o["package"] != "unclear" else "",
-                  o["price_eur"] or "", ", ".join(link(part_note(code, parts_by_id[p]), parts_by_id[p]["name"])
-                                                  for p in o["parts"] if r and p in parts_by_id)] for o in opts]
-        sub_hub("Options", [f"Price list (Dataset/{code}_OptionList.PDF via outputs/markdown/options)."], [],
-                ["", *table(["Category", "Option", "Availability", "Code", "Price EUR", "Components"], orows)])
-    if not r:
-        return
-    scores = {mk: ds.scores(code, None if mk == "ALL" else mk) for mk in ["ALL", "EU", "US", "RoW"]}
-    classes = {v for v, *_ in counts(r, "Vfc level2 Name")} - {NO_CLASS}
-    # Components: Components -> Exterior / Interior -> area -> part
     parts = graph["parts"]
-    sides = defaultdict(lambda: defaultdict(list))
-    for pid, p in parts.items():
-        sides[p["side"]][p["area"]].append(pid)
-    comp_dir = f"{base}/Components"
-    sub_hub("Components", ["The parts of the 3D car with this model's customer feedback and options."],
-            [link(hub(f"{comp_dir}/{s}")) for s in sides], ["", f"- {len(parts)} parts in {sum(len(a) for a in sides.values())} areas."])
-    for side, areas in sides.items():
-        notes.add(hub(f"{comp_dir}/{side}"), side, "Vehicle side", [f"**Model:** {link(mnote, m['folder'])}"],
-                  [link(hub(comp_dir))] + [link(hub(f"{comp_dir}/{side}/{a}")) for a in areas], [""], front)
-        for area, pids in areas.items():
-            notes.add(hub(f"{comp_dir}/{side}/{area}"), area, "Vehicle area", [f"**Model:** {link(mnote, m['folder'])}"],
-                      [link(hub(f"{comp_dir}/{side}"))] + [link(part_note(code, parts[p])) for p in pids], [""], front)
-            for pid in pids:
-                p = parts[pid]
-                heat = []
-                for mk, s in scores.items():
-                    c = s["components"].get(pid)
-                    if c and c.get("comments"):
-                        k = c["counts"]
-                        heat.append([code, mk, c["score"], c["comments"], c["n"], k.get("Likes", 0), k.get("Difficult to Use", 0),
-                                     k.get("Defect", 0), k.get("Wants", 0), c["positive_share"]])
-                orow = [[code, o["name"], o["package"] if o["package"] not in ("", "unclear") else "", o["price_eur"] or "",
-                         o["availability"]] for o in opts if pid in o["parts"]]
-                drivers = ", ".join(f"{d} {graph['drivers'][d]['short']}" for d in p["drivers"]) or "none"
-                notes.add(part_note(code, p), p["name"], "Component",
-                          [f"**Model:** {link(mnote, m['folder'])}", f"**Part ID:** {pid}",
-                           f"**Feature classes:** {', '.join(p['feature_classes']) or 'none of its own, uses ' + p['fallback'] + ' feedback'}",
-                           f"**Purchase drivers (Torque):** {drivers}"],
-                          [link(hub(f"{comp_dir}/{side}/{area}"))] + [link(vfc_note(code, c)) for c in p["feature_classes"] if c in classes],
-                          ["", "### Customer feedback heat map",
-                           "Heat 0 = most criticised part, 100 = best rated part of this model and market. Comments = unique comment IDs,",
-                           "mentions = classified rows. Edit values here; Torque's Concept 3D shows them.", "",
-                           *table(HEAT_COLS, heat), "", "### Options today", "From the German price list.", "", *table(OPT_COLS, orow)],
-                          [f"part_id: {pid}", *front])
-    # VFC: overview + one note per feature class (level 2) with its level 3 and level 2+3 tables
+    opts = {c: options.parse(OPTIONS_MD / f"{c.lower()}_options_features.md", linked_only=False)
+            for c in MODELS if (OPTIONS_MD / f"{c.lower()}_options_features.md").is_file()}
+    scores = {(c, mk): ds.scores(c, None if mk == "ALL" else mk) for c in rows for mk in ["ALL", "EU", "US", "RoW"]}
     part_of = defaultdict(list)
     for pid, p in parts.items():
         for c in p["feature_classes"]:
             part_of[c].append(pid)
-    lvl2 = counts(r, "Vfc level2 Name")
-    sub_hub("VFC", ["Vehicle feature classes: level 2 (feature), level 3 (aspect), level 2 3 (combined)."],
-            [link(vfc_note(code, v)) for v, *_ in lvl2 if v != NO_CLASS],
-            ["", "### VFC level 2", *table(["Feature class", *COUNT_COLS],
-                                           [[link(vfc_note(code, v), v) if v != NO_CLASS else v, *x] for v, *x in lvl2]),
-             "", "### VFC level 3", *table(["Aspect", *COUNT_COLS], counts(r, "Vfc level3 Name"))])
-    for v, *x in lvl2:
-        if v == NO_CLASS:
-            continue
-        sub_rows = [y for y in r if y["Vfc level2 Name"] == v]
-        notes.add(vfc_note(code, v), v, "Feature class (VFC level 2)",
-                  [f"**Model:** {link(mnote, m['folder'])}", f"**Comments:** {x[0]:,} unique IDs, {x[1]:,} rows"],
-                  [link(hub(f"{base}/VFC"))] + [link(part_note(code, parts[p])) for p in part_of.get(v, [])],
-                  ["", *table(["Feature class", *COUNT_COLS], [[v, *x]]),
-                   "", "### VFC level 3", *table(["Aspect", *COUNT_COLS], counts(sub_rows, "Vfc level3 Name")),
-                   "", "### VFC level 2 3", *table(["Class and aspect", *COUNT_COLS], counts(sub_rows, "Vfc level2 3 Name")),
-                   "", "### By market (mentions)", *table(["Market", "Mentions"],
-                                                          sorted(Counter(MARKET_LABEL[feedback.market_of(y["Country"])] for y in sub_rows).items()))],
-                  front)
-    # ID: one table, no texts
-    by_id = {}
-    for y in r:
-        e = by_id.setdefault(y["ID"], {"src": y["Source"], "c": y["Country"], "e": y["Engine Type"], "t": [], "v": []})
-        if y["Feedback Type"] and y["Feedback Type"] not in e["t"]:
-            e["t"].append(y["Feedback Type"])
-        if y["Vfc level2 Name"] not in ("", NO_CLASS) and y["Vfc level2 Name"] not in e["v"]:
-            e["v"].append(y["Vfc level2 Name"])
-    sub_hub("ID", ["Every comment ID with source, country, engine, feedback types and feature classes. Comment texts stay out of the vault (spec D8)."],
-            [], ["", f"- {len(by_id):,} comment IDs, {len(r):,} rows.", "",
-                 *table(["ID", "Source", "Country", "Engine", "Feedback types", "VFC level 2"],
-                        [[i, e["src"], e["c"], e["e"], ", ".join(e["t"]), ", ".join(e["v"])] for i, e in by_id.items()])])
-    # Country, Engine, Source, Feedback: hub table + one note per value
-    dims = {"Country": ("Country", "Comments per country, with the Torque market."),
-            "Engine": ("Engine Type", "Comments per drivetrain (BEVE = battery electric)."),
-            "Source": ("Source", "Comments per source."),
-            "Feedback": ("Feedback Type", "Feedback types; empty = untyped.")}
-    for dim, (col, text) in dims.items():
-        data = counts(r, col)
-        label = lambda v: (f"{v} ({MARKET_LABEL[feedback.market_of(v)]})" if dim == "Country" else
-                           f"{v} ({SOURCE_HINT[v]})" if dim == "Source" and v in SOURCE_HINT else v)
-        value_note = lambda v: f"{base}/{dim}/{safe(v)}"
-        values = [v for v, *_ in data if v != "(empty)"]
-        sub_hub(dim, [text], [link(value_note(v)) for v in values],
-                ["", *table([dim, *COUNT_COLS], [[link(value_note(v), label(v)) if v != "(empty)" else v, *x] for v, *x in data])])
-        for v, *x in data:
-            if v == "(empty)":
-                continue
-            sub_rows = [y for y in r if y[col] == v]
-            top = counts([y for y in sub_rows if y["Vfc level2 Name"] not in ("", NO_CLASS)], "Vfc level2 Name")[:15]
-            notes.add(value_note(v), v, dim, [f"**Model:** {link(mnote, m['folder'])}", f"**{dim}:** {label(v)}"],
-                      [link(hub(f"{base}/{dim}"))] + [link(vfc_note(code, c)) for c, *_ in top],
-                      ["", *table([dim, *COUNT_COLS], [[label(v), *x]]),
-                       "", "### Top feature classes", *table(["Feature class", *COUNT_COLS],
-                                                             [[link(vfc_note(code, c), c), *y] for c, *y in top])],
-                      front)
+    present = {c: {r["Vfc level2 Name"] for r in rs} for c, rs in rows.items()}
+    graph_classes = sorted(c for c in part_of if any(c in v for v in present.values()))
+    has_data = {pid: [c for c in rows if scores[(c, "ALL")]["components"].get(pid, {}).get("comments")] for pid in parts}
+    notes, sheets = {}, {"Feedback": [], "Heat": [], "Sales": [], "Studies": [], "Options": []}
+    wb_link = link(WORKBOOK, "BMW Dataset workbook")
+
+    # Brand
+    brand_rows = []
+    for code, m in MODELS.items():
+        r = rows.get(code, [])
+        total = sum(x[3] or 0 for x in sales[m["sheet"]][1:] if x and x[1])
+        brand_rows.append([link(model_note(code), m["folder"]), len({x["ID"] for x in r}) or "", len(r) or "", total])
+    notes[f"{FOLDERS['brand']}/{BRAND}"] = render(BRAND, "Brand", ["**Brand:** BMW (column Brand)"],
+                                                  [link(model_note(c)) for c in MODELS] + [wb_link],
+                                                  ["", *table(["Model", "Comments", "Mentions", "Sales 2025 (sheet)"], brand_rows),
+                                                   "", "- G60 and G68 share the sales sheet G60_G68."], [], today)
+    # Models
+    for code, m in MODELS.items():
+        r = rows.get(code, [])
+        info = [f"**Brand:** {link(FOLDERS['brand'] + '/' + BRAND, BRAND)}", f"**Derivate (e-code):** {code}",
+                f"**Sales description:** {m['name']}",
+                f"**Comments:** {len({x['ID'] for x in r}):,} unique IDs, {len(r):,} rows" if r else
+                "**Comments:** none in the Dataset (study and sales only)", f"**Data:** {wb_link}"]
+        facts = ["", "### Sales", *table(["Market", "2024", "2025", "2030 plan"],
+                                         [[x[0], *x[2:5]] for x in sales[m["sheet"]][1:] if x and x[0]])]
+        for region, (sheet, col) in m["studies"].items():
+            facts += ["", f"### Customer study {region} 2025 ({sheet})", "Full answers: workbook sheet Studies."]
+            st = study_rows(studies, sheet, col)
+            if sheet == "CN_EU_2025":
+                st = sorted(st, key=lambda x: x[1])
+                facts += table(["Weakest topics", "Mean 0-10"], st[:5]) + [""] + table(["Strongest topics", "Mean 0-10"], st[-5:][::-1])
+            else:
+                facts.append(f"- {len(st)} questions with answer distributions.")
+        if r:
+            for title, col, label in [("Markets", None, "Market"), ("Engines", "Engine Type", "Engine"),
+                                      ("Sources", "Source", "Source"), ("Feedback types", "Feedback Type", "Type")]:
+                data = counts([{**x, "M": MARKET_LABEL[feedback.market_of(x["Country"])]} for x in r], "M") if col is None else counts(r, col)
+                if col == "Source":
+                    data = [[f"{v} ({SOURCE_HINT.get(v, '')})" if v in SOURCE_HINT else v, *x] for v, *x in data]
+                facts += ["", f"### {title}", *table([label, *COUNT_COLS], data)]
+            top = [x for x in counts(r, "Vfc level2 Name") if x[0] != NO_CLASS][:15]
+            facts += ["", "### Top feature classes (VFC level 2)", *table(["Feature class", *COUNT_COLS],
+                      [[link(class_note(v), v) if v in graph_classes else v, *x] for v, *x in top])]
+        notes[model_note(code)] = render(m["folder"], "Model", info,
+                                         [link(FOLDERS['brand'] + '/' + BRAND)]
+                                         + [link(part_note(parts[p])) for p in parts if code in has_data[p]]
+                                         + [link(class_note(c)) for c in graph_classes if c in present.get(code, set())] + [wb_link],
+                                         facts, [f"model: {code}"], today)
+    # Components (editable tables feed Torque Concept 3D)
+    for pid, p in parts.items():
+        heat, orow = [], []
+        for code in rows:
+            for mk in ["ALL", "EU", "US", "RoW"]:
+                c = scores[(code, mk)]["components"].get(pid)
+                if c and c.get("comments"):
+                    k = c["counts"]
+                    heat.append([code, mk, c["score"], c["comments"], c["n"], k.get("Likes", 0), k.get("Difficult to Use", 0),
+                                 k.get("Defect", 0), k.get("Wants", 0), c["positive_share"]])
+        for code, lst in opts.items():
+            orow += [[code, o["name"], o["package"] if o["package"] not in ("", "unclear") else "", o["price_eur"] or "",
+                      o["availability"]] for o in lst if pid in o["parts"]]
+        drivers = ", ".join(f"{d} {graph['drivers'][d]['short']}" for d in p["drivers"]) or "none"
+        notes[part_note(p)] = render(p["name"], "Component",
+                                     [f"**Part ID:** {pid}", f"**Area:** {p['side']} / {p['area']}",
+                                      f"**Feature classes:** {', '.join(p['feature_classes']) or 'none of its own, uses ' + p['fallback'] + ' feedback'}",
+                                      f"**Purchase drivers (Torque):** {drivers}"],
+                                     [link(model_note(c)) for c in has_data[pid]] + [link(class_note(c)) for c in p["feature_classes"] if c in graph_classes],
+                                     ["", "### Customer feedback heat map",
+                                      "Heat 0 = most criticised part, 100 = best rated part of that model and market. Comments = unique comment IDs,",
+                                      "mentions = classified rows. Edit values here; Torque's Concept 3D shows them.", "",
+                                      *table(HEAT_COLS, heat), "", "### Options today", "From the German price lists.", "", *table(OPT_COLS, orow)],
+                                     [f"part_id: {pid}"], today)
+        sheets["Heat"] += [[pid, p["name"], *h] for h in heat]
+    # Feature classes that colour a component
+    for cls in graph_classes:
+        per_model, aspects = [], []
+        for code, r in rows.items():
+            sub = [x for x in r if x["Vfc level2 Name"] == cls]
+            if sub:
+                per_model.append([link(model_note(code), MODELS[code]["folder"]), *counts(sub, "Vfc level2 Name")[0][1:]])
+                aspects += [[MODELS[code]["folder"], *a] for a in counts(sub, "Vfc level3 Name")]
+        notes[class_note(cls)] = render(cls, "Feature class (VFC level 2)", ["**Column:** Vfc level2 Name"],
+                                        [link(part_note(parts[p])) for p in part_of[cls]]
+                                        + [link(model_note(c)) for c in rows if cls in present[c]],
+                                        ["", *table(["Model", *COUNT_COLS], per_model), "", "### VFC level 3 (aspects)",
+                                         *table(["Model", "Aspect", *COUNT_COLS], aspects)], [], today)
+    # Workbook sheets
+    for code, r in rows.items():
+        for x in r:
+            v2 = x["Vfc level2 Name"]
+            sheets["Feedback"].append([x["ID"], code, MODELS[code]["folder"], x["Country"], MARKET_LABEL[feedback.market_of(x["Country"])],
+                                       x["Engine Type"], x["Source"], x["Feedback Type"] or "(untyped)", v2, x["Vfc level3 Name"],
+                                       x["Vfc level2 3 Name"], ", ".join(parts[p]["name"] for p in part_of.get(v2, []))])
+    for code, m in MODELS.items():
+        for x in sales[m["sheet"]][1:]:
+            if x and x[0]:
+                sheets["Sales"] += [[code, m["folder"], m["sheet"], x[0], x[1], year, v] for year, v in zip((2024, 2025, 2030), x[2:5])]
+        for region, (sheet, col) in m["studies"].items():
+            sheets["Studies"] += [[code, m["folder"], region, sheet, *s] for s in study_rows(studies, sheet, col)]
+        for o in opts.get(code, []):
+            sheets["Options"].append([code, m["folder"], o["category"], o["name"], o["availability"], o["package"], o["price_eur"],
+                                      ", ".join(parts[p]["name"] for p in o["parts"] if p in parts)])
+    return notes, sheets
+
+
+SHEET_HEADS = {
+    "Feedback": ["ID", "Model code", "Model", "Country", "Market", "Engine", "Source", "Feedback type", "VFC level 2",
+                 "VFC level 3", "VFC level 2 3", "Components"],
+    "Heat": ["Part ID", "Component", *HEAT_COLS],
+    "Sales": ["Model code", "Model", "Sheet", "Market", "Market code", "Year", "Volume"],
+    "Studies": ["Model code", "Model", "Study", "Sheet", "Topic or question", "Mean (0-10) or answers"],
+    "Options": ["Model code", "Model", "Category", "Option", "Availability", "Package or code", "Price EUR", "Components"],
+}
+
+
+def write_workbook(path: Path, sheets: dict[str, list[list]]) -> None:
+    wb = Workbook()
+    wb.remove(wb.active)
+    for name, rows in sheets.items():
+        ws = wb.create_sheet(name)
+        ws.append(SHEET_HEADS[name])
+        for r in rows:
+            ws.append(r)
+        ws.freeze_panes = "A2"
+        ws.auto_filter.ref = ws.dimensions
+    path.parent.mkdir(parents=True, exist_ok=True)
+    wb.save(path)
+    log.info("wrote %s (%s)", path, ", ".join(f"{k} {len(v)}" for k, v in sheets.items()))
+
+
+def register_types(config: Path) -> None:
+    """Adds the four note types to Rowboat's config/notes.json (existing types are kept)."""
+    defs = json.loads(config.read_text(encoding="utf-8"))
+    known = {d["type"] for d in defs}
+    added = [t for t in NOTE_TYPES if t["type"] not in known]
+    if added:
+        config.write_text(json.dumps(defs + added, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    log.info("notes.json: %s", f"added {', '.join(t['type'] for t in added)}" if added else "types already registered")
 
 
 def write(vault: Path, refresh: bool, graph: dict) -> int:
-    notes = build(graph, datetime.now().strftime("%Y-%m-%d"))
+    notes, sheets = build(graph, datetime.now().strftime("%Y-%m-%d"))
     written = 0
     for rel, text in notes.items():
         path = vault / f"{rel}.md"
@@ -343,19 +336,22 @@ def write(vault: Path, refresh: bool, graph: dict) -> int:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
         written += 1
-    log.info("%d of %d note(s) written to %s/%s", written, len(notes), vault, ROOT)
+    write_workbook(vault / WORKBOOK, sheets)
+    log.info("%d of %d note(s) written to %s", written, len(notes), vault)
     return written
 
 
 def main() -> int:
-    import json
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--vault", type=Path, default=Path("~/.rowboat/knowledge"))
     ap.add_argument("--refresh", action="store_true", help="rewrite notes that still carry managed_by: ehl-visu")
+    ap.add_argument("--register", action="store_true", help="add the note types to <vault>/../config/notes.json")
     args = ap.parse_args()
-    graph = json.loads((HERE.parent / "torque" / "dist" / "visu" / "graph.json").read_text(encoding="utf-8"))
-    write(args.vault.expanduser(), args.refresh, graph)
+    vault = args.vault.expanduser()
+    write(vault, args.refresh, json.loads(GRAPH.read_text(encoding="utf-8")))
+    if args.register:
+        register_types(vault.parent / "config" / "notes.json")
     return 0
 
 

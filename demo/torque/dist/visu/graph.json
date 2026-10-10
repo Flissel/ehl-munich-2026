@@ -1,23 +1,29 @@
 {
- "version": 2,
- "root": "Brands",
+ "version": 3,
+ "folders": {
+  "brand": "Brands",
+  "model": "Models",
+  "part": "Components",
+  "class": "Feature Classes",
+  "data": "Data"
+ },
  "brand": "BMW",
  "models": {
   "F70": {
    "folder": "1er F70",
-   "note": "Brands/BMW/Models/1er F70/1er F70"
+   "note": "Models/1er F70"
   },
   "G60": {
    "folder": "5er G60",
-   "note": "Brands/BMW/Models/5er G60/5er G60"
+   "note": "Models/5er G60"
   },
   "G68": {
    "folder": "5er G68",
-   "note": "Brands/BMW/Models/5er G68/5er G68"
+   "note": "Models/5er G68"
   },
   "G70": {
    "folder": "7er G70",
-   "note": "Brands/BMW/Models/7er G70/7er G70"
+   "note": "Models/7er G70"
   }
  },
  "areas": {
@@ -145,10 +151,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Hood",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Body panels/Hood",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Body panels/Hood",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Body panels/Hood"
+    "F70": "Components/Hood",
+    "G60": "Components/Hood",
+    "G70": "Components/Hood"
    }
   },
   "roof": {
@@ -163,10 +170,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Roof",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Body panels/Roof",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Body panels/Roof",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Body panels/Roof"
+    "F70": "Components/Roof",
+    "G60": "Components/Roof",
+    "G70": "Components/Roof"
    }
   },
   "trunk-lid": {
@@ -186,10 +194,11 @@
    "topics": [
     "Topics/Space and storage"
    ],
+   "note": "Components/Trunk lid",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Body panels/Trunk lid",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Body panels/Trunk lid",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Body panels/Trunk lid"
+    "F70": "Components/Trunk lid",
+    "G60": "Components/Trunk lid",
+    "G70": "Components/Trunk lid"
    }
   },
   "fender-front-left": {
@@ -200,10 +209,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Front-left fender",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Body panels/Front-left fender",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Body panels/Front-left fender",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Body panels/Front-left fender"
+    "F70": "Components/Front-left fender",
+    "G60": "Components/Front-left fender",
+    "G70": "Components/Front-left fender"
    }
   },
   "fender-front-right": {
@@ -214,10 +224,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Front-right fender",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Body panels/Front-right fender",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Body panels/Front-right fender",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Body panels/Front-right fender"
+    "F70": "Components/Front-right fender",
+    "G60": "Components/Front-right fender",
+    "G70": "Components/Front-right fender"
    }
   },
   "quarter-rear-left": {
@@ -233,10 +244,11 @@
     "Topics/Range and charging",
     "Topics/Trend Electrification"
    ],
+   "note": "Components/Rear-left quarter panel",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Body panels/Rear-left quarter panel",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Body panels/Rear-left quarter panel",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Body panels/Rear-left quarter panel"
+    "F70": "Components/Rear-left quarter panel",
+    "G60": "Components/Rear-left quarter panel",
+    "G70": "Components/Rear-left quarter panel"
    }
   },
   "quarter-rear-right": {
@@ -247,10 +259,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Rear-right quarter panel",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Body panels/Rear-right quarter panel",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Body panels/Rear-right quarter panel",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Body panels/Rear-right quarter panel"
+    "F70": "Components/Rear-right quarter panel",
+    "G60": "Components/Rear-right quarter panel",
+    "G70": "Components/Rear-right quarter panel"
    }
   },
   "pillars-sills": {
@@ -261,10 +274,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Pillars & body sides",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Body panels/Pillars & body sides",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Body panels/Pillars & body sides",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Body panels/Pillars & body sides"
+    "F70": "Components/Pillars & body sides",
+    "G60": "Components/Pillars & body sides",
+    "G70": "Components/Pillars & body sides"
    }
   },
   "underbody": {
@@ -280,10 +294,11 @@
     "Topics/Range and charging",
     "Topics/Trend Electrification"
    ],
+   "note": "Components/Underbody",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Body panels/Underbody",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Body panels/Underbody",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Body panels/Underbody"
+    "F70": "Components/Underbody",
+    "G60": "Components/Underbody",
+    "G70": "Components/Underbody"
    }
   },
   "front-splitter": {
@@ -296,10 +311,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Front splitter",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Bumpers and aero/Front splitter",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Bumpers and aero/Front splitter",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Bumpers and aero/Front splitter"
+    "F70": "Components/Front splitter",
+    "G60": "Components/Front splitter",
+    "G70": "Components/Front splitter"
    }
   },
   "front-bumper": {
@@ -317,10 +333,11 @@
    "topics": [
     "Topics/Assistance and parking"
    ],
+   "note": "Components/Front bumper",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Bumpers and aero/Front bumper",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Bumpers and aero/Front bumper",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Bumpers and aero/Front bumper"
+    "F70": "Components/Front bumper",
+    "G60": "Components/Front bumper",
+    "G70": "Components/Front bumper"
    }
   },
   "rear-diffuser": {
@@ -333,10 +350,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Rear diffuser",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Bumpers and aero/Rear diffuser",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Bumpers and aero/Rear diffuser",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Bumpers and aero/Rear diffuser"
+    "F70": "Components/Rear diffuser",
+    "G60": "Components/Rear diffuser",
+    "G70": "Components/Rear diffuser"
    }
   },
   "rear-bumper": {
@@ -354,10 +372,11 @@
    "topics": [
     "Topics/Assistance and parking"
    ],
+   "note": "Components/Rear bumper",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Bumpers and aero/Rear bumper",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Bumpers and aero/Rear bumper",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Bumpers and aero/Rear bumper"
+    "F70": "Components/Rear bumper",
+    "G60": "Components/Rear bumper",
+    "G70": "Components/Rear bumper"
    }
   },
   "side-skirt-left": {
@@ -370,10 +389,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Left side skirt",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Bumpers and aero/Left side skirt",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Bumpers and aero/Left side skirt",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Bumpers and aero/Left side skirt"
+    "F70": "Components/Left side skirt",
+    "G60": "Components/Left side skirt",
+    "G70": "Components/Left side skirt"
    }
   },
   "side-skirt-right": {
@@ -386,10 +406,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Right side skirt",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Bumpers and aero/Right side skirt",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Bumpers and aero/Right side skirt",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Bumpers and aero/Right side skirt"
+    "F70": "Components/Right side skirt",
+    "G60": "Components/Right side skirt",
+    "G70": "Components/Right side skirt"
    }
   },
   "rear-spoiler": {
@@ -400,10 +421,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Rear spoiler",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Bumpers and aero/Rear spoiler",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Bumpers and aero/Rear spoiler",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Bumpers and aero/Rear spoiler"
+    "F70": "Components/Rear spoiler",
+    "G60": "Components/Rear spoiler",
+    "G70": "Components/Rear spoiler"
    }
   },
   "kidney-grille": {
@@ -421,10 +443,11 @@
     "Topics/Exterior design",
     "Topics/Trend Neue Klasse"
    ],
+   "note": "Components/Kidney grille",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Bumpers and aero/Kidney grille",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Bumpers and aero/Kidney grille",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Bumpers and aero/Kidney grille"
+    "F70": "Components/Kidney grille",
+    "G60": "Components/Kidney grille",
+    "G70": "Components/Kidney grille"
    }
   },
   "lower-intake": {
@@ -435,10 +458,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Lower front intake",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Bumpers and aero/Lower front intake",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Bumpers and aero/Lower front intake",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Bumpers and aero/Lower front intake"
+    "F70": "Components/Lower front intake",
+    "G60": "Components/Lower front intake",
+    "G70": "Components/Lower front intake"
    }
   },
   "mirror-left": {
@@ -451,10 +475,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Left side mirror",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Doors and mirrors/Left side mirror",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Doors and mirrors/Left side mirror",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Doors and mirrors/Left side mirror"
+    "F70": "Components/Left side mirror",
+    "G60": "Components/Left side mirror",
+    "G70": "Components/Left side mirror"
    }
   },
   "mirror-right": {
@@ -467,10 +492,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Right side mirror",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Doors and mirrors/Right side mirror",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Doors and mirrors/Right side mirror",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Doors and mirrors/Right side mirror"
+    "F70": "Components/Right side mirror",
+    "G60": "Components/Right side mirror",
+    "G70": "Components/Right side mirror"
    }
   },
   "door-left": {
@@ -493,10 +519,11 @@
    "topics": [
     "Topics/Access and convenience"
    ],
+   "note": "Components/Left door",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Doors and mirrors/Left door",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Doors and mirrors/Left door",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Doors and mirrors/Left door"
+    "F70": "Components/Left door",
+    "G60": "Components/Left door",
+    "G70": "Components/Left door"
    }
   },
   "door-right": {
@@ -519,10 +546,11 @@
    "topics": [
     "Topics/Access and convenience"
    ],
+   "note": "Components/Right door",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Doors and mirrors/Right door",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Doors and mirrors/Right door",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Doors and mirrors/Right door"
+    "F70": "Components/Right door",
+    "G60": "Components/Right door",
+    "G70": "Components/Right door"
    }
   },
   "windshield": {
@@ -540,10 +568,11 @@
    "topics": [
     "Topics/Assistance and parking"
    ],
+   "note": "Components/Windshield",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Glass/Windshield",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Glass/Windshield",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Glass/Windshield"
+    "F70": "Components/Windshield",
+    "G60": "Components/Windshield",
+    "G70": "Components/Windshield"
    }
   },
   "rear-window": {
@@ -557,10 +586,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Rear window",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Glass/Rear window",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Glass/Rear window",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Glass/Rear window"
+    "F70": "Components/Rear window",
+    "G60": "Components/Rear window",
+    "G70": "Components/Rear window"
    }
   },
   "window-left": {
@@ -573,10 +603,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Left side window",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Glass/Left side window",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Glass/Left side window",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Glass/Left side window"
+    "F70": "Components/Left side window",
+    "G60": "Components/Left side window",
+    "G70": "Components/Left side window"
    }
   },
   "window-right": {
@@ -589,10 +620,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Right side window",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Glass/Right side window",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Glass/Right side window",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Glass/Right side window"
+    "F70": "Components/Right side window",
+    "G60": "Components/Right side window",
+    "G70": "Components/Right side window"
    }
   },
   "headlight-left": {
@@ -611,10 +643,11 @@
     "Topics/Exterior design",
     "Topics/Trend Neue Klasse"
    ],
+   "note": "Components/Left headlight",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Lighting/Left headlight",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Lighting/Left headlight",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Lighting/Left headlight"
+    "F70": "Components/Left headlight",
+    "G60": "Components/Left headlight",
+    "G70": "Components/Left headlight"
    }
   },
   "headlight-right": {
@@ -633,10 +666,11 @@
     "Topics/Exterior design",
     "Topics/Trend Neue Klasse"
    ],
+   "note": "Components/Right headlight",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Lighting/Right headlight",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Lighting/Right headlight",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Lighting/Right headlight"
+    "F70": "Components/Right headlight",
+    "G60": "Components/Right headlight",
+    "G70": "Components/Right headlight"
    }
   },
   "taillight-left": {
@@ -654,10 +688,11 @@
     "Topics/Exterior design",
     "Topics/Trend Neue Klasse"
    ],
+   "note": "Components/Left taillight",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Lighting/Left taillight",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Lighting/Left taillight",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Lighting/Left taillight"
+    "F70": "Components/Left taillight",
+    "G60": "Components/Left taillight",
+    "G70": "Components/Left taillight"
    }
   },
   "taillight-right": {
@@ -675,10 +710,11 @@
     "Topics/Exterior design",
     "Topics/Trend Neue Klasse"
    ],
+   "note": "Components/Right taillight",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Lighting/Right taillight",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Lighting/Right taillight",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Lighting/Right taillight"
+    "F70": "Components/Right taillight",
+    "G60": "Components/Right taillight",
+    "G70": "Components/Right taillight"
    }
   },
   "exhaust": {
@@ -691,10 +727,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Exhaust system",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Exterior details/Exhaust system",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Exterior details/Exhaust system",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Exterior details/Exhaust system"
+    "F70": "Components/Exhaust system",
+    "G60": "Components/Exhaust system",
+    "G70": "Components/Exhaust system"
    }
   },
   "roof-fin": {
@@ -705,10 +742,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Shark-fin antenna",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Exterior details/Shark-fin antenna",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Exterior details/Shark-fin antenna",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Exterior details/Shark-fin antenna"
+    "F70": "Components/Shark-fin antenna",
+    "G60": "Components/Shark-fin antenna",
+    "G70": "Components/Shark-fin antenna"
    }
   },
   "badges": {
@@ -719,10 +757,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Badges & logos",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Exterior details/Badges & logos",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Exterior details/Badges & logos",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Exterior details/Badges & logos"
+    "F70": "Components/Badges & logos",
+    "G60": "Components/Badges & logos",
+    "G70": "Components/Badges & logos"
    }
   },
   "license-plate": {
@@ -733,10 +772,11 @@
    "fallback": "general exterior",
    "drivers": [],
    "topics": [],
+   "note": "Components/License plate",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Exterior details/License plate",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Exterior details/License plate",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Exterior details/License plate"
+    "F70": "Components/License plate",
+    "G60": "Components/License plate",
+    "G70": "Components/License plate"
    }
   },
   "seat-driver": {
@@ -756,10 +796,11 @@
    "topics": [
     "Topics/Comfort and seats"
    ],
+   "note": "Components/Driver seat",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Seats/Driver seat",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Seats/Driver seat",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Seats/Driver seat"
+    "F70": "Components/Driver seat",
+    "G60": "Components/Driver seat",
+    "G70": "Components/Driver seat"
    }
   },
   "seat-passenger": {
@@ -779,10 +820,11 @@
    "topics": [
     "Topics/Comfort and seats"
    ],
+   "note": "Components/Passenger seat",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Seats/Passenger seat",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Seats/Passenger seat",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Seats/Passenger seat"
+    "F70": "Components/Passenger seat",
+    "G60": "Components/Passenger seat",
+    "G70": "Components/Passenger seat"
    }
   },
   "rear-seats": {
@@ -802,10 +844,11 @@
     "Topics/Comfort and seats",
     "Topics/Space and storage"
    ],
+   "note": "Components/Rear seats",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Seats/Rear seats",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Seats/Rear seats",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Seats/Rear seats"
+    "F70": "Components/Rear seats",
+    "G60": "Components/Rear seats",
+    "G70": "Components/Rear seats"
    }
   },
   "instrument-cluster": {
@@ -827,10 +870,11 @@
     "Topics/Driving experience",
     "Topics/Trend Software and connected car"
    ],
+   "note": "Components/Instrument cluster display",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cockpit and displays/Instrument cluster display",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cockpit and displays/Instrument cluster display",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cockpit and displays/Instrument cluster display"
+    "F70": "Components/Instrument cluster display",
+    "G60": "Components/Instrument cluster display",
+    "G70": "Components/Instrument cluster display"
    }
   },
   "central-display": {
@@ -857,10 +901,11 @@
     "Topics/Infotainment and operation",
     "Topics/Trend Software and connected car"
    ],
+   "note": "Components/Central touch display",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cockpit and displays/Central touch display",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cockpit and displays/Central touch display",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cockpit and displays/Central touch display"
+    "F70": "Components/Central touch display",
+    "G60": "Components/Central touch display",
+    "G70": "Components/Central touch display"
    }
   },
   "climate-controls": {
@@ -878,10 +923,11 @@
     "Topics/Climate Control Usability",
     "Topics/Comfort and seats"
    ],
+   "note": "Components/Climate control panel",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cockpit and displays/Climate control panel",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cockpit and displays/Climate control panel",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cockpit and displays/Climate control panel"
+    "F70": "Components/Climate control panel",
+    "G60": "Components/Climate control panel",
+    "G70": "Components/Climate control panel"
    }
   },
   "center-console": {
@@ -906,10 +952,11 @@
     "Topics/Infotainment and operation",
     "Topics/Phone Charging"
    ],
+   "note": "Components/Center console & armrest",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Console and storage/Center console & armrest",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Console and storage/Center console & armrest",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Console and storage/Center console & armrest"
+    "F70": "Components/Center console & armrest",
+    "G60": "Components/Center console & armrest",
+    "G70": "Components/Center console & armrest"
    }
   },
   "dashboard": {
@@ -931,10 +978,11 @@
     "Topics/Interior design and quality",
     "Topics/Trend Software and connected car"
    ],
+   "note": "Components/Dashboard",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cockpit and displays/Dashboard",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cockpit and displays/Dashboard",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cockpit and displays/Dashboard"
+    "F70": "Components/Dashboard",
+    "G60": "Components/Dashboard",
+    "G70": "Components/Dashboard"
    }
   },
   "steering-wheel": {
@@ -954,10 +1002,11 @@
     "Topics/Climate Control Usability",
     "Topics/Infotainment and operation"
    ],
+   "note": "Components/Steering wheel",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cockpit and displays/Steering wheel",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cockpit and displays/Steering wheel",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cockpit and displays/Steering wheel"
+    "F70": "Components/Steering wheel",
+    "G60": "Components/Steering wheel",
+    "G70": "Components/Steering wheel"
    }
   },
   "pedals": {
@@ -970,10 +1019,11 @@
    "fallback": "general interior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Pedals",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cockpit and displays/Pedals",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cockpit and displays/Pedals",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cockpit and displays/Pedals"
+    "F70": "Components/Pedals",
+    "G60": "Components/Pedals",
+    "G70": "Components/Pedals"
    }
   },
   "door-trim-left": {
@@ -994,10 +1044,11 @@
     "Topics/Infotainment and operation",
     "Topics/Interior design and quality"
    ],
+   "note": "Components/Left door trim & speaker",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cabin trim/Left door trim & speaker",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cabin trim/Left door trim & speaker",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cabin trim/Left door trim & speaker"
+    "F70": "Components/Left door trim & speaker",
+    "G60": "Components/Left door trim & speaker",
+    "G70": "Components/Left door trim & speaker"
    }
   },
   "door-trim-right": {
@@ -1018,10 +1069,11 @@
     "Topics/Infotainment and operation",
     "Topics/Interior design and quality"
    ],
+   "note": "Components/Right door trim & speaker",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cabin trim/Right door trim & speaker",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cabin trim/Right door trim & speaker",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cabin trim/Right door trim & speaker"
+    "F70": "Components/Right door trim & speaker",
+    "G60": "Components/Right door trim & speaker",
+    "G70": "Components/Right door trim & speaker"
    }
   },
   "overhead-console": {
@@ -1039,10 +1091,11 @@
     "Topics/Connectivity and digital services",
     "Topics/Trend Software and connected car"
    ],
+   "note": "Components/Overhead console (SOS, lights)",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cabin trim/Overhead console (SOS, lights)",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cabin trim/Overhead console (SOS, lights)",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cabin trim/Overhead console (SOS, lights)"
+    "F70": "Components/Overhead console (SOS, lights)",
+    "G60": "Components/Overhead console (SOS, lights)",
+    "G70": "Components/Overhead console (SOS, lights)"
    }
   },
   "headliner": {
@@ -1055,10 +1108,11 @@
    "fallback": "general interior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Headliner & pillar trim",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cabin trim/Headliner & pillar trim",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cabin trim/Headliner & pillar trim",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cabin trim/Headliner & pillar trim"
+    "F70": "Components/Headliner & pillar trim",
+    "G60": "Components/Headliner & pillar trim",
+    "G70": "Components/Headliner & pillar trim"
    }
   },
   "interior-side-panels": {
@@ -1075,10 +1129,11 @@
    "topics": [
     "Topics/Interior design and quality"
    ],
+   "note": "Components/Sills & side panels",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cabin trim/Sills & side panels",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cabin trim/Sills & side panels",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cabin trim/Sills & side panels"
+    "F70": "Components/Sills & side panels",
+    "G60": "Components/Sills & side panels",
+    "G70": "Components/Sills & side panels"
    }
   },
   "seat-belts": {
@@ -1091,10 +1146,11 @@
    "fallback": "general interior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Seat belts",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Seats/Seat belts",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Seats/Seat belts",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Seats/Seat belts"
+    "F70": "Components/Seat belts",
+    "G60": "Components/Seat belts",
+    "G70": "Components/Seat belts"
    }
   },
   "interior-mirror": {
@@ -1112,10 +1168,11 @@
    "topics": [
     "Topics/Assistance and parking"
    ],
+   "note": "Components/Interior mirror",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cabin trim/Interior mirror",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cabin trim/Interior mirror",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cabin trim/Interior mirror"
+    "F70": "Components/Interior mirror",
+    "G60": "Components/Interior mirror",
+    "G70": "Components/Interior mirror"
    }
   },
   "sun-visors": {
@@ -1128,10 +1185,11 @@
    "fallback": "general interior",
    "drivers": [],
    "topics": [],
+   "note": "Components/Sun visors",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Interior/Cabin trim/Sun visors",
-    "G60": "Brands/BMW/Models/5er G60/Components/Interior/Cabin trim/Sun visors",
-    "G70": "Brands/BMW/Models/7er G70/Components/Interior/Cabin trim/Sun visors"
+    "F70": "Components/Sun visors",
+    "G60": "Components/Sun visors",
+    "G70": "Components/Sun visors"
    }
   },
   "wheel-front-left": {
@@ -1152,10 +1210,11 @@
    "topics": [
     "Topics/Driving experience"
    ],
+   "note": "Components/Front-left wheel",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Wheels and brakes/Front-left wheel",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Wheels and brakes/Front-left wheel",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Wheels and brakes/Front-left wheel"
+    "F70": "Components/Front-left wheel",
+    "G60": "Components/Front-left wheel",
+    "G70": "Components/Front-left wheel"
    }
   },
   "wheel-front-right": {
@@ -1176,10 +1235,11 @@
    "topics": [
     "Topics/Driving experience"
    ],
+   "note": "Components/Front-right wheel",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Wheels and brakes/Front-right wheel",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Wheels and brakes/Front-right wheel",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Wheels and brakes/Front-right wheel"
+    "F70": "Components/Front-right wheel",
+    "G60": "Components/Front-right wheel",
+    "G70": "Components/Front-right wheel"
    }
   },
   "wheel-rear-left": {
@@ -1200,10 +1260,11 @@
    "topics": [
     "Topics/Driving experience"
    ],
+   "note": "Components/Rear-left wheel",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Wheels and brakes/Rear-left wheel",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Wheels and brakes/Rear-left wheel",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Wheels and brakes/Rear-left wheel"
+    "F70": "Components/Rear-left wheel",
+    "G60": "Components/Rear-left wheel",
+    "G70": "Components/Rear-left wheel"
    }
   },
   "wheel-rear-right": {
@@ -1224,10 +1285,11 @@
    "topics": [
     "Topics/Driving experience"
    ],
+   "note": "Components/Rear-right wheel",
    "notes": {
-    "F70": "Brands/BMW/Models/1er F70/Components/Exterior/Wheels and brakes/Rear-right wheel",
-    "G60": "Brands/BMW/Models/5er G60/Components/Exterior/Wheels and brakes/Rear-right wheel",
-    "G70": "Brands/BMW/Models/7er G70/Components/Exterior/Wheels and brakes/Rear-right wheel"
+    "F70": "Components/Rear-right wheel",
+    "G60": "Components/Rear-right wheel",
+    "G70": "Components/Rear-right wheel"
    }
   }
  },

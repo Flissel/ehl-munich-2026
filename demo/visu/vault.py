@@ -1,7 +1,7 @@
 """The 3D car in Rowboat's knowledge graph: fixed links, editable data.
 
     python demo/visu/vault.py graph                  # rebuild the link map demo/torque/dist/visu/graph.json
-    python demo/visu/vault.py notes [--vault V]      # write missing notes of the tree <vault>/Brands (brand.py)
+    python demo/visu/vault.py notes [--vault V]      # write missing notes: Brands, Models, Components, Feature Classes + Data workbook (brand.py)
     python demo/visu/vault.py notes --refresh        # also rewrite existing managed notes (overwrites edits)
     python demo/visu/vault.py sync [--watch]         # vault -> demo/torque/dist/visu/data/visu.json
 
@@ -11,8 +11,8 @@ attached to a part (heat map rows per model and market, option rows) lives in th
 may edit them and `sync --watch` hands every change to Torque's Concept 3D within seconds. Notes are only
 created when missing, so edits survive a re-run. Customer quotes never go into the vault (spec D8).
 
-Tree and graph (brand.py): Brands -> BMW -> Models -> <model> -> Components -> Exterior / Interior -> area -> part,
-next to VFC, ID, Country, Engine, Source, Feedback, Sales, Studies and Options of the model.
+Schema (brand.py, Rowboat style: one top-level folder per note type, hierarchy in the links): Brands -> Models ->
+Components -> Feature Classes, plus Data/BMW Dataset.xlsx for analysis.
 """
 from __future__ import annotations
 
@@ -97,10 +97,11 @@ def build_graph() -> dict:
                       "feature_classes": classes.get(pid, []),
                       "fallback": "general interior" if side == "Interior" else "general exterior",
                       "drivers": drv, "topics": topics}
-        parts[pid]["notes"] = {code: brand.part_note(code, parts[pid]) for code in brand.models_with_feedback()}
+        parts[pid]["note"] = brand.part_note(parts[pid])
+        parts[pid]["notes"] = {code: parts[pid]["note"] for code in brand.models_with_feedback()}
         a = areas.setdefault(area, {"side": side, "parts": []})
         a["parts"].append(pid)
-    return {"version": 2, "root": brand.ROOT, "brand": brand.BRAND,
+    return {"version": 3, "folders": brand.FOLDERS, "brand": brand.BRAND,
             "models": {c: {"folder": m["folder"], "note": brand.model_note(c)} for c, m in brand.MODELS.items()},
             "areas": areas, "parts": parts, "drivers": drivers}
 
@@ -138,15 +139,16 @@ def read_vault(vault: Path, g: dict) -> dict:
     """Component data from the notes, keyed by the fixed part_id (+ model) in their front matter, so a renamed
     or moved note still feeds the same 3D part. Links in the notes are never read."""
     parts = {pid: {"notes": {}, "heat": {}, "options": {}} for pid in g["parts"]}
-    for f in sorted((vault / brand.ROOT).rglob("*.md")):
+    for f in sorted((vault / brand.FOLDERS["part"]).rglob("*.md")):
         text = f.read_text(encoding="utf-8", errors="ignore")
         head = re.match(r"---\n(.*?)\n---", text, flags=re.S)
         meta = dict(re.findall(r"^(\w+):\s*(.+?)\s*$", head[1], flags=re.M)) if head else {}
-        pid, code = meta.get("part_id"), meta.get("model")
-        if pid not in parts or not code:
+        pid, code = meta.get("part_id"), meta.get("model", "")
+        if pid not in parts:
             continue
         p = parts[pid]
-        p["notes"][code] = f.relative_to(vault).with_suffix("").as_posix()
+        note = f.relative_to(vault).with_suffix("").as_posix()
+        p["notes"].update({c: note for c in brand.models_with_feedback()} if not code else {code: note})
         for r in read_table(text, "Customer feedback heat map"):
             p["heat"][f"{r.get('Model') or code}|{r.get('Market', 'ALL')}"] = {
                 "score": num(r.get("Heat", "")), "comments": num(r.get("Comments", "")), "n": num(r.get("Mentions", "")),
@@ -190,7 +192,7 @@ def sync_once(vault: Path, out: Path) -> bool:
 
 
 def signature(vault: Path) -> tuple:
-    files = list((vault / brand.ROOT).rglob("*.md")) + [GRAPH]
+    files = list((vault / brand.FOLDERS["part"]).rglob("*.md")) + [GRAPH]
     return tuple(sorted((str(f), f.stat().st_mtime_ns, f.stat().st_size) for f in files if f.exists()))
 
 
