@@ -3070,11 +3070,13 @@ const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const BASE_DIST = 8.4;
 const cam3 = {yaw:.62, pitch:.16, dist:BASE_DIST, auto:!REDUCED, mode:"exterior", pins:true, dims:false};
 let focusPin = null, g3 = null;
-// The heat map needs the glTF car that demo/visu/prepare_local.py puts into visu/models (never in git). Without it
-// Torque opens car.html, the same app with the built-in concept car, where every driver has its spot on the car.
+// Concept 3D needs the three glTF cars (X1, X5, X7) that demo/visu/prepare_local.py --cars installs into visu/models
+// (never in git, see demo/visu/README.md). Missing cars: the stage says how to install them (no built-in car with
+// hardcoded data any more; car.html was removed on 2026-10-11).
 const exists = u => fetch(u, {cache:"no-store"}).then(r => { if(r.body) r.body.cancel(); return r.ok; }, () => false);   // GET: not every app server answers HEAD
-if(/^https?:/.test(location.protocol)) exists("visu/models/bmw-m4-competition-2021/scene.gltf")
-  .then(ok => ok ? false : exists("car.html")).then(car => { if(car) location.replace("car.html" + location.search + location.hash); });
+const CARS = {"1":"bmw-x1-2020", "5":"bmw-x5-2019", "7":"bmw-x7-2019"};
+const CARS_OK = {};
+Object.values(CARS).forEach(c => exists(`visu/models/${c}/scene.gltf`).then(ok => { CARS_OK[c] = ok; if(state.view === "concept") render(false); }));
 
 function isLWB(){
   if(state.model === "1" || state.market !== "CN" || statusOf("R-03") === "rejected") return false;
@@ -3512,6 +3514,12 @@ function partHtml(d){
     ${GRAPH.parts[d.id]?.notes?.[M().code] ? `<small class="muted">In Rowboat: ${esc(GRAPH.parts[d.id].notes[M().code])}</small>` : ""}</div>`;
 }
 function bConcept(){
+  const car = CARS[state.model] || CARS["5"];
+  if(CARS_OK[car] === false){
+    if(VISU.frame){ VISU.frame.style.visibility = "hidden"; VISU.frame.style.pointerEvents = "none"; }
+    $("#stage").insertAdjacentHTML("beforeend", `<div class="stage-msg">3D car ${car} is not installed on this PC.<br>Download the three cars (links in demo/visu/README.md) and run<br><code>python demo/visu/prepare_local.py --cars "&lt;folder with the zips&gt;"</code></div>`);
+    return;
+  }
   const stage = $("#stage"), card = $("#focusCard"), f = visuFrame(), holder = document.createElement("div");
   const rk = topRank(), order = rk.map(x => x.r.id), rankOf = Object.fromEntries(rk.map((x,i) => [x.r.id, [i+1, x.s.total]]));
   let focusId = null, last = "";

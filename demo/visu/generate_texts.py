@@ -178,6 +178,23 @@ def read_notes(vault: Path) -> dict:
     return out
 
 
+def notes_from_seed(vault: Path, refresh: bool = False) -> int:
+    """Writes the Requirements notes from the committed agent output (texts.seed.json), without calling the API:
+    lets every team PC fill its vault; regenerate with the agent when RAG and a key are available."""
+    seed = json.loads(SEED.read_text(encoding="utf-8"))
+    today, written = datetime.now().strftime("%Y-%m-%d"), 0
+    for rid, t in seed["requirements"].items():
+        path = vault / FOLDER / f"{rid} {re.sub(r'[\/:*?\"<>|]', ' ', t['short'])}.md"
+        if path.exists() and (not refresh or MARKER not in path.read_text(encoding="utf-8")[:300]):
+            continue
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(note_text(rid, t["short"], t["cat"], {k: t.get(k, [] if k == "assume" else "") for k in FIELDS},
+                                  [seed.get("source", "agent output")], "agent (seed copy)", today), encoding="utf-8")
+        written += 1
+    log.info("%d requirement note(s) written from the seed", written)
+    return written
+
+
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])

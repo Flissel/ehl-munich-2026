@@ -235,6 +235,12 @@ def main() -> int:
         write_graph()
     elif args.command == "notes":
         brand.write(vault, args.refresh, json.loads(GRAPH.read_text(encoding="utf-8")) if GRAPH.exists() else write_graph())
+        import assumptions, generate_texts  # Assumptions/ (seed values) and Requirements/ (committed agent output)
+        assumptions.write_notes(vault, args.refresh)
+        generate_texts.notes_from_seed(vault, args.refresh)
+        config = vault.parent / "config" / "notes.json"  # Rowboat's note types (its agents write these folders alike)
+        if config.exists():
+            brand.register_types(config)
     else:
         last = None
         while True:

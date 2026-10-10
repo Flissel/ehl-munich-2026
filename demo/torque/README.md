@@ -29,4 +29,4 @@ Essentials (black) is for deciding: the top 10 with a recommendation, the decisi
 
 ## Concept 3D
 
-The Concept 3D page embeds the customer feedback heat map from `demo/visu/` (built into `dist/visu/`). Without its glTF car on the PC, Torque opens `dist/car.html` by itself: the same app with the built-in concept car, where every purchase driver has its spot on the car. Run `python demo/visu/prepare_local.py --model <glTF zip>` once per PC for its data and car model; see `demo/visu/README.md`.
+The Concept 3D page embeds the customer feedback heat map from `demo/visu/` (built into `dist/visu/`), on the car of the selected model (X1 for the 1 Series, X5 for the 5 Series, X7 for the 7 Series). Run `python demo/visu/prepare_local.py --cars "<folder with the three car zips>"` once per PC (download links in the top-level README). Without the cars, the stage says how to install them.
