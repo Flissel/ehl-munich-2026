@@ -7,7 +7,9 @@ Works on macOS and Windows (Git Bash or PowerShell). Ask the user before install
 ## 0. Who am I?
 
 Ask the user for their **WP** (1–4, see the table in `CLAUDE.md`) and their GitHub login. The user
-needs write access to `Flissel/ehl-munich-2026` and `Flissel/rowboat` (ask Flissel if missing).
+needs write access to `Flissel/ehl-munich-2026` (ask Flissel if missing). For Rowboat the user works
+in **their own fork** of `Flissel/rowboat` (created in step 2) – no write access to `Flissel/rowboat`
+is needed.
 
 ## 1. Prerequisites (check, install only what is missing)
 
@@ -25,15 +27,22 @@ Entire CLI is optional; without it the repo's Claude hooks do nothing.
 
 ## 2. Clone side by side
 
-Pick a base folder (e.g. `~/ehl`) and clone both repos next to each other:
+Pick a base folder (e.g. `~/ehl`). Clone this repo, then **fork** `Flissel/rowboat` into your own
+account and clone your fork next to it:
 
 ```bash
 mkdir -p ~/ehl && cd ~/ehl
 gh repo clone Flissel/ehl-munich-2026
-gh repo clone Flissel/rowboat -- --branch ehl
+gh repo fork Flissel/rowboat --clone        # creates <your-login>/rowboat incl. branch ehl
+cd rowboat
+git remote -v                               # origin = <your-login>/rowboat, upstream = Flissel/rowboat
+git fetch upstream ehl
+git switch -c ehl upstream/ehl              # local ehl tracks the team base
 ```
 
-Result: `~/ehl/ehl-munich-2026` and `~/ehl/rowboat` (on branch `ehl`).
+Result: `~/ehl/ehl-munich-2026` and `~/ehl/rowboat` (your fork, on `ehl`, `upstream` = `Flissel/rowboat`).
+Already have a fork? Clone it instead, then `git remote add upstream https://github.com/Flissel/rowboat.git`.
+Never push to `upstream`; push your branches to `origin` and open PRs (see `CLAUDE.md`).
 
 ## 3. Your WP branch and the board worktree
 
@@ -59,11 +68,14 @@ npm run dev                                       # Electron app + renderer (por
   a temp folder as test vault).
 - Already have the official Rowboat app installed? Use `npm run dev:sandbox -- --seed-config`
   instead; it runs in `~/.rowboat-dev/<id>`, so point `EHL_VAULT` at that instance's `knowledge/`.
-- Changing Rowboat: branch `ehl/<wp>-<topic>` in `~/ehl/rowboat`, PR into `ehl` (see `CLAUDE.md`).
+- Changing Rowboat: `git fetch upstream && git switch -c ehl/<wp>-<topic> upstream/ehl` in
+  `~/ehl/rowboat`, commit, `git push -u origin ehl/<wp>-<topic>`, then a PR from your fork into
+  `Flissel/rowboat:ehl` (command in `CLAUDE.md` → Pull requests).
 
 ## 5. Verify
 
 - [ ] `gh auth status` ok, both repos cloned, WP branch checked out, board worktree on `board`
+- [ ] `~/ehl/rowboat`: `origin` = your own fork, `upstream` = `Flissel/rowboat`, local `ehl` tracks `upstream/ehl`
 - [ ] Rowboat dev window opens and shows the (empty or test) vault
 - [ ] `docker info` ok
 - [ ] `git show origin/board:WORKBOARD.md` prints the board
