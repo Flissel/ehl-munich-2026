@@ -1138,7 +1138,7 @@ body:not(.analyst) .sum .qt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box
 
 <style>
 /* Market map (geo.js) */
-:root{--map-land:#e2e1dc;--map-edge:#ffffff}
+:root{--map-land:#d9d8d2;--map-edge:#ffffff}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--map-land:#2a2a28;--map-edge:#0c0c0b}}
 :root[data-theme="dark"]{--map-land:#2a2a28;--map-edge:#0c0c0b}
 .mlead{margin:-4px 0 12px;font-size:13.5px;color:var(--ink-2);max-width:80ch}
@@ -2958,9 +2958,9 @@ BIND.log = () => {
 
 /* ---------- Audit trail view ---------- */
 const AU_TYPES = ["content","score","priority","evidence","status","data","review"];
-let auScope = "model";   // decisions are per successor model, data entries hold for all
+let auScope = "model", auQ = "";   // the audit search is its own, the comment feed keeps state.q   // decisions are per successor model, data entries hold for all
 function auditRows(){
-  return state.audit.filter(e => (auScope === "all" || !e.model || e.model === state.model) && (state.auf === "all" || e.type === state.auf || ACTOR(e.actor).toLowerCase() === state.auf) && (!state.q || JSON.stringify(e).toLowerCase().includes(state.q.toLowerCase())));
+  return state.audit.filter(e => (auScope === "all" || !e.model || e.model === state.model) && (state.auf === "all" || e.type === state.auf || ACTOR(e.actor).toLowerCase() === state.auf) && (!auQ || JSON.stringify(e).toLowerCase().includes(auQ.toLowerCase())));
 }
 RENDER.audit = () => {
   const a = state.audit, by = k => a.filter(e => ACTOR(e.actor) === k).length;
@@ -2971,7 +2971,7 @@ RENDER.audit = () => {
     <section class="card lt"><span class="who human big">Human</span><div><div class="num">${by("Human")}</div><div class="lbl">Decisions and overrides</div></div></section></div>
   <section class="card"><div class="card-h"><div><h3>Audit trail</h3><p class="sub">Append only. Every customer need can be traced from the data through clustering, scoring and prioritisation to the human decision.</p></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><div class="seg" id="auScope">${[["model", mName()], ["all", "All models"]].map(([k, l]) => `<button type="button" data-aus="${k}" aria-pressed="${auScope === k}">${l}</button>`).join("")}</div><button type="button" class="btn" id="auCsv">CSV</button><button type="button" class="btn dark" id="auJson">${SVGI.copy}Export JSON</button></div></div>
-    <div class="filters"><label class="search">${SVGI.search}<input id="auq" type="search" placeholder="Search, e.g. R-13" value="${esc(state.q)}"></label>
+    <div class="filters"><label class="search">${SVGI.search}<input id="auq" type="search" placeholder="Search, e.g. R-13" value="${esc(auQ)}"></label>
       <div class="chips">${["all","human","ai","system", ...AU_TYPES].map(k => `<button type="button" class="fchip" data-auf="${k}" aria-pressed="${state.auf === k}">${k === "all" ? "All" : k === "ai" ? "AI" : k[0].toUpperCase() + k.slice(1)}</button>`).join("")}</div></div>
     <div class="tbl-wrap"><table class="tbl au" style="min-width:760px"><thead><tr><th>When</th><th>Driver</th><th>Change</th><th>Old</th><th>New</th><th>Who</th><th>Rationale</th></tr></thead><tbody id="auBody"></tbody></table></div></section>`;
 };
@@ -2985,7 +2985,7 @@ BIND.audit = () => {
   renderAudit();
   $$("[data-aus]").forEach(b => b.onclick = () => { auScope = b.dataset.aus; $$("[data-aus]").forEach(x => x.setAttribute("aria-pressed", x === b)); renderAudit(); });
   $$("[data-auf]").forEach(b => b.onclick = () => { state.auf = b.dataset.auf; $$("[data-auf]").forEach(x => x.setAttribute("aria-pressed", x === b)); renderAudit(); });
-  $("#auq").oninput = e => { state.q = e.target.value; renderAudit(); };
+  $("#auq").oninput = e => { auQ = e.target.value; renderAudit(); };
   $("#auJson").onclick = () => download("torque-audit-trail.json", JSON.stringify(state.audit, null, 2), "application/json");
   $("#auCsv").onclick = () => { const q = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
     download("torque-audit-trail.csv", ["timestamp,requirement,change_type,old_value,new_value,actor,rationale", ...state.audit.map(e => [e.at, e.id || "", e.type, e.from, e.to, e.actor, e.why].map(q).join(","))].join("\n"), "text/csv"); };
@@ -3049,7 +3049,7 @@ NAV[0][1].splice(NAV[0][1].indexOf("req") + 1, 0, "markets");
 
 let mapLayer = "upside";
 const MAP_MIN_N = 30;                       // comments a country needs before its pain share is coloured
-const MAP_ANCHOR = {EU:[-24, 53], US:[-128, 33], CN:[136, 24], RoW:[-58, -14]};   // chips sit beside the market, not on it
+const MAP_ANCHOR = {EU:[-26, 54], US:[-132, 30], CN:[140, 22], RoW:[-22, -22]};   // chips sit beside the market, not on it
 const modelled = mk => basisOf(mk) === "model";
 
 function mapXY(lon, lat){
@@ -3095,7 +3095,7 @@ RENDER.markets = () => {
     const u = ups.find(x => x.mk === g.mk), p = countryPain(g.id);
     let fill = "var(--map-land)", tip = `<b>${esc(g.n)}</b><br>${MK[g.mk]}`;
     if(mapLayer === "upside"){
-      if(u.sold){ fill = mix("--accent", .14 + .76 * clamp(u.up / upMax, 0, 1)); tip += `<br>${sgnK(u.up)} buyers a year with the top ${TOP} drivers`; }
+      if(u.sold){ fill = mix("--accent", .22 + .73 * clamp(u.up / upMax, 0, 1)); tip += `<br>${sgnK(u.up)} buyers a year with the top ${TOP} drivers`; }
       else tip += `<br>The ${M().name} is not in the sales plan here`;
     } else if(p){
       fill = p.n >= MAP_MIN_N ? mix("--serious", .18 + .8 * clamp((p.share - .1) / .5, 0, 1)) : mix("--serious", .1);
@@ -3103,7 +3103,7 @@ RENDER.markets = () => {
     } else tip += modelled(g.mk) ? "<br>No comments in the BMW data, customer study only" : "<br>No comments for this model";
     return `<path d="${g.d}" style="fill:${fill}" class="${g.mk === state.market ? "sel" : ""}" data-mk="${g.mk}" ${tipAttr(tip)}></path>`; }).join("");
   const legend = mapLayer === "upside"
-    ? `<div class="mlegend"><span>Fewer extra buyers</span><i style="background:linear-gradient(90deg,${mix("--accent", .14)},${mix("--accent", .9)})"></i><span>${sgnK(upMax)}${live.some(u => u.up > upMax) ? " or more" : ""}</span></div>`
+    ? `<div class="mlegend"><span>Fewer extra buyers</span><i style="background:linear-gradient(90deg,${mix("--accent", .22)},${mix("--accent", .95)})"></i><span>${sgnK(upMax)}${live.some(u => u.up > upMax) ? " or more" : ""}</span></div>`
     : `<div class="mlegend"><span>10% pain</span><i style="background:linear-gradient(90deg,${mix("--serious", .18)},${mix("--serious", .98)})"></i><span>60%+</span><em><i class="few"></i>under ${MAP_MIN_N} comments</em></div>`;
   const rankUp = [...ups].sort((a, b) => (b.sold - a.sold) || (b.up - a.up)).map(u => u.sold
     ? `<li class="${state.market === u.mk ? "on" : ""}"><div class="mr-h"><button type="button" class="link mr-n" data-mk="${u.mk}">${MK[u.mk]}</button><b class="netv ${u.up < 0 ? "neg" : "pos"}">${fmtK(u.up)}</b></div>
