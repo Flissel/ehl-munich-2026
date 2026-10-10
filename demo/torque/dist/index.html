@@ -1134,6 +1134,26 @@ body:not(.analyst) .sum .qt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box
 .tile .tgo{position:static;margin-top:auto;padding-top:2px;opacity:1;color:var(--ink-3)}
 .tile:hover .tgo,.tile:focus-visible .tgo{color:var(--tone)}
 .tile .tgo::after{content:" \2192"}
+
+/* ---------- Export: share a brief ---------- */
+.xbtn span{font-weight:500}
+.xwrap{position:fixed;inset:0;z-index:60;background:var(--scrim);display:grid;place-items:center;padding:16px}
+.xdlg{width:min(640px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px 20px;animation:rise .2s}
+.xh{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.xh h3{margin:0;font-size:16px}.xh p{margin:3px 0 0;font-size:12.5px;color:var(--ink-3)}
+.xscope{margin:14px 0;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-s,10px);background:var(--surface-2);font-size:13px}
+.xscope .lbl{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600;margin-bottom:3px}
+.xscope .muted{display:block;font-size:12px;margin-top:3px}
+.xmodes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.xmode{text-align:left;border:1px solid var(--line-2);background:var(--surface);border-radius:var(--r-s,10px);padding:10px 12px;display:flex;flex-direction:column;gap:3px}
+.xmode b{font-size:13.5px}.xmode span{font-size:12px;color:var(--ink-2)}
+.xmode[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.xsecs{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:12px}
+.xsec{display:flex;gap:8px;align-items:flex-start;font-size:13px;padding:6px 4px;cursor:pointer}
+.xsec input{margin-top:3px;accent-color:var(--accent)}.xsec small{display:block;font-size:11.5px;color:var(--ink-3)}
+.xfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;border-top:1px solid var(--line);padding-top:12px;font-size:12px}
+.xfoot>div{display:flex;gap:8px}
+@media (max-width:640px){.xmodes,.xsecs{grid-template-columns:1fr}.xbtn span{display:none}}
 </style>
 
 <style>
@@ -3680,6 +3700,128 @@ function bConcept(){
   if(focusPin && rankOf[focusPin]){ const id = focusPin; setTimeout(() => setFocus(id), 60); }
 }
 
+
+/* ---------- Export: a brief for people without access to the tool ---------- */
+// One self-contained HTML page (opens anywhere, prints to one or a few pages) or Markdown for a mail or a wiki.
+// Scope follows what is on screen (model and market); the reader picks Short or Detailed and the sections.
+// Lives in its own file and mounts its own button, so the shell stays as the other session left it.
+const EXPORT_SECTIONS = [
+  ["decisions", "Decisions on the top 10", true, "Rank, driver, recommendation, decision and reason, net buyers a year"],
+  ["evidence", "Why customers buy it", false, "Purchase signal, asked for, customer quote, evidence level"],
+  ["spec", "Target and acceptance criterion", false, "The spec text of every approved or edited driver"],
+  ["open", "Open evidence requests", true, "Challenged drivers with owner and due date"],
+  ["markets", "Sales upside by market", false, "Extra buyers a year per market from the choice model"],
+  ["log", "Review log", false, "Every decision of this model with reason and date"],
+];
+let exportOpts = {mode:"short", sections:new Set(EXPORT_SECTIONS.filter(s => s[2]).map(s => s[0])), allMarkets:false};
+const EXP_DETAILED = ["decisions", "evidence", "spec", "open", "markets"];
+
+function exportData(){
+  const rk = topRank(), net = netEffects(), c = decCounts();
+  const sim = simulate(specCfg()), today = simulate(baseCfg()), pc = today.units ? (sim.units / today.units - 1) * 100 : 0;
+  const rows = rk.map((x, i) => { const r = x.r, d = decOf(r.id), rc = recoOf(r, i + 1, net);
+    return {rank:i + 1, id:r.id, title:r.title, reco:rc.l, why:rc.why, status:STATUS[statusOf(r.id)].l, by:d?.by, at:d?.at, reason:d?.reason, net:net[r.id].net,
+      buy:Math.round(x.s.f.buy), wish:wishOf(r), ev:r.ev0.level, n:r.T.n, quote:r.says ? SRCQ(r.says) : "", quoteId:r.says?.id, motive:r.motive,
+      target:effTarget(r), accept:effAccept(r), edited:!!(d && (d.target || d.accept)), ask:d?.ask, owner:d?.owner, due:d?.due, overdue:isOverdue(d)}; });
+  const open = REQS.filter(r => statusOf(r.id) === "challenged").map(r => { const d = decOf(r.id); return {id:r.id, title:r.title, ask:d.ask, owner:d.owner, due:d.due, overdue:isOverdue(d), reason:d.reason}; });
+  const markets = MKS.filter(mk => sold(mk)).map(mk => { const u = marketUpside(mk); return {mk, name:MK[mk], up:u.up, pct:u.pct, plan:u.plan, modelled:basisOf(mk) === "model", drivers:u.drivers.map(x => `${x.id} ${RBY[x.id].short}`)}; });
+  const log = state.log.filter(l => l.model === state.model && l.id).map(l => ({n:l.n, id:l.id, title:RBY[l.id]?.title, kind:l.kind, from:STATUS[l.prev]?.l, to:STATUS[l.status]?.l, reason:l.reason, by:l.by, at:l.at, round:l.round}));
+  return {model:`${M().name} (${M().code}) successor`, market:mkLabel(), round:roundNow(), user:state.user || "You", at:new Date().toISOString(),
+    done:c.done, total:c.total, open:c.open, challenged:c.challenged, recheck:c.recheck, buyers:sim.units, pct:pc, plan:plan(), comments:findingsNow(), studyOnly:studyOnly(),
+    rows, openReq:open, markets, log};
+}
+const expWhen = iso => iso ? new Date(iso).toLocaleDateString("en-GB", {day:"2-digit", month:"short", year:"numeric"}) : "";
+const expMoney = n => (n > 0 ? "+" : "") + fmtK(n);
+
+function briefHTML(d, mode, secs){
+  const h = esc, detailed = mode === "detailed";
+  const rowsT = d.rows.map(r => `<tr class="${r.status === "Proposed" ? "" : "dec"}"><td class="n">${r.rank}</td><td><b>${h(r.title)}</b><small>${r.id}</small>${detailed && r.reason ? `<p class="reason">${h(r.reason)}<span>${h(r.by || "")}${r.at ? ", " + expWhen(r.at) : ""}</span></p>` : ""}</td>
+    <td><span class="chip ${r.reco.toLowerCase().replace(/ /g, "-")}">${h(r.reco)}</span>${detailed ? `<small>${h(r.why)}</small>` : ""}</td><td class="st ${r.status.toLowerCase()}">${h(r.status)}${r.ask ? `<small>${h(r.ask)}${r.owner ? ", " + h(r.owner) : ""}${r.due ? ", due " + h(r.due) : ""}</small>` : ""}</td><td class="num ${r.net < 0 ? "neg" : ""}">${expMoney(r.net)}</td></tr>`).join("");
+  const sec = [];
+  if(secs.has("decisions")) sec.push(`<h2>Decisions on the top 10 in ${h(d.market)}</h2><div class="tw"><table><thead><tr><th>#</th><th>Purchase driver</th><th>Recommendation</th><th>Decision</th><th class="num">Net buyers a year</th></tr></thead><tbody>${rowsT}</tbody></table></div>
+    <p class="fine">Recommendation from purchase signals, customers won and lost and confidence. Decided rows are shaded. Net buyers: choice model on the BMW sales plan 2030 (customer types modelled).</p>`);
+  if(secs.has("evidence")) sec.push(`<h2>Why customers buy it</h2><div class="cards">${d.rows.map(r => `<div class="ev"><b>${r.rank}. ${h(r.title)}</b><div class="kv"><span>Purchase signal <b>${r.buy}</b></span><span>Asked for <b>${r.wish}</b></span><span>Evidence <b>${h(r.ev)}</b></span><span>${fmt(r.n)} comments</span></div><p>${h(r.motive)}</p>${r.quote ? `<q>${h(r.quote)}</q><small>${h(r.quoteId)} · real BMW comment, names masked</small>` : ""}</div>`).join("")}</div>`);
+  if(secs.has("spec")){ const sp = d.rows.filter(r => ["Approved", "Edited"].includes(r.status));
+    sec.push(`<h2>Target and acceptance criterion</h2>${sp.length ? sp.map(r => `<div class="spec"><b>${r.rank}. ${h(r.title)}</b> <em>${h(r.status)}</em><dl><dt>Target</dt><dd>${h(r.target)}</dd><dt>Acceptance</dt><dd>${h(r.accept)}</dd></dl></div>`).join("") : `<p class="fine">Nothing approved yet.</p>`}`); }
+  if(secs.has("open")) sec.push(`<h2>Open evidence requests</h2>${d.openReq.length ? `<ul class="open">${d.openReq.map(o => `<li class="${o.overdue ? "late" : ""}"><b>${h(o.title)}</b> <span>${h(o.ask || "evidence")}${o.owner ? ", " + h(o.owner) : ""}${o.due ? ", due " + h(o.due) : ""}${o.overdue ? " (overdue)" : ""}</span><p>${h(o.reason)}</p></li>`).join("")}</ul>` : `<p class="fine">Nothing is waiting for evidence.</p>`}`);
+  if(secs.has("markets")) sec.push(`<h2>Sales upside by market</h2><div class="tw"><table><thead><tr><th>Market</th><th class="num">Extra buyers a year</th><th class="num">vs today</th><th class="num">Plan 2030</th><th>Strongest drivers</th></tr></thead><tbody>${d.markets.map(m => `<tr><td><b>${h(m.name)}</b>${m.modelled ? "<small>modelled, no owner comments</small>" : ""}</td><td class="num">${expMoney(m.up)}</td><td class="num">${m.pct >= 0 ? "+" : ""}${m.pct.toFixed(1)} %</td><td class="num">${fmtK(m.plan)}</td><td>${h(m.drivers.join(", "))}</td></tr>`).join("")}</tbody></table></div><p class="fine">If the top 10 drivers of each market make it into the spec. China is modelled from the customer study until comments exist.</p>`);
+  if(secs.has("log")) sec.push(`<h2>Review log</h2>${d.log.length ? `<div class="tw"><table><thead><tr><th>When</th><th>Driver</th><th>Change</th><th>Reason</th><th>By</th></tr></thead><tbody>${d.log.map(l => `<tr><td>${expWhen(l.at)}</td><td>${h(l.title || l.id)}</td><td>${l.kind === "note" ? "Note" : l.kind === "confirm" ? "Kept" : `${h(l.from)} → ${h(l.to)}`}</td><td>${h(l.reason)}</td><td>${h(l.by)}</td></tr>`).join("")}</tbody></table></div>` : `<p class="fine">No decisions yet.</p>`}`);
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Torque brief: ${h(d.model)}, ${h(d.market)}</title>
+<style>
+body{margin:0;background:#f4f4f1;color:#121212;font:14px/1.5 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.page{max-width:900px;margin:0 auto;padding:36px 28px 60px;background:#fff}
+header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-bottom:2px solid #121212;padding-bottom:14px;margin-bottom:18px}
+header h1{margin:0;font-size:22px;letter-spacing:.01em}header p{margin:4px 0 0;color:#5a5955}
+.tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5a5955;border:1px solid #d4d3cd;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 22px}
+.sum div{border:1px solid #e3e2dc;border-radius:10px;padding:10px 12px}.sum small{display:block;font-size:11px;color:#5a5955;text-transform:uppercase;letter-spacing:.06em}.sum b{font-size:22px}
+.sum .red b{color:#c93434}.sum .green b{color:#1a8a2e}.sum .blue b{color:#2f5fe8}
+h2{font-size:15px;margin:26px 0 10px;padding-top:12px;border-top:1px solid #e3e2dc}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}.tw{overflow-x:auto}th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#5a5955;padding:6px 8px;border-bottom:1px solid #c9c8c2}
+td{padding:8px;border-bottom:1px solid #ecebe6;vertical-align:top}td.n{font-weight:700;color:#7a7974}td small,th small{display:block;font-size:11px;color:#7a7974;font-weight:400}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.neg{color:#c93434}tr.dec td{background:#f7f7f4}
+.chip{display:inline-block;font-size:11px;font-weight:600;border:1px solid #c9c8c2;border-radius:999px;padding:1px 8px}.chip.lock{color:#1a8a2e;border-color:#9fd3a9}.chip.rethink{color:#a86d00;border-color:#e4c278}.chip.make-optional{color:#c93434;border-color:#e8a3a3}
+.st.approved{color:#1a8a2e}.st.edited{color:#a86d00}.st.rejected{color:#c93434}.st.challenged{color:#5d4fc4}.st.proposed{color:#7a7974}
+p.reason{margin:4px 0 0;font-size:12.5px;color:#3c3b38}p.reason span{display:block;font-size:11px;color:#7a7974}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ev{border:1px solid #e3e2dc;border-radius:10px;padding:10px 12px;font-size:12.5px}.ev b{display:block}.ev .kv{display:flex;flex-wrap:wrap;gap:4px 12px;color:#5a5955;margin:4px 0}.ev p{margin:4px 0}.ev q{display:block;color:#3c3b38;font-style:italic}.ev small{color:#7a7974;font-size:11px}
+.spec{margin:0 0 12px}.spec em{font-style:normal;color:#7a7974;font-size:12px}.spec dl{margin:4px 0 0;display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:12.5px}.spec dt{color:#7a7974}.spec dd{margin:0}
+ul.open{padding-left:18px}ul.open li{margin-bottom:8px}ul.open span{color:#5a5955;font-size:12.5px}ul.open li.late span{color:#c93434}ul.open p{margin:2px 0 0;font-size:12.5px}
+.fine{font-size:11.5px;color:#7a7974;margin:6px 0 0}
+footer{margin-top:30px;border-top:1px solid #e3e2dc;padding-top:10px;font-size:11px;color:#7a7974}
+@media print{body{background:#fff}.page{padding:0}h2{break-after:avoid}tr,.ev,.spec{break-inside:avoid}}
+@media (max-width:640px){.page{padding:20px 16px 40px}.sum{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr}}
+</style></head><body><div class="page">
+<header><div><h1>Torque brief: ${h(d.model)}</h1><p>${h(d.market)} · review round ${d.round} · ${detailed ? "detailed" : "short"} brief by ${h(d.user)}, ${expWhen(d.at)}</p></div><span class="tag">Prototype</span></header>
+<div class="sum"><div class="${d.open ? "red" : "green"}"><small>To review</small><b>${d.open}</b> of the top ${d.total}</div><div class="${d.done === d.total ? "green" : ""}"><small>Decided</small><b>${d.done}</b> of ${d.total}</div><div><small>Needs a second look</small><b>${d.challenged + d.recheck}</b> ${d.challenged} waiting, ${d.recheck} to re-check</div><div class="blue"><small>Projected buyers a year</small><b>${fmtK(d.buyers)}</b> ${d.pct >= 0 ? "+" : ""}${d.pct.toFixed(1)} % vs today in ${h(d.market)}</div></div>
+${sec.join("\n")}
+<footer>Torque Decision Cockpit, EHL Grand Finale 2026. Comments, studies, sales plan and option prices are BMW hackathon data${d.studyOnly ? `; ${h(d.market)} has no comments and runs on the customer study and the model profile` : ""}. Customer types of the choice model and the competitor benchmark are modelled. Names in quotes are masked. ${h(d.comments ? fmt(d.comments) + " comments from " + d.market : "")}</footer>
+</div></body></html>`;
+}
+
+function briefMarkdown(d, mode, secs){
+  const detailed = mode === "detailed", L = [`# Torque brief: ${d.model}`, `${d.market} · review round ${d.round} · ${detailed ? "detailed" : "short"} brief by ${d.user}, ${expWhen(d.at)}`, "",
+    `**${d.open} of the top ${d.total} to review · ${d.done} decided · ${d.challenged + d.recheck} need a second look · ${fmtK(d.buyers)} projected buyers a year (${d.pct >= 0 ? "+" : ""}${d.pct.toFixed(1)} % vs today)**`, ""];
+  if(secs.has("decisions")){ L.push(`## Decisions on the top 10 in ${d.market}`, "", "| # | Purchase driver | Recommendation | Decision | Net buyers a year |", "|---|---|---|---|---|");
+    d.rows.forEach(r => L.push(`| ${r.rank} | ${r.title} (${r.id}) | ${r.reco} | ${r.status}${r.ask ? ` (${r.ask}${r.owner ? ", " + r.owner : ""}${r.due ? ", due " + r.due : ""})` : ""} | ${expMoney(r.net)} |`));
+    if(detailed) d.rows.filter(r => r.reason).forEach(r => L.push("", `- **${r.rank}. ${r.title}**: ${r.reason} (${r.by}, ${expWhen(r.at)})`)); L.push(""); }
+  if(secs.has("evidence")){ L.push("## Why customers buy it", ""); d.rows.forEach(r => L.push(`- **${r.rank}. ${r.title}**: purchase signal ${r.buy}, asked for ${r.wish}, evidence ${r.ev}, ${fmt(r.n)} comments. ${r.motive}${r.quote ? ` "${r.quote}" (${r.quoteId})` : ""}`)); L.push(""); }
+  if(secs.has("spec")){ L.push("## Target and acceptance criterion", ""); const sp = d.rows.filter(r => ["Approved", "Edited"].includes(r.status)); sp.length ? sp.forEach(r => L.push(`- **${r.rank}. ${r.title}** [${r.status}]`, `  - Target: ${r.target}`, `  - Acceptance: ${r.accept}`)) : L.push("_Nothing approved yet._"); L.push(""); }
+  if(secs.has("open")){ L.push("## Open evidence requests", ""); d.openReq.length ? d.openReq.forEach(o => L.push(`- **${o.title}**: ${o.ask || "evidence"}${o.owner ? ", " + o.owner : ""}${o.due ? ", due " + o.due : ""}${o.overdue ? " (overdue)" : ""}. ${o.reason}`)) : L.push("_Nothing is waiting for evidence._"); L.push(""); }
+  if(secs.has("markets")){ L.push("## Sales upside by market", "", "| Market | Extra buyers a year | vs today | Plan 2030 | Strongest drivers |", "|---|---|---|---|---|"); d.markets.forEach(m => L.push(`| ${m.name}${m.modelled ? " (modelled)" : ""} | ${expMoney(m.up)} | ${m.pct >= 0 ? "+" : ""}${m.pct.toFixed(1)} % | ${fmtK(m.plan)} | ${m.drivers.join(", ")} |`)); L.push(""); }
+  if(secs.has("log")){ L.push("## Review log", ""); d.log.length ? d.log.forEach(l => L.push(`- ${expWhen(l.at)} ${l.title || l.id}: ${l.kind === "note" ? "note" : l.kind === "confirm" ? "kept" : `${l.from} → ${l.to}`}. ${l.reason} (${l.by})`)) : L.push("_No decisions yet._"); L.push(""); }
+  L.push("_Torque Decision Cockpit, prototype. BMW hackathon data; customer types of the choice model and the competitor benchmark are modelled; names in quotes masked._");
+  return L.join("\n");
+}
+
+function renderExportDlg(){
+  const el = $("#exportDlg"), d = exportData(), secs = exportOpts.mode === "detailed" ? exportOpts.sections : new Set(["decisions", "open"]);
+  const file = `torque-brief-${M().code}-${state.market}-${exportOpts.mode}`;
+  el.innerHTML = `<div class="xdlg" role="dialog" aria-label="Export a brief">
+    <div class="xh"><div><h3>Share as a brief</h3><p>For someone without access to the tool: one page they can read or print, nothing to click through.</p></div><button type="button" class="x" id="xClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="xscope"><span class="lbl">What is on screen</span><b>${esc(d.model)}</b> · <b>${esc(d.market)}</b> · round ${d.round} · ${d.done} of the top ${d.total} decided<span class="muted">Switch model or market in the header to change the scope.</span></div>
+    <div class="xmodes">
+      <button type="button" class="xmode" data-xmode="short" aria-pressed="${exportOpts.mode === "short"}"><b>Short</b><span>One page: the top 10 with recommendation and decision, plus open evidence requests.</span></button>
+      <button type="button" class="xmode" data-xmode="detailed" aria-pressed="${exportOpts.mode === "detailed"}"><b>Detailed</b><span>You pick the sections: reasons, evidence, spec text, markets, review log.</span></button>
+    </div>
+    <div class="xsecs" ${exportOpts.mode === "detailed" ? "" : "hidden"}>${EXPORT_SECTIONS.map(([k, l, , hint]) => `<label class="xsec"><input type="checkbox" data-xsec="${k}" ${secs.has(k) ? "checked" : ""}><span><b>${l}</b><small>${hint}</small></span></label>`).join("")}</div>
+    <div class="xfoot"><span class="muted">${secs.size} section${secs.size === 1 ? "" : "s"} · ${esc(file)}.html</span><div><button type="button" class="btn" id="xMd">${SVGI.copy}Copy as Markdown</button><button type="button" class="btn primary" id="xHtml">Download brief</button></div></div>
+  </div>`;
+  $("#xClose").onclick = closeExport;
+  $$("[data-xmode]").forEach(b => b.onclick = () => { exportOpts.mode = b.dataset.xmode; renderExportDlg(); });
+  $$("[data-xsec]").forEach(i => i.onchange = () => { i.checked ? exportOpts.sections.add(i.dataset.xsec) : exportOpts.sections.delete(i.dataset.xsec); if(!exportOpts.sections.size){ exportOpts.sections.add("decisions"); } renderExportDlg(); });
+  $("#xHtml").onclick = () => { download(`${file}.html`, briefHTML(d, exportOpts.mode, secs), "text/html"); audit({type:"review", from:"", to:`${exportOpts.mode} brief`, actor:"user:" + d.user, why:`Brief exported for ${d.market}: ${[...secs].join(", ")}`}); closeExport(); };
+  $("#xMd").onclick = async () => { const md = briefMarkdown(d, exportOpts.mode, secs); try{ await navigator.clipboard.writeText(md); toast("Brief copied as Markdown."); closeExport(); }catch(e){ download(`${file}.md`, md, "text/markdown"); } };
+}
+function openExport(){ const el = $("#exportDlg"); if(openId) closeDrawer(); el.hidden = false; renderExportDlg(); setTimeout(() => $("#xHtml")?.focus(), 30); }
+function closeExport(){ $("#exportDlg").hidden = true; }
+document.addEventListener("DOMContentLoaded", () => {
+  const dlg = document.createElement("div"); dlg.id = "exportDlg"; dlg.className = "xwrap"; dlg.hidden = true; dlg.addEventListener("click", e => { if(e.target === dlg) closeExport(); });
+  document.body.appendChild(dlg);
+  const btn = document.createElement("button"); btn.type = "button"; btn.className = "searchbtn xbtn"; btn.id = "exportBtn"; btn.title = "Share what is on screen as a brief";
+  btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 15V4M7 9l5-5 5 5M5 15v4h14v-4"/></svg><span>Export</span>`; btn.onclick = openExport;
+  const pal = $("#palBtn"); if(pal) pal.before(btn);
+  document.addEventListener("keydown", e => { if(e.key === "Escape" && !$("#exportDlg").hidden){ closeExport(); e.stopPropagation(); } }, true);
+});
 
 /* ---------- AI (sample) ---------- */
 // As a Claude artifact the copilot runs on Claude, inside Rowboat on the model set in Rowboat, otherwise it answers offline from the data.
