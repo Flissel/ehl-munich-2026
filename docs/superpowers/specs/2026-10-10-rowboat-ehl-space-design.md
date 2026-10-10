@@ -1,204 +1,201 @@
-# Rowboat-Space „EHL“: Sales- und Marketing-Daten auf die PCs des Teams
+# Rowboat Space "EHL": Sales and Marketing Data on the Team's PCs
 
-**Datum:** 2026-10-10 · **Anlass:** EHL Munich 2026 Grand Finale (Demo am 11.10., 6 min Pitch)
-**Status:** Entwurf zur Freigabe
+**Date:** 2026-10-10 · **Occasion:** EHL Munich 2026 Grand Finale (demo on Oct 11, 6-min pitch)
+**Status:** Draft awaiting approval
 
-## 1. Ziel
+## 1. Goal
 
-Rowboat wird zur gemeinsamen Projektübersicht des Teams. Die Daten aus den bestehenden
-Deployments (Sales-Claw, Marketing) fließen automatisch in einen gemeinsamen Rowboat-Space
-„EHL“. Jedes Mitglied sieht sie in der Rowboat-Desktop-App auf seinem eigenen PC.
+Rowboat becomes the team's shared project overview. Data from the existing deployments
+(Sales-Claw, Marketing) flows automatically into a shared Rowboat Space "EHL". Every member
+sees it in the Rowboat desktop app on their own PC.
 
-**Erfolgskriterium:** Ein Mitglied installiert *nur* die offizielle Rowboat-Desktop-App, öffnet
-einen Einladungslink, meldet sich mit E-Mail + Passwort an und sieht den Space „EHL“ mit
-Übersicht, Kontakten, Versandplan, Kampagnen und Feed. Keine weitere Software (kein Tailscale,
-kein Docker) auf dem PC des Mitglieds.
+**Success criterion:** A member installs *only* the official Rowboat desktop app, opens an
+invite link, signs in with email + password and sees the Space "EHL" with overview, contacts,
+send schedule, campaigns and feed. No other software (no Tailscale, no Docker) on the member's PC.
 
-**Demo-Kriterium:** Ein in Sales-Claw angelegter Kontakt bzw. eine Freigabe erscheint innerhalb
-von ~60 s im Feed und in den Dateien des Space auf einem zweiten Rechner außerhalb des Heimnetzes.
+**Demo criterion:** A contact created in Sales-Claw, or an approval granted there, appears within
+~60 s in the feed and in the Space's files on a second machine outside the home network.
 
-## 2. Ausgangslage (erkundet am 2026-10-10)
+## 2. Current state (explored on 2026-10-10)
 
-| System | Wo | Zugang | Stand |
+| System | Where | Access | State |
 |---|---|---|---|
-| Sales-Claw (`Flissel/sales-claw`, Branch `feat/stufe-1-fundament`) | Mini-PC `vibemind-offload-1`, Tailscale `100.67.177.45` | sales-mcp `:8765` (MCP streamable-http), UI `:8791` | läuft |
-| Marketing (`Flissel/vibemind-os`, `spaces/marketing`) | dieser PC | API `127.0.0.1:5510`, MCP-Sidecar `:8130` | läuft, `/api/health` ok |
-| Rowboat Desktop (Upstream `rowboatlabs/rowboat`, `apps/x`) | PCs der Mitglieder | offizielle Installer | wird installiert |
-| Harbor (Upstream, `apps/harbor`, Spaces-Server) | – | – | neu aufzusetzen |
+| Sales-Claw (`Flissel/sales-claw`, branch `feat/stufe-1-fundament`) | Mini PC `vibemind-offload-1`, Tailscale `100.67.177.45` | sales-mcp `:8765` (MCP streamable-http), UI `:8791` | running |
+| Marketing (`Flissel/vibemind-os`, `spaces/marketing`) | this PC | API `127.0.0.1:5510`, MCP sidecar `:8130` | running, `/api/health` ok |
+| Rowboat Desktop (upstream `rowboatlabs/rowboat`, `apps/x`) | members' PCs | official installers | being installed |
+| Harbor (upstream, `apps/harbor`, Spaces server) | – | – | to be set up |
 
-Der Fork in `vibemind-os/spaces/rowboat/rowboat` (Next.js-Web-App) wird für dieses Vorhaben
-**nicht** benötigt; seine Electron-App ist dort nur ein Rumpf. Wir nutzen die Upstream-Desktop-App
-und den Upstream-Spaces-Server Harbor (Apache 2.0).
+The fork in `vibemind-os/spaces/rowboat/rowboat` (Next.js web app) is **not** needed for this
+project; its Electron app is only a stub there. We use the upstream desktop app and the upstream
+Spaces server Harbor (Apache 2.0).
 
-## 3. Entscheidungen
+## 3. Decisions
 
-| # | Entscheidung | Begründung |
+| # | Decision | Rationale |
 |---|---|---|
-| E1 | Gemeinsamer Stand über Rowboat **Spaces / Harbor**, selbst gehostet auf diesem PC | Daten bleiben beim Team; Rowboat-Bordmittel statt Eigenbau |
-| E2 | Harbor auf Upstream-Commit **`72e9d8c`** (2026-10-09) festgenagelt, eigene Änderungen als Patch-Dateien | Reproduzierbar, Upstream ändert sich täglich |
-| E3 | **Eigener** Postgres- und GoTrue-Container im Harbor-Compose; der bestehende Supabase-Swarm bleibt unberührt | Keine Kollision mit laufenden VibeMind-Diensten |
-| E4 | Login über **Supabase GoTrue `v2.188.1`** als OAuth-2.1-Server (E-Mail + Passwort) | Einziger mit Harbor getesteter Login-Server; Image liegt lokal schon vor |
-| E5 | Erreichbarkeit über **Tailscale Funnel** (öffentliches HTTPS unter `https://<pc>.<tailnet>.ts.net`) | Mitglieder brauchen nur Rowboat; Desktop akzeptiert nur `https://` |
-| E6 | Die **Brücke** liest nur über die vorhandenen Schnittstellen (sales-mcp, Marketing-API), nie direkt aus fremden Datenbanken | Kapselung der Fremdschemata |
-| E7 | Sales: **nur der eigene Claw** (Hauptladen, Schema `sales`, sales-mcp auf dem Mini-PC). Marketing: **alle Mandanten** | Vorgabe |
-| E8 | **Nur lesend Richtung Rowboat.** Kein Rückweg aus Rowboat in Sales/Marketing; Freigaben und Versand bleiben in Sales-Claw | YAGNI bis zur Demo; Freigabe-Gate bleibt erhalten |
-| E9 | Keine Telefonnummern und E-Mail-Adressen von Kontakten im Space | Datensparsamkeit (DSGVO); Kontaktdaten bleiben in Sales-Claw |
+| D1 | Shared state via Rowboat **Spaces / Harbor**, self-hosted on this PC | Data stays with the team; Rowboat's built-in tools instead of a custom build |
+| D2 | Harbor pinned to upstream commit **`72e9d8c`** (2026-10-09); our changes kept as patch files | Reproducible; upstream changes daily |
+| D3 | **Dedicated** Postgres and GoTrue containers in the Harbor compose file; the existing Supabase swarm stays untouched | No collision with running VibeMind services |
+| D4 | Sign-in via **Supabase GoTrue `v2.188.1`** as OAuth 2.1 server (email + password) | Only sign-in server tested with Harbor; image already available locally |
+| D5 | Reachability via **Tailscale Funnel** (public HTTPS at `https://<pc>.<tailnet>.ts.net`) | Members only need Rowboat; the desktop app only accepts `https://` |
+| D6 | The **bridge** reads only through existing interfaces (sales-mcp, Marketing API), never directly from other systems' databases | Encapsulation of foreign schemas |
+| D7 | Sales: **only our own Claw** (main store, schema `sales`, sales-mcp on the mini PC). Marketing: **all tenants** | Requirement |
+| D8 | **Read-only towards Rowboat.** No path back from Rowboat into Sales/Marketing; approvals and sending stay in Sales-Claw | YAGNI until the demo; the approval gate is preserved |
+| D9 | No phone numbers or email addresses of contacts in the Space | Data minimisation (GDPR); contact details stay in Sales-Claw |
 
-## 4. Architektur
+## 4. Architecture
 
 ```
- Mini-PC (Tailscale)                    dieser PC                                   Internet
+ Mini PC (Tailscale)                    this PC                                     Internet
 ┌──────────────────┐     ┌───────────────────────────────────────────────┐
-│ sales-mcp :8765  │◄────┤ bruecke  (Python, alle 60 s)                  │
-└──────────────────┘     │   │ liest                     │ schreibt      │
-┌──────────────────┐     │   ▼                           ▼ rbk_-Schlüssel│
+│ sales-mcp :8765  │◄────┤ bridge  (Python, every 60 s)                  │
+└──────────────────┘     │   │ reads                     │ writes        │
+┌──────────────────┐     │   ▼                           ▼ rbk_ key      │
 │ Marketing :5510  │◄────┤                     harbor :4272 ──┐          │
 └──────────────────┘     │                     gotrue :9999 ──┤ postgres │
                          │                                    │          │
                          │  tailscale funnel :443  → harbor   │          │      Rowboat Desktop
-                         │  tailscale funnel :8443 → gotrue   │          │◄──── (Mitglied 1..n)
+                         │  tailscale funnel :8443 → gotrue   │          │◄──── (member 1..n)
                          └───────────────────────────────────────────────┘
 ```
 
-Alle Container binden nur an `127.0.0.1`. Nach außen gehen ausschließlich Harbor und GoTrue,
-und nur über Funnel.
+All containers bind to `127.0.0.1` only. Only Harbor and GoTrue are exposed, and only via Funnel.
 
-## 5. Komponenten
+## 5. Components
 
-### 5.1 `harbor/` – Spaces-Server, Login, Erreichbarkeit
+### 5.1 `harbor/` – Spaces server, sign-in, reachability
 
-- `docker-compose.yml` mit drei Diensten:
-  - `postgres` (`postgres:16`, Volume, zwei Datenbanken `harbor` und `auth`)
-  - `gotrue` (`public.ecr.aws/supabase/gotrue:v2.188.1`, OAuth-2.1-Server-Modus mit
-    dynamischer Client-Registrierung an, offene Registrierung **aus**, E-Mail-Bestätigung aus)
-  - `harbor` (Build aus Upstream `72e9d8c` + `patches/`, `DATABASE_URL`, `BLOBS_DIR` auf Volume,
-    `AUTH_ISSUER` = öffentliche GoTrue-Adresse, `AUTH_PUBLISHABLE_KEY` für Harbors
-    Login-/Zustimmungsseite `/oauth/consent`, `HARBOR_ORG=EHL`, `HARBOR_ADDRESS` = Funnel-Adresse)
+- `docker-compose.yml` with three services:
+  - `postgres` (`postgres:16`, volume, two databases `harbor` and `auth`)
+  - `gotrue` (`public.ecr.aws/supabase/gotrue:v2.188.1`, OAuth 2.1 server mode with
+    dynamic client registration on, open sign-up **off**, email confirmation off)
+  - `harbor` (built from upstream `72e9d8c` + `patches/`, `DATABASE_URL`, `BLOBS_DIR` on a volume,
+    `AUTH_ISSUER` = public GoTrue address, `AUTH_PUBLISHABLE_KEY` for Harbor's
+    sign-in/consent page `/oauth/consent`, `HARBOR_ORG=EHL`, `HARBOR_ADDRESS` = Funnel address)
 - `patches/`:
-  - `0001-org-adresse-aus-env.patch`: Org-Adresse aus `HARBOR_ADDRESS` statt `localhost:<port>`
-    (betrifft Einladungs- und Deep-Links).
-  - `0002-keine-rowboat-seeds.patch`: kein automatisches Anlegen der Rowboat-Mitarbeiter und des
-    Space „Roadboard“ im Single-Org-Pfad.
-- `funnel.ps1`: richtet `tailscale funnel` für `:443 → harbor` und `:8443 → gotrue` ein.
-- `mitglied-anlegen.ps1 <email> <name>`: legt das Konto über die GoTrue-Admin-API an und gibt ein
-  Startpasswort aus.
-- `einrichten.ps1` (einmalig, nach dem ersten Login des Admins):
-  1. Space „EHL“ anlegen (`POST /v1/spaces`).
-  2. Agent „Brücke“ anlegen (`POST /v1/agents`, `kind: custom`, `connection: contract`);
-     `rbk_…`-Schlüssel nach `bruecke/.env` schreiben.
-  3. Agent in den Space aufnehmen (`POST /v1/spaces/:id/members`, `actingMode: direct`).
-  4. Einladungslink erzeugen (`POST /v1/invites`) und ausgeben.
-- Das erste Admin-Mitglied wird per SQL in `member_identities` (`iss`, `sub`, `member_id`)
-  eingetragen; das ist laut Upstream-Code der vorgesehene Weg im Single-Org-Pfad.
+  - `0001-org-address-from-env.patch`: org address from `HARBOR_ADDRESS` instead of
+    `localhost:<port>` (affects invite links and deep links).
+  - `0002-no-rowboat-seeds.patch`: no automatic creation of the Rowboat staff members and the
+    Space "Roadboard" in the single-org path.
+- `funnel.ps1`: sets up `tailscale funnel` for `:443 → harbor` and `:8443 → gotrue`.
+- `add-member.ps1 <email> <name>`: creates the account via the GoTrue admin API and prints an
+  initial password.
+- `setup.ps1` (one-off, after the admin's first sign-in):
+  1. Create Space "EHL" (`POST /v1/spaces`).
+  2. Create agent "Bridge" (`POST /v1/agents`, `kind: custom`, `connection: contract`);
+     write the `rbk_…` key to `bridge/.env`.
+  3. Add the agent to the Space (`POST /v1/spaces/:id/members`, `actingMode: direct`).
+  4. Create an invite link (`POST /v1/invites`) and print it.
+- The first admin member is inserted via SQL into `member_identities` (`iss`, `sub`, `member_id`);
+  according to the upstream code this is the intended way in the single-org path.
 
-### 5.2 `bruecke/` – Synchronisation Sales/Marketing → Space
+### 5.2 `bridge/` – Sync Sales/Marketing → Space
 
-Python 3.12, Docker-Container, läuft auf diesem PC. Aufgeteilt in klar getrennte Einheiten:
+Python 3.12, Docker container, runs on this PC. Split into clearly separated units:
 
-| Modul | Aufgabe | Abhängigkeit |
+| Module | Responsibility | Dependency |
 |---|---|---|
-| `quellen/sales.py` | Kontakte, Pipeline-Stufen, offene Entwürfe über sales-mcp (MCP-Client) | `SALES_MCP_URL` |
-| `quellen/marketing.py` | Kampagnen, Versandaufträge, Inhalte aller Mandanten über die Marketing-API | `MARKETING_API_URL`, `MARKETING_API_KEY` |
-| `modell.py` | Neutrale Datentypen (`Kontakt`, `Versand`, `Kampagne`, `Ereignis`) | – |
-| `darstellung.py` | Reine Funktionen: Modell → Markdown je Datei | – |
-| `ereignisse.py` | Vergleich alter/neuer Stand → neue Ereignisse | Zustandsdatei |
-| `harbor.py` | Harbor-REST-Client: Datei anlegen/ändern, Feed-Nachricht posten | `HARBOR_URL`, `HARBOR_SPACE_ID`, `HARBOR_AGENT_KEY` |
-| `lauf.py` | Schleife alle `INTERVALL_S` (Standard 60): lesen → darstellen → bei Änderung schreiben → Ereignisse posten | alle obigen |
+| `sources/sales.py` | Contacts, pipeline stages, open drafts via sales-mcp (MCP client) | `SALES_MCP_URL` |
+| `sources/marketing.py` | Campaigns, send jobs, content of all tenants via the Marketing API | `MARKETING_API_URL`, `MARKETING_API_KEY` |
+| `model.py` | Neutral data types (`Contact`, `Send`, `Campaign`, `Event`) | – |
+| `render.py` | Pure functions: model → Markdown per file | – |
+| `events.py` | Compare old/new state → new events | state file |
+| `harbor.py` | Harbor REST client: create/update file, post feed message | `HARBOR_URL`, `HARBOR_SPACE_ID`, `HARBOR_AGENT_KEY` |
+| `run.py` | Loop every `INTERVAL_S` (default 60): read → render → write on change → post events | all of the above |
 
-**Dateien im Space „EHL“:**
+**Files in Space "EHL":**
 
-| Datei | Inhalt |
+| File | Content |
 |---|---|
-| `Übersicht.md` | Kennzahlen: Kontakte gesamt / neu heute, Kontakte je Pipeline-Stufe, offene Freigaben, nächste 3 Versände; Zeitstempel des letzten Abgleichs |
-| `Kontakte.md` | Tabelle: Name, Firma, Stufe, Quelle, angelegt am (ohne Telefon/E-Mail, E9) |
-| `Versandplan.md` | Chronologisch: Termin, Kanal, Betreff/Titel, Herkunft (Marketing/Sales), Status (Entwurf / freigegeben / gesendet / abgelehnt) |
-| `Kampagnen/<mandant>/<kampagne>.md` | Titel, Status, geplanter Termin, Text, Bild-Links |
+| `Overview.md` | Key figures: contacts total / new today, contacts per pipeline stage, open approvals, next 3 sends; timestamp of the last sync |
+| `Contacts.md` | Table: name, company, stage, source, created on (no phone/email, D9) |
+| `Send-Schedule.md` | Chronological: date, channel, subject/title, origin (Marketing/Sales), status (draft / approved / sent / rejected) |
+| `Campaigns/<tenant>/<campaign>.md` | Title, status, scheduled date, text, image links |
 
-**Feed-Ereignisse:** neuer Kontakt, Kontakt wechselt Pipeline-Stufe, Versand freigegeben,
-Versand gesendet, Versand fehlgeschlagen. Mehrere gleichartige Ereignisse eines Laufs werden zu
-einer Nachricht gebündelt („🆕 3 neue Kontakte: …“).
+**Feed events:** new contact, contact changes pipeline stage, send approved, send sent,
+send failed. Several events of the same kind within one run are bundled into one message
+("🆕 3 new contacts: …").
 
-**Schreiblogik:**
-- Jede Datei wird je Lauf vollständig neu erzeugt; ein SHA-256 des Inhalts wird mit dem zuletzt
-  geschriebenen verglichen. Nur bei Abweichung wird geschrieben.
-- Datei existiert noch nicht → `POST /v1/spaces/:id/assets`; sonst Version holen und
-  `POST /v1/spaces/:id/changes` mit `baseVersion`. Bei Konflikt: Version neu holen, einmal
-  wiederholen, sonst im nächsten Lauf.
-- Gesehene Ereignis-Schlüssel stehen in `zustand.json` (Volume), damit nach einem Neustart
-  nichts doppelt gepostet wird. Beim allerersten Lauf werden keine Ereignisse gepostet, nur die
-  Dateien geschrieben.
+**Write logic:**
+- Each file is fully regenerated on every run; a SHA-256 of the content is compared with the last
+  one written. Only on a difference is it written.
+- File does not exist yet → `POST /v1/spaces/:id/assets`; otherwise fetch the version and
+  `POST /v1/spaces/:id/changes` with `baseVersion`. On conflict: re-fetch the version, retry
+  once, otherwise defer to the next run.
+- Seen event keys are kept in `state.json` (volume) so nothing is posted twice after a restart.
+  On the very first run no events are posted; only the files are written.
 
-## 6. Fehlerbehandlung
+## 6. Error handling
 
-| Fall | Verhalten |
+| Case | Behaviour |
 |---|---|
-| Quelle (sales-mcp oder Marketing-API) nicht erreichbar | Betroffene Dateien behalten den letzten Inhalt plus Kopfzeile „⚠️ Stand von HH:MM – Quelle nicht erreichbar“; keine Ereignisse aus dieser Quelle; nächster Lauf versucht es erneut |
-| Harbor nicht erreichbar | Lauf wird übersprungen, Zustand nicht fortgeschrieben → nichts geht verloren |
-| Schlüssel ungültig (401/403) | Klarer Log-Fehler, Container beendet sich mit Fehlercode (kein stilles Weiterlaufen) |
-| Einzelner fehlerhafter Datensatz | Wird übersprungen und geloggt; der Rest der Datei wird geschrieben |
+| Source (sales-mcp or Marketing API) unreachable | Affected files keep their last content plus a header line "⚠️ As of HH:MM – source unreachable"; no events from this source; the next run retries |
+| Harbor unreachable | Run is skipped, state is not advanced → nothing is lost |
+| Invalid key (401/403) | Clear log error; container exits with an error code (no silent continuation) |
+| Single malformed record | Skipped and logged; the rest of the file is written |
 
-Logging über das Python-`logging`-Modul, ein Logger je Modul, kein `print`.
+Logging via Python's `logging` module, one logger per module, no `print`.
 
-## 7. Sicherheit
+## 7. Security
 
-- Container binden nur an `127.0.0.1`; öffentlich sind nur Harbor und GoTrue über Funnel.
-- Harbors Dev-Modus (Anmeldung ohne `AUTH_ISSUER`) wird **nie** über Funnel betrieben. Er ist nur
-  in der Entwicklung erlaubt, solange Funnel aus ist.
-- GoTrue: offene Registrierung aus; Konten legt nur der Admin an.
-- Geheimnisse (`rbk_`-Schlüssel, GoTrue-JWT-Secret, Service-Role-Key, Marketing-API-Key) nur in
-  `.env`-Dateien, die per `.gitignore` ausgeschlossen sind; Vorlagen als `.env.example`.
-- Der Brücke-Agent hat nur Mitgliedschaft im Space „EHL“.
+- Containers bind to `127.0.0.1` only; only Harbor and GoTrue are public, via Funnel.
+- Harbor's dev mode (sign-in without `AUTH_ISSUER`) is **never** run behind Funnel. It is only
+  allowed during development while Funnel is off.
+- GoTrue: open sign-up off; only the admin creates accounts.
+- Secrets (`rbk_` key, GoTrue JWT secret, service role key, Marketing API key) only in
+  `.env` files excluded via `.gitignore`; templates as `.env.example`.
+- The Bridge agent is a member of Space "EHL" only.
 
 ## 8. Tests
 
-- **Unit (`bruecke/tests/`, pytest):**
-  - `darstellung`: Beispiel-Modelle → erwartetes Markdown (Snapshot), inkl. leerer Listen und
-    Sonderzeichen in Namen.
-  - `ereignisse`: neuer Kontakt, Stufenwechsel, Freigabe, keine Doppelmeldung nach Neustart,
-    keine Meldungen im ersten Lauf.
-  - `lauf`: Quelle fällt aus → Warnhinweis, letzter Inhalt bleibt; unveränderter Inhalt → kein
-    Schreibaufruf (Harbor-Client gemockt).
-- **Integration (lokal):** Harbor + GoTrue + Postgres per Compose; Brücke gegen Harbor mit
-  Fake-Quellen; prüfen, dass Dateien und Feed-Nachrichten über die Harbor-API lesbar sind.
-- **Ende-zu-Ende:** Testkontakt in Sales-Claw anlegen → binnen ~60 s in `Kontakte.md` und im Feed.
-- **Mitgliederzugang:** Rowboat Desktop auf einem zweiten Rechner außerhalb des Heimnetzes
-  (Handy-Hotspot): Einladungslink → Login → Space sichtbar.
+- **Unit (`bridge/tests/`, pytest):**
+  - `render`: sample models → expected Markdown (snapshot), including empty lists and
+    special characters in names.
+  - `events`: new contact, stage change, approval, no duplicate after restart,
+    no messages on the first run.
+  - `run`: source fails → warning, last content kept; unchanged content → no write call
+    (Harbor client mocked).
+- **Integration (local):** Harbor + GoTrue + Postgres via compose; bridge against Harbor with
+  fake sources; verify that files and feed messages are readable via the Harbor API.
+- **End-to-end:** create a test contact in Sales-Claw → within ~60 s in `Contacts.md` and in the feed.
+- **Member access:** Rowboat Desktop on a second machine outside the home network
+  (phone hotspot): invite link → sign-in → Space visible.
 
-## 9. Demo-Ablauf (3–4 min innerhalb des 6-min-Pitches)
+## 9. Demo flow (3–4 min within the 6-min pitch)
 
-1. Mitglied hat Rowboat Desktop mit Space „EHL“ offen (Übersicht, Versandplan).
-2. Live in Sales-Claw einen Kontakt anlegen bzw. einen Versand freigeben.
-3. Feed-Nachricht erscheint, `Übersicht.md` und `Versandplan.md` aktualisieren sich.
-4. Mitglied fragt seinen Rowboat-Agenten: „Was geht diese Woche raus?“
+1. A member has Rowboat Desktop open with Space "EHL" (Overview, Send Schedule).
+2. Live in Sales-Claw: create a contact or approve a send.
+3. A feed message appears; `Overview.md` and `Send-Schedule.md` update.
+4. The member asks their Rowboat agent: "What's going out this week?"
 
-## 10. Risiken und Rückfallebene
+## 10. Risks and fallback
 
-| Risiko | Prüfung | Rückfall |
+| Risk | Check | Fallback |
 |---|---|---|
-| GoTrue `v2.188.1` hat keinen bzw. einen inkompatiblen OAuth-2.1-Server-Modus (DCR, PKCE, RFC-8414-Metadaten) | Erster Plan-Schritt, zeitbegrenzt | Neueres GoTrue-Image; sonst Rückfall unten |
-| Rowboat Desktop akzeptiert keine eigene Org-Adresse oder scheitert am Login gegen unseren Server | Früh mit einem Desktop testen, sobald Harbor + GoTrue über Funnel stehen | Von Rowboat gehosteter Harbor mit Testdaten; Brücke bekommt nur andere `HARBOR_URL` |
-| sales-mcp verlangt eine Anmeldung oder ist nur im Compose-Netz vorgesehen (`:8765` antwortet über Tailscale, Auth ungeprüft) | Beim Bau von `quellen/sales.py` zuerst einen Lesezugriff testen | Lesender Zugang über die vorhandene sales-claw-Konfiguration; kein Schreibzugriff |
-| Funnel-Ports: nur 443, 8443, 10000 erlaubt | Zwei Dienste auf 443/8443 verteilt | – |
-| Harbor-Upstream-Code ändert Annahmen der Patches | Festgenagelter Commit (E2) | – |
+| GoTrue `v2.188.1` has no, or an incompatible, OAuth 2.1 server mode (DCR, PKCE, RFC 8414 metadata) | First plan step, time-boxed | Newer GoTrue image; otherwise the fallback below |
+| Rowboat Desktop doesn't accept a custom org address or fails to sign in against our server | Test early with one desktop as soon as Harbor + GoTrue are up behind Funnel | Rowboat-hosted Harbor with test data; the bridge only gets a different `HARBOR_URL` |
+| sales-mcp requires authentication or is only meant for the compose network (`:8765` answers over Tailscale, auth unverified) | When building `sources/sales.py`, test a read call first | Read access via the existing sales-claw configuration; no write access |
+| Funnel ports: only 443, 8443, 10000 allowed | Two services split across 443/8443 | – |
+| Harbor upstream code changes assumptions the patches rely on | Pinned commit (D2) | – |
 
-**Reihenfolge:** Zuerst der riskanteste Teil (GoTrue-OAuth + Harbor + Funnel + ein Desktop-Login),
-parallel bzw. danach die Brücke. Die Brücke ist unabhängig vom Login testbar (Harbor im Dev-Modus
-lokal ohne Funnel).
+**Order:** The riskiest part first (GoTrue OAuth + Harbor + Funnel + one desktop sign-in),
+the bridge in parallel or afterwards. The bridge can be tested independently of sign-in (Harbor
+in dev mode locally without Funnel).
 
-## 11. Nicht im Umfang
+## 11. Out of scope
 
-- Rückweg aus Rowboat nach Sales/Marketing (Termine ändern, freigeben, Kontakte anlegen).
-- Synchronisation der Claws anderer Mitglieder (später über weitere `SALES_MCP_URL` möglich).
-- Bilder als Dateien im Space (nur Links).
-- Eigene Domain, Reverse-Proxy, Single Sign-on.
-- Aufgaben-/Kanban-Objekte (Harbor kennt keine; ggf. später als Markdown-Dateien).
-- Der Rowboat-Fork in `vibemind-os/spaces/rowboat`.
+- Path back from Rowboat to Sales/Marketing (changing dates, approving, creating contacts).
+- Syncing other members' Claws (possible later via additional `SALES_MCP_URL`s).
+- Images as files in the Space (links only).
+- Own domain, reverse proxy, single sign-on.
+- Task/kanban objects (Harbor has none; possibly later as Markdown files).
+- The Rowboat fork in `vibemind-os/spaces/rowboat`.
 
-## 12. Vorarbeit und Lizenzen
+## 12. Prior work and licences
 
-| Teil | Herkunft | Lizenz |
+| Part | Origin | Licence |
 |---|---|---|
-| Sales-Claw | `github.com/Flissel/sales-claw` (vor dem Hackathon) | eigen |
-| Marketing | `github.com/Flissel/vibemind-os`, `spaces/marketing` (vor dem Hackathon) | eigen |
+| Sales-Claw | `github.com/Flissel/sales-claw` (before the hackathon) | own |
+| Marketing | `github.com/Flissel/vibemind-os`, `spaces/marketing` (before the hackathon) | own |
 | Rowboat Desktop, Harbor | `github.com/rowboatlabs/rowboat` | Apache 2.0 |
-| **Neu am Hackathon** | `harbor/` (Compose, Patches, Skripte), `bruecke/` | eigen |
+| **New at the hackathon** | `harbor/` (compose, patches, scripts), `bridge/` | own |
