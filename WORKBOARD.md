@@ -62,9 +62,10 @@ A claim is active if the row was updated less than 2 h ago.
 
 | # | Change | Requested by | Agreed by | State |
 |---|---|---|---|---|
-| – | – | – | – | – |
+| C1 | New vault folder `Vehicle Parts/` (managed_by: ehl-visu): hub, sides, areas and 56 car-part notes linked to Purchase Drivers, Topics, Projects; data tables editable in Rowboat, read by Torque Concept 3D (PR #7) | yunes-mahan | – | proposed |
 
 ## Log (newest first)
+- 2026-10-10 21:00: yunes-mahan: PR #7 now reads the 3D car's data from Rowboat (`Vehicle Parts/` notes, fixed links in `visu/graph.json`, `demo/visu/vault.py sync --watch`); contract change request C1 for the new folder.
 - 2026-10-10 20:55: WP1 (Peter): PR #7 taken into `feat/ehl-demo-content` (15f9e85): Yunes' heat map commits plus the three option feature files; the verbatim feedback exports (3e65ee9) stay out. Torque's Concept 3D in Rowboat is now the heat map; its source lives as `three_visu.js` in Peter's prototype repo, so @yunes-mahan: tell Peter before further edits to `demo/torque/dist/index.html`, they get ported back.
 - 2026-10-10 20:30: yunes-mahan: draft PR [#7](https://github.com/Flissel/ehl-munich-2026/pull/7) into `feat/ehl-demo-content`: Torque's Concept 3D now shows a real-car customer-feedback heat map (`demo/visu/`, F70/G60/G70 follow the model switch, prompt on the Rowboat model). Data + car model local only (`demo/visu/prepare_local.py`). Peter: `dist/index.html` edited directly, please port to the prototype source.
 - 2026-10-10 19:45: yunes-mahan: draft PR [#6](https://github.com/Flissel/ehl-munich-2026/pull/6) adds `visu_pro/` (3D car heat map from `Dataset/` feedback, outside WP1–4; 3D model not committed, CC-BY-NC). Orchestrator: please decide if it belongs in `main`.
