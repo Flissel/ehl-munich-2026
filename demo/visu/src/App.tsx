@@ -35,6 +35,9 @@ const EMBED = PARAMS.has("embed");
 type Override = { label: string; note?: string; scores: Record<string, number> };
 type Context = { series: string | null; market: string; title: string; focus: string | null; focusSignal: number;
   override?: Override | null };
+/** Part data from Rowboat's vault (demo/visu/vault.py sync -> data/visu.json): heat rows keyed "MODEL|MARKET". */
+type VaultRow = { score: number | null; comments: number | null; n: number | null; counts: Record<string, number>; positive_share: number | null };
+type Vault = { generated?: string; parts: Record<string, { note: string; heat: Record<string, VaultRow> }> };
 const post = (msg: unknown) => { if (EMBED) window.parent.postMessage(msg, location.origin); };
 
 export default function App() {
@@ -53,6 +56,17 @@ export default function App() {
   const [resetSignal, setResetSignal] = useState(0);
   const [view, setView] = useState<CameraView>("exterior");
   const [panel, setPanel] = useState(false);
+  const [vault, setVault] = useState<Vault | null>(null);
+
+  // Rowboat is the source of the part data: re-read the synced vault every few seconds.
+  useEffect(() => {
+    let last = "";
+    const read = () => fetch("data/visu.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null))
+      .then((v: Vault | null) => { if (v && v.generated !== last) { last = v.generated ?? ""; setVault(v); } }).catch(() => {});
+    read();
+    const t = window.setInterval(read, 3000);
+    return () => window.clearInterval(t);
+  }, []);
 
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
@@ -105,16 +119,24 @@ export default function App() {
 
   const override = EMBED ? ctx.override ?? null : null;
   const usingFeedback = !override && source !== "synthetic" && feedback !== null && !scoreError;
+  const vaultKey = `${source === "ALL" ? "ALL" : source}|${fallback || !ctx.market ? "ALL" : ctx.market}`;
+  const vaultRows = useMemo(() => {
+    if (!vault || override || source === "synthetic") return null;
+    const rows = Object.fromEntries(Object.entries(vault.parts).map(([id, p]) => [id, p.heat[vaultKey]]).filter(([, r]) => r));
+    return Object.keys(rows).length ? rows as Record<string, VaultRow> : null;
+  }, [vault, vaultKey, override, source]);
   const scores = useMemo(() => {
     if (override) return override.scores;
+    if (vaultRows) return Object.fromEntries(Object.entries(vaultRows).map(([k, r]) => [k, r.score ?? 50]));
     if (!usingFeedback) return synthetic;
     return Object.fromEntries(Object.entries(feedback!.components).map(([k, v]) => [k, v.score]));
-  }, [override, usingFeedback, feedback, synthetic]);
+  }, [override, vaultRows, usingFeedback, feedback, synthetic]);
   const dataLabel = override ? override.label : usingFeedback
     ? `${feedback!.series_label} · ${fallback ? "all markets" : feedback!.market_label ?? "all markets"} · ` +
       `${(feedback!.comments ?? feedback!.rows_used).toLocaleString()} comments`
     : "synthetic demo scores";
   const note = override ? override.note ?? null : fallback;
+  const fromVault = vaultRows ? " · data from Rowboat" : "";
   const sourceLabel = usingFeedback ? `customer feedback (${dataLabel})` : "synthetic demo score";
 
   // Only components that were actually found in the model are listed/scored.
@@ -130,9 +152,17 @@ export default function App() {
   useEffect(() => {
     if (load.kind !== "ready") return;
     post({ type: "visu:select", id: selected?.id ?? null, name: selected?.name ?? null,
-      category: selected?.category ?? null, score: selected?.score ?? null, data: dataLabel, fallback: note,
-      detail: usingFeedback && selected ? feedback!.components[selected.id] ?? null : null });
-  }, [selected?.id, selected?.score, dataLabel, note, load.kind]); // eslint-disable-line react-hooks/exhaustive-deps
+      category: selected?.category ?? null, score: selected?.score ?? null, data: dataLabel + fromVault, fallback: note,
+      detail: selected && (usingFeedback || vaultRows) ? partDetail(selected.id) : null });
+  }, [selected?.id, selected?.score, dataLabel, note, load.kind, vaultRows]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Counts from the vault (edited in Rowboat), quotes only from the local feedback file (never in the vault).
+  function partDetail(id: string) {
+    const fb = feedback?.components[id], v = vaultRows?.[id];
+    if (!v) return fb ?? null;
+    return { ...(fb ?? { basis: "specific", classes: [], quotes: [] }), score: v.score ?? 50, comments: v.comments ?? undefined,
+      n: v.n ?? 0, counts: v.counts, positive_share: v.positive_share ?? 0 };
+  }
 
   const onLoaded = useCallback((report: SegmentationReport) => setLoad({ kind: "ready", report }), []);
   const onError = useCallback((message: string) => setLoad({ kind: "error", message }), []);
@@ -161,7 +191,7 @@ export default function App() {
       {EMBED && (
         <div className="embed-head">
           <b>{ctx.title || model.displayName}</b>
-          <span>{dataLabel}</span>
+          <span>{dataLabel}{fromVault}</span>
           {note && <span className="warn">{note}</span>}
           <span className="muted">3D stand-in: {model.displayName}</span>
         </div>

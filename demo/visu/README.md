@@ -41,6 +41,31 @@ This writes two **local, gitignored** folders next to the build:
 
 Then install Torque as in `demo/torque/README.md`; the 3D view is at Concept 3D.
 
+## Data in Rowboat's knowledge graph
+
+The part data lives in the vault, so Rowboat (and its AI) is where it is changed:
+
+```bash
+python demo/dataset_to_notes.py --out ~/.rowboat/knowledge   # WP1: Projects/ and Topics/ (models, themes, markets)
+python demo/torque/sync.py                                    # Torque: Purchase Drivers/
+python demo/visu/vault.py notes                               # Vehicle Parts/: hub, sides, areas, 56 parts
+python demo/visu/vault.py sync --watch                        # keep running: vault -> dist/visu/data/visu.json
+```
+
+- **Graph:** `Vehicle Parts/Vehicle` → `Exterior` / `Interior` → 11 areas (Wheels and brakes, Lighting, Seats,
+  Cockpit and displays, …) → one note per part. Each part note links to its purchase drivers
+  (`Purchase Drivers/…`), WP1 themes (`Topics/…`) and the models (`Projects/F70` …).
+- **Fixed links:** what belongs to what (part ↔ area ↔ driver ↔ theme, feature classes per part) is
+  `demo/torque/dist/visu/graph.json`, built by `vault.py graph` and committed. The UI only uses this map, so
+  editing or deleting links in a note never breaks the 3D view. Notes are found by `part_id` in their front
+  matter, so a renamed note still feeds the same part.
+- **Editable data:** the tables in each part note ("Customer feedback heat map" per model and market,
+  "Options today" per model). Change a value in Rowboat, by hand or by asking the AI, and Concept 3D shows it
+  within a few seconds (heat colour, counts and options in the card). The card names the note ("In Rowboat: …").
+- `vault.py notes` only creates missing notes; `--refresh` rewrites notes that still have
+  `managed_by: ehl-visu` (remove that line to protect a note). Quotes never go into the vault (spec D8);
+  they stay in the local `data/feedback-*.json`.
+
 ## How it works
 
 - **Heat map:** score = rank of the weighted positive share of comments per part (0 = most criticised,

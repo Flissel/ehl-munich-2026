@@ -1,0 +1,1280 @@
+{
+ "version": 1,
+ "folder": "Vehicle Parts",
+ "hub": {
+  "note": "Vehicle Parts/Vehicle",
+  "sides": {
+   "Exterior": "Vehicle Parts/Exterior",
+   "Interior": "Vehicle Parts/Interior"
+  }
+ },
+ "areas": {
+  "Body panels": {
+   "side": "Exterior",
+   "note": "Vehicle Parts/Body panels",
+   "parts": [
+    "hood",
+    "roof",
+    "trunk-lid",
+    "fender-front-left",
+    "fender-front-right",
+    "quarter-rear-left",
+    "quarter-rear-right",
+    "pillars-sills",
+    "underbody"
+   ]
+  },
+  "Bumpers and aero": {
+   "side": "Exterior",
+   "note": "Vehicle Parts/Bumpers and aero",
+   "parts": [
+    "front-splitter",
+    "front-bumper",
+    "rear-diffuser",
+    "rear-bumper",
+    "side-skirt-left",
+    "side-skirt-right",
+    "rear-spoiler",
+    "kidney-grille",
+    "lower-intake"
+   ]
+  },
+  "Doors and mirrors": {
+   "side": "Exterior",
+   "note": "Vehicle Parts/Doors and mirrors",
+   "parts": [
+    "mirror-left",
+    "mirror-right",
+    "door-left",
+    "door-right"
+   ]
+  },
+  "Glass": {
+   "side": "Exterior",
+   "note": "Vehicle Parts/Glass",
+   "parts": [
+    "windshield",
+    "rear-window",
+    "window-left",
+    "window-right"
+   ]
+  },
+  "Lighting": {
+   "side": "Exterior",
+   "note": "Vehicle Parts/Lighting",
+   "parts": [
+    "headlight-left",
+    "headlight-right",
+    "taillight-left",
+    "taillight-right"
+   ]
+  },
+  "Exterior details": {
+   "side": "Exterior",
+   "note": "Vehicle Parts/Exterior details",
+   "parts": [
+    "exhaust",
+    "roof-fin",
+    "badges",
+    "license-plate"
+   ]
+  },
+  "Seats": {
+   "side": "Interior",
+   "note": "Vehicle Parts/Seats",
+   "parts": [
+    "seat-driver",
+    "seat-passenger",
+    "rear-seats",
+    "seat-belts"
+   ]
+  },
+  "Cockpit and displays": {
+   "side": "Interior",
+   "note": "Vehicle Parts/Cockpit and displays",
+   "parts": [
+    "instrument-cluster",
+    "central-display",
+    "climate-controls",
+    "dashboard",
+    "steering-wheel",
+    "pedals"
+   ]
+  },
+  "Console and storage": {
+   "side": "Interior",
+   "note": "Vehicle Parts/Console and storage",
+   "parts": [
+    "center-console"
+   ]
+  },
+  "Cabin trim": {
+   "side": "Interior",
+   "note": "Vehicle Parts/Cabin trim",
+   "parts": [
+    "door-trim-left",
+    "door-trim-right",
+    "overhead-console",
+    "headliner",
+    "interior-side-panels",
+    "interior-mirror",
+    "sun-visors"
+   ]
+  },
+  "Wheels and brakes": {
+   "side": "Exterior",
+   "note": "Vehicle Parts/Wheels and brakes",
+   "parts": [
+    "wheel-front-left",
+    "wheel-front-right",
+    "wheel-rear-left",
+    "wheel-rear-right"
+   ]
+  }
+ },
+ "parts": {
+  "hood": {
+   "name": "Hood",
+   "side": "Exterior",
+   "area": "Body panels",
+   "note": "Vehicle Parts/Hood",
+   "feature_classes": [
+    "Hood",
+    "Hood, open / close"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "roof": {
+   "name": "Roof",
+   "side": "Exterior",
+   "area": "Body panels",
+   "note": "Vehicle Parts/Roof",
+   "feature_classes": [
+    "Panorama glass roof",
+    "Roof",
+    "Roof function centre"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "trunk-lid": {
+   "name": "Trunk lid",
+   "side": "Exterior",
+   "area": "Body panels",
+   "note": "Vehicle Parts/Trunk lid",
+   "feature_classes": [
+    "non-contact trunk lid opening",
+    "Trunk lid, open / close",
+    "Trunk lid",
+    "Trunk light"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-16"
+   ],
+   "topics": [
+    "Topics/Space and storage"
+   ]
+  },
+  "fender-front-left": {
+   "name": "Front-left fender",
+   "side": "Exterior",
+   "area": "Body panels",
+   "note": "Vehicle Parts/Front-left fender",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "fender-front-right": {
+   "name": "Front-right fender",
+   "side": "Exterior",
+   "area": "Body panels",
+   "note": "Vehicle Parts/Front-right fender",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "quarter-rear-left": {
+   "name": "Rear-left quarter panel",
+   "side": "Exterior",
+   "area": "Body panels",
+   "note": "Vehicle Parts/Rear-left quarter panel",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-01"
+   ],
+   "topics": [
+    "Topics/Range and charging",
+    "Topics/Trend Electrification"
+   ]
+  },
+  "quarter-rear-right": {
+   "name": "Rear-right quarter panel",
+   "side": "Exterior",
+   "area": "Body panels",
+   "note": "Vehicle Parts/Rear-right quarter panel",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "pillars-sills": {
+   "name": "Pillars & body sides",
+   "side": "Exterior",
+   "area": "Body panels",
+   "note": "Vehicle Parts/Pillars & body sides",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "underbody": {
+   "name": "Underbody",
+   "side": "Exterior",
+   "area": "Body panels",
+   "note": "Vehicle Parts/Underbody",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-02"
+   ],
+   "topics": [
+    "Topics/Range and charging",
+    "Topics/Trend Electrification"
+   ]
+  },
+  "front-splitter": {
+   "name": "Front splitter",
+   "side": "Exterior",
+   "area": "Bumpers and aero",
+   "note": "Vehicle Parts/Front splitter",
+   "feature_classes": [
+    "Bumper, front"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "front-bumper": {
+   "name": "Front bumper",
+   "side": "Exterior",
+   "area": "Bumpers and aero",
+   "note": "Vehicle Parts/Front bumper",
+   "feature_classes": [
+    "Bumper, front",
+    "Towing eye"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-19"
+   ],
+   "topics": [
+    "Topics/Assistance and parking"
+   ]
+  },
+  "rear-diffuser": {
+   "name": "Rear diffuser",
+   "side": "Exterior",
+   "area": "Bumpers and aero",
+   "note": "Vehicle Parts/Rear diffuser",
+   "feature_classes": [
+    "Bumper, rear"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "rear-bumper": {
+   "name": "Rear bumper",
+   "side": "Exterior",
+   "area": "Bumpers and aero",
+   "note": "Vehicle Parts/Rear bumper",
+   "feature_classes": [
+    "Bumper, rear",
+    "Towing eye"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-19"
+   ],
+   "topics": [
+    "Topics/Assistance and parking"
+   ]
+  },
+  "side-skirt-left": {
+   "name": "Left side skirt",
+   "side": "Exterior",
+   "area": "Bumpers and aero",
+   "note": "Vehicle Parts/Left side skirt",
+   "feature_classes": [
+    "Side sill trim panel"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "side-skirt-right": {
+   "name": "Right side skirt",
+   "side": "Exterior",
+   "area": "Bumpers and aero",
+   "note": "Vehicle Parts/Right side skirt",
+   "feature_classes": [
+    "Side sill trim panel"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "rear-spoiler": {
+   "name": "Rear spoiler",
+   "side": "Exterior",
+   "area": "Bumpers and aero",
+   "note": "Vehicle Parts/Rear spoiler",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "kidney-grille": {
+   "name": "Kidney grille",
+   "side": "Exterior",
+   "area": "Bumpers and aero",
+   "note": "Vehicle Parts/Kidney grille",
+   "feature_classes": [
+    "Radiator grille"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-10"
+   ],
+   "topics": [
+    "Topics/Exterior design",
+    "Topics/Trend Neue Klasse"
+   ]
+  },
+  "lower-intake": {
+   "name": "Lower front intake",
+   "side": "Exterior",
+   "area": "Bumpers and aero",
+   "note": "Vehicle Parts/Lower front intake",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "mirror-left": {
+   "name": "Left side mirror",
+   "side": "Exterior",
+   "area": "Doors and mirrors",
+   "note": "Vehicle Parts/Left side mirror",
+   "feature_classes": [
+    "Exterior rearview mirror"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "mirror-right": {
+   "name": "Right side mirror",
+   "side": "Exterior",
+   "area": "Doors and mirrors",
+   "note": "Vehicle Parts/Right side mirror",
+   "feature_classes": [
+    "Exterior rearview mirror"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "door-left": {
+   "name": "Left door",
+   "side": "Exterior",
+   "area": "Doors and mirrors",
+   "note": "Vehicle Parts/Left door",
+   "feature_classes": [
+    "Door, open / close",
+    "Automatic doors",
+    "Resting state after door opening",
+    "Door, front",
+    "Door, finisher panel, front",
+    "Outer door handle, front",
+    "Outer door handle, rear"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-13"
+   ],
+   "topics": [
+    "Topics/Access and convenience"
+   ]
+  },
+  "door-right": {
+   "name": "Right door",
+   "side": "Exterior",
+   "area": "Doors and mirrors",
+   "note": "Vehicle Parts/Right door",
+   "feature_classes": [
+    "Door, open / close",
+    "Automatic doors",
+    "Resting state after door opening",
+    "Door, front",
+    "Door, finisher panel, front",
+    "Outer door handle, front",
+    "Outer door handle, rear"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-13"
+   ],
+   "topics": [
+    "Topics/Access and convenience"
+   ]
+  },
+  "windshield": {
+   "name": "Windshield",
+   "side": "Exterior",
+   "area": "Glass",
+   "note": "Vehicle Parts/Windshield",
+   "feature_classes": [
+    "Windshield",
+    "Windshield wiper"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-07"
+   ],
+   "topics": [
+    "Topics/Assistance and parking"
+   ]
+  },
+  "rear-window": {
+   "name": "Rear window",
+   "side": "Exterior",
+   "area": "Glass",
+   "note": "Vehicle Parts/Rear window",
+   "feature_classes": [
+    "Heated rear window",
+    "Rear wiper"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "window-left": {
+   "name": "Left side window",
+   "side": "Exterior",
+   "area": "Glass",
+   "note": "Vehicle Parts/Left side window",
+   "feature_classes": [
+    "Side window, open / close"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "window-right": {
+   "name": "Right side window",
+   "side": "Exterior",
+   "area": "Glass",
+   "note": "Vehicle Parts/Right side window",
+   "feature_classes": [
+    "Side window, open / close"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "headlight-left": {
+   "name": "Left headlight",
+   "side": "Exterior",
+   "area": "Lighting",
+   "note": "Vehicle Parts/Left headlight",
+   "feature_classes": [
+    "Exterior lighting",
+    "Fog light"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-10"
+   ],
+   "topics": [
+    "Topics/Exterior design",
+    "Topics/Trend Neue Klasse"
+   ]
+  },
+  "headlight-right": {
+   "name": "Right headlight",
+   "side": "Exterior",
+   "area": "Lighting",
+   "note": "Vehicle Parts/Right headlight",
+   "feature_classes": [
+    "Exterior lighting",
+    "Fog light"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-10"
+   ],
+   "topics": [
+    "Topics/Exterior design",
+    "Topics/Trend Neue Klasse"
+   ]
+  },
+  "taillight-left": {
+   "name": "Left taillight",
+   "side": "Exterior",
+   "area": "Lighting",
+   "note": "Vehicle Parts/Left taillight",
+   "feature_classes": [
+    "Exterior lighting"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-10"
+   ],
+   "topics": [
+    "Topics/Exterior design",
+    "Topics/Trend Neue Klasse"
+   ]
+  },
+  "taillight-right": {
+   "name": "Right taillight",
+   "side": "Exterior",
+   "area": "Lighting",
+   "note": "Vehicle Parts/Right taillight",
+   "feature_classes": [
+    "Exterior lighting"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-10"
+   ],
+   "topics": [
+    "Topics/Exterior design",
+    "Topics/Trend Neue Klasse"
+   ]
+  },
+  "exhaust": {
+   "name": "Exhaust system",
+   "side": "Exterior",
+   "area": "Exterior details",
+   "note": "Vehicle Parts/Exhaust system",
+   "feature_classes": [
+    "Exhaust system"
+   ],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "roof-fin": {
+   "name": "Shark-fin antenna",
+   "side": "Exterior",
+   "area": "Exterior details",
+   "note": "Vehicle Parts/Shark-fin antenna",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "badges": {
+   "name": "Badges & logos",
+   "side": "Exterior",
+   "area": "Exterior details",
+   "note": "Vehicle Parts/Badges & logos",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "license-plate": {
+   "name": "License plate",
+   "side": "Exterior",
+   "area": "Exterior details",
+   "note": "Vehicle Parts/License plate",
+   "feature_classes": [],
+   "fallback": "general exterior",
+   "drivers": [],
+   "topics": []
+  },
+  "seat-driver": {
+   "name": "Driver seat",
+   "side": "Interior",
+   "area": "Seats",
+   "note": "Vehicle Parts/Driver seat",
+   "feature_classes": [
+    "Seats",
+    "Seating, ventilate / heat",
+    "Seat massage",
+    "Seat memory"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-14"
+   ],
+   "topics": [
+    "Topics/Comfort and seats"
+   ]
+  },
+  "seat-passenger": {
+   "name": "Passenger seat",
+   "side": "Interior",
+   "area": "Seats",
+   "note": "Vehicle Parts/Passenger seat",
+   "feature_classes": [
+    "Seats",
+    "Seating, ventilate / heat",
+    "Seat massage",
+    "Seat memory"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-14"
+   ],
+   "topics": [
+    "Topics/Comfort and seats"
+   ]
+  },
+  "rear-seats": {
+   "name": "Rear seats",
+   "side": "Interior",
+   "area": "Seats",
+   "note": "Vehicle Parts/Rear seats",
+   "feature_classes": [
+    "Seats",
+    "Child restraint seat, use",
+    "Child restraint seat"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-03"
+   ],
+   "topics": [
+    "Topics/Comfort and seats",
+    "Topics/Space and storage"
+   ]
+  },
+  "instrument-cluster": {
+   "name": "Instrument cluster display",
+   "side": "Interior",
+   "area": "Cockpit and displays",
+   "note": "Vehicle Parts/Instrument cluster display",
+   "feature_classes": [
+    "Instrument cluster",
+    "Head-Up Display",
+    "Display, time"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-06",
+    "R-17"
+   ],
+   "topics": [
+    "Topics/Connectivity and digital services",
+    "Topics/Driving experience",
+    "Topics/Trend Software and connected car"
+   ]
+  },
+  "central-display": {
+   "name": "Central touch display",
+   "side": "Interior",
+   "area": "Cockpit and displays",
+   "note": "Vehicle Parts/Central touch display",
+   "feature_classes": [
+    "Touch screen, operation",
+    "Screen mirroring",
+    "ConnectedDrive and Infotainment, overall technology",
+    "Navigation",
+    "Apple CarPlay",
+    "Operating concept, operating system"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-04",
+    "R-06",
+    "R-12"
+   ],
+   "topics": [
+    "Topics/Connectivity and digital services",
+    "Topics/Infotainment Usability",
+    "Topics/Infotainment and operation",
+    "Topics/Trend Software and connected car"
+   ]
+  },
+  "climate-controls": {
+   "name": "Climate control panel",
+   "side": "Interior",
+   "area": "Cockpit and displays",
+   "note": "Vehicle Parts/Climate control panel",
+   "feature_classes": [
+    "Vehicle, climatization"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-20"
+   ],
+   "topics": [
+    "Topics/Climate Control Usability",
+    "Topics/Comfort and seats"
+   ]
+  },
+  "center-console": {
+   "name": "Center console & armrest",
+   "side": "Interior",
+   "area": "Console and storage",
+   "note": "Vehicle Parts/Center console & armrest",
+   "feature_classes": [
+    "Center console, front",
+    "Mobile device, wireless charging",
+    "Cupholder",
+    "Center armrest, front",
+    "Storage compartments"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-05",
+    "R-15"
+   ],
+   "topics": [
+    "Topics/Climate Control Usability",
+    "Topics/Connectivity and digital services",
+    "Topics/Infotainment and operation",
+    "Topics/Phone Charging"
+   ]
+  },
+  "dashboard": {
+   "name": "Dashboard",
+   "side": "Interior",
+   "area": "Cockpit and displays",
+   "note": "Vehicle Parts/Dashboard",
+   "feature_classes": [
+    "Instrument panel",
+    "Glove box",
+    "Ambient light"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-08",
+    "R-09"
+   ],
+   "topics": [
+    "Topics/Connectivity and digital services",
+    "Topics/Interior design and quality",
+    "Topics/Trend Software and connected car"
+   ]
+  },
+  "steering-wheel": {
+   "name": "Steering wheel",
+   "side": "Interior",
+   "area": "Cockpit and displays",
+   "note": "Vehicle Parts/Steering wheel",
+   "feature_classes": [
+    "Steering wheel",
+    "Heated steering wheel",
+    "Multi-function steering wheel operation"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-05"
+   ],
+   "topics": [
+    "Topics/Climate Control Usability",
+    "Topics/Infotainment and operation"
+   ]
+  },
+  "pedals": {
+   "name": "Pedals",
+   "side": "Interior",
+   "area": "Cockpit and displays",
+   "note": "Vehicle Parts/Pedals",
+   "feature_classes": [
+    "Pedals, operate"
+   ],
+   "fallback": "general interior",
+   "drivers": [],
+   "topics": []
+  },
+  "door-trim-left": {
+   "name": "Left door trim & speaker",
+   "side": "Interior",
+   "area": "Cabin trim",
+   "note": "Vehicle Parts/Left door trim & speaker",
+   "feature_classes": [
+    "Ambient light",
+    "Upholstery / interior trim",
+    "Audio mode, sound"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-09",
+    "R-18"
+   ],
+   "topics": [
+    "Topics/Infotainment and operation",
+    "Topics/Interior design and quality"
+   ]
+  },
+  "door-trim-right": {
+   "name": "Right door trim & speaker",
+   "side": "Interior",
+   "area": "Cabin trim",
+   "note": "Vehicle Parts/Right door trim & speaker",
+   "feature_classes": [
+    "Ambient light",
+    "Upholstery / interior trim",
+    "Audio mode, sound"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-09",
+    "R-18"
+   ],
+   "topics": [
+    "Topics/Infotainment and operation",
+    "Topics/Interior design and quality"
+   ]
+  },
+  "overhead-console": {
+   "name": "Overhead console (SOS, lights)",
+   "side": "Interior",
+   "area": "Cabin trim",
+   "note": "Vehicle Parts/Overhead console (SOS, lights)",
+   "feature_classes": [
+    "Vehicle interior, lighting"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-08"
+   ],
+   "topics": [
+    "Topics/Connectivity and digital services",
+    "Topics/Trend Software and connected car"
+   ]
+  },
+  "headliner": {
+   "name": "Headliner & pillar trim",
+   "side": "Interior",
+   "area": "Cabin trim",
+   "note": "Vehicle Parts/Headliner & pillar trim",
+   "feature_classes": [
+    "Vehicle interior, lighting"
+   ],
+   "fallback": "general interior",
+   "drivers": [],
+   "topics": []
+  },
+  "interior-side-panels": {
+   "name": "Sills & side panels",
+   "side": "Interior",
+   "area": "Cabin trim",
+   "note": "Vehicle Parts/Sills & side panels",
+   "feature_classes": [
+    "Upholstery / interior trim"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-09"
+   ],
+   "topics": [
+    "Topics/Interior design and quality"
+   ]
+  },
+  "seat-belts": {
+   "name": "Seat belts",
+   "side": "Interior",
+   "area": "Seats",
+   "note": "Vehicle Parts/Seat belts",
+   "feature_classes": [
+    "Seat belts"
+   ],
+   "fallback": "general interior",
+   "drivers": [],
+   "topics": []
+  },
+  "interior-mirror": {
+   "name": "Interior mirror",
+   "side": "Interior",
+   "area": "Cabin trim",
+   "note": "Vehicle Parts/Interior mirror",
+   "feature_classes": [
+    "Interior rearview mirror",
+    "Interior mirror, garage door opener"
+   ],
+   "fallback": "general interior",
+   "drivers": [
+    "R-07"
+   ],
+   "topics": [
+    "Topics/Assistance and parking"
+   ]
+  },
+  "sun-visors": {
+   "name": "Sun visors",
+   "side": "Interior",
+   "area": "Cabin trim",
+   "note": "Vehicle Parts/Sun visors",
+   "feature_classes": [
+    "Sun visor, front"
+   ],
+   "fallback": "general interior",
+   "drivers": [],
+   "topics": []
+  },
+  "wheel-front-left": {
+   "name": "Front-left wheel",
+   "side": "Exterior",
+   "area": "Wheels and brakes",
+   "note": "Vehicle Parts/Front-left wheel",
+   "feature_classes": [
+    "Wheels / tires",
+    "RSC tire",
+    "Tirefit",
+    "Tire pressure control",
+    "Braking"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-11"
+   ],
+   "topics": [
+    "Topics/Driving experience"
+   ]
+  },
+  "wheel-front-right": {
+   "name": "Front-right wheel",
+   "side": "Exterior",
+   "area": "Wheels and brakes",
+   "note": "Vehicle Parts/Front-right wheel",
+   "feature_classes": [
+    "Wheels / tires",
+    "RSC tire",
+    "Tirefit",
+    "Tire pressure control",
+    "Braking"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-11"
+   ],
+   "topics": [
+    "Topics/Driving experience"
+   ]
+  },
+  "wheel-rear-left": {
+   "name": "Rear-left wheel",
+   "side": "Exterior",
+   "area": "Wheels and brakes",
+   "note": "Vehicle Parts/Rear-left wheel",
+   "feature_classes": [
+    "Wheels / tires",
+    "RSC tire",
+    "Tirefit",
+    "Tire pressure control",
+    "Braking"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-11"
+   ],
+   "topics": [
+    "Topics/Driving experience"
+   ]
+  },
+  "wheel-rear-right": {
+   "name": "Rear-right wheel",
+   "side": "Exterior",
+   "area": "Wheels and brakes",
+   "note": "Vehicle Parts/Rear-right wheel",
+   "feature_classes": [
+    "Wheels / tires",
+    "RSC tire",
+    "Tirefit",
+    "Tire pressure control",
+    "Braking"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-11"
+   ],
+   "topics": [
+    "Topics/Driving experience"
+   ]
+  }
+ },
+ "drivers": {
+  "R-01": {
+   "title": "Fast charging that fits a coffee stop",
+   "short": "Fast charging",
+   "note": "Purchase Drivers/Fast charging that fits a coffee stop",
+   "topics": [
+    "Topics/Range and charging",
+    "Topics/Trend Electrification"
+   ],
+   "parts": [
+    "quarter-rear-left"
+   ]
+  },
+  "R-02": {
+   "title": "Highway range without range anxiety",
+   "short": "Real world range",
+   "note": "Purchase Drivers/Highway range without range anxiety",
+   "topics": [
+    "Topics/Range and charging",
+    "Topics/Trend Electrification"
+   ],
+   "parts": [
+    "underbody"
+   ]
+  },
+  "R-03": {
+   "title": "Rear seat as a first class lounge",
+   "short": "Rear seat lounge",
+   "note": "Purchase Drivers/Rear seat as a first class lounge",
+   "topics": [
+    "Topics/Comfort and seats",
+    "Topics/Space and storage"
+   ],
+   "parts": [
+    "rear-seats"
+   ]
+  },
+  "R-04": {
+   "title": "Find any function in two taps",
+   "short": "Simple digital UX",
+   "note": "Purchase Drivers/Find any function in two taps",
+   "topics": [
+    "Topics/Infotainment and operation",
+    "Topics/Infotainment Usability"
+   ],
+   "parts": [
+    "central-display"
+   ]
+  },
+  "R-05": {
+   "title": "Physical controls for blind operation",
+   "short": "Physical controls",
+   "note": "Purchase Drivers/Physical controls for blind operation",
+   "topics": [
+    "Topics/Infotainment and operation",
+    "Topics/Climate Control Usability"
+   ],
+   "parts": [
+    "center-console",
+    "steering-wheel"
+   ]
+  },
+  "R-06": {
+   "title": "Software that gets better and never freezes",
+   "short": "Software reliability",
+   "note": "Purchase Drivers/Software that gets better and never freezes",
+   "topics": [
+    "Topics/Connectivity and digital services",
+    "Topics/Trend Software and connected car"
+   ],
+   "parts": [
+    "instrument-cluster",
+    "central-display"
+   ]
+  },
+  "R-07": {
+   "title": "Hands off highway assist the driver trusts",
+   "short": "Highway assistant",
+   "note": "Purchase Drivers/Hands off highway assist the driver trusts",
+   "topics": [
+    "Topics/Assistance and parking"
+   ],
+   "parts": [
+    "windshield",
+    "interior-mirror"
+   ]
+  },
+  "R-08": {
+   "title": "An assistant that knows me",
+   "short": "Personal assistant",
+   "note": "Purchase Drivers/An assistant that knows me",
+   "topics": [
+    "Topics/Connectivity and digital services",
+    "Topics/Trend Software and connected car"
+   ],
+   "parts": [
+    "dashboard",
+    "overhead-console"
+   ]
+  },
+  "R-09": {
+   "title": "Interior that feels premium to the touch",
+   "short": "Interior quality",
+   "note": "Purchase Drivers/Interior that feels premium to the touch",
+   "topics": [
+    "Topics/Interior design and quality"
+   ],
+   "parts": [
+    "door-trim-left",
+    "door-trim-right",
+    "dashboard",
+    "interior-side-panels"
+   ]
+  },
+  "R-10": {
+   "title": "Design that stands out without dividing",
+   "short": "Design identity",
+   "note": "Purchase Drivers/Design that stands out without dividing",
+   "topics": [
+    "Topics/Exterior design",
+    "Topics/Trend Neue Klasse"
+   ],
+   "parts": [
+    "kidney-grille",
+    "headlight-left",
+    "headlight-right",
+    "taillight-left",
+    "taillight-right"
+   ]
+  },
+  "R-11": {
+   "title": "Agile handling, also as an EV",
+   "short": "Driving dynamics",
+   "note": "Purchase Drivers/Agile handling, also as an EV",
+   "topics": [
+    "Topics/Driving experience"
+   ],
+   "parts": [
+    "wheel-front-left",
+    "wheel-front-right",
+    "wheel-rear-left",
+    "wheel-rear-right"
+   ]
+  },
+  "R-12": {
+   "title": "Clear control over my data",
+   "short": "Data privacy",
+   "note": "Purchase Drivers/Clear control over my data",
+   "topics": [
+    "Topics/Connectivity and digital services"
+   ],
+   "parts": [
+    "central-display"
+   ]
+  },
+  "R-13": {
+   "title": "Access that works on the first try",
+   "short": "Hands free access",
+   "note": "Purchase Drivers/Access that works on the first try",
+   "topics": [
+    "Topics/Access and convenience"
+   ],
+   "parts": [
+    "door-left",
+    "door-right"
+   ]
+  },
+  "R-14": {
+   "title": "Seats that stay comfortable in heat and on long drives",
+   "short": "Seat comfort",
+   "note": "Purchase Drivers/Seats that stay comfortable in heat and on long drives",
+   "topics": [
+    "Topics/Comfort and seats"
+   ],
+   "parts": [
+    "seat-driver",
+    "seat-passenger"
+   ]
+  },
+  "R-15": {
+   "title": "Phone and car work as one",
+   "short": "Phone integration",
+   "note": "Purchase Drivers/Phone and car work as one",
+   "topics": [
+    "Topics/Connectivity and digital services",
+    "Topics/Phone Charging"
+   ],
+   "parts": [
+    "center-console"
+   ]
+  },
+  "R-16": {
+   "title": "Space that works for daily life",
+   "short": "Space and storage",
+   "note": "Purchase Drivers/Space that works for daily life",
+   "topics": [
+    "Topics/Space and storage"
+   ],
+   "parts": [
+    "trunk-lid"
+   ]
+  },
+  "R-17": {
+   "title": "Start-stop that stays off when I say so",
+   "short": "Smart start-stop",
+   "note": "Purchase Drivers/Start-stop that stays off when I say so",
+   "topics": [
+    "Topics/Driving experience"
+   ],
+   "parts": [
+    "instrument-cluster"
+   ]
+  },
+  "R-18": {
+   "title": "Sound that matches the price",
+   "short": "Premium audio",
+   "note": "Purchase Drivers/Sound that matches the price",
+   "topics": [
+    "Topics/Infotainment and operation"
+   ],
+   "parts": [
+    "door-trim-left",
+    "door-trim-right"
+   ]
+  },
+  "R-19": {
+   "title": "Parking without stress",
+   "short": "Parking and cameras",
+   "note": "Purchase Drivers/Parking without stress",
+   "topics": [
+    "Topics/Assistance and parking"
+   ],
+   "parts": [
+    "rear-bumper",
+    "front-bumper"
+   ]
+  },
+  "R-20": {
+   "title": "Climate that just works",
+   "short": "Climate comfort",
+   "note": "Purchase Drivers/Climate that just works",
+   "topics": [
+    "Topics/Comfort and seats",
+    "Topics/Climate Control Usability"
+   ],
+   "parts": [
+    "climate-controls"
+   ]
+  },
+  "R-21": {
+   "title": "Value that justifies the premium",
+   "short": "Value for money",
+   "note": "Purchase Drivers/Value that justifies the premium",
+   "topics": [
+    "Topics/Value and overall impression"
+   ],
+   "parts": []
+  }
+ },
+ "models": {
+  "F70": "Projects/F70",
+  "G60": "Projects/G60",
+  "G68": "Projects/G68",
+  "G70": "Projects/G70"
+ },
+ "markets": {
+  "EU": "Topics/Market Europe",
+  "CN": "Topics/Market China",
+  "US": "Topics/Market USA",
+  "RoW": "Topics/Market Rest of World"
+ }
+}
