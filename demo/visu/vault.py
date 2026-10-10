@@ -165,6 +165,11 @@ def read_vault(vault: Path, g: dict) -> dict:
 def sync_once(vault: Path, out: Path) -> bool:
     import assumptions  # Assumptions/*.md -> assumptions.json (Torque reads it before its seed copy)
     write_json(out / "assumptions.json", assumptions.read(vault))
+    import generate_texts  # Requirements/*.md (agent output, editable) -> texts.json, on top of the seed
+    seed = json.loads(generate_texts.SEED.read_text(encoding="utf-8"))
+    for rid, t in generate_texts.read_notes(vault).items():
+        seed["requirements"][rid] = {**seed["requirements"].get(rid, {}), **{k: v for k, v in t.items() if v}}
+    write_json(out / "texts.json", {**seed, "source": "Rowboat notes Requirements/ (agent output, editable)"})
     g = json.loads(GRAPH.read_text(encoding="utf-8"))
     data = {"source": str(vault), "parts": read_vault(vault, g)}
     dst = out / "visu.json"
@@ -212,7 +217,8 @@ def write_json(dst: Path, data: dict) -> bool:
 
 
 def signature(vault: Path) -> tuple:
-    files = list((vault / brand.FOLDERS["part"]).rglob("*.md")) + list((vault / "Assumptions").glob("*.md")) + [GRAPH]
+    files = (list((vault / brand.FOLDERS["part"]).rglob("*.md")) + list((vault / "Assumptions").glob("*.md"))
+             + list((vault / "Requirements").glob("*.md")) + [GRAPH])
     return tuple(sorted((str(f), f.stat().st_mtime_ns, f.stat().st_size) for f in files if f.exists()))
 
 

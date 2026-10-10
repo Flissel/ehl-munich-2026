@@ -83,6 +83,14 @@ NOTE_TYPES = [
                  "{What the values mean}\n\n## Values\n```json\n{values, keep the keys}\n```\n\n## Sources\n- {source of a researched value}",
      "extractionGuide": "Look for: values Torque needs that the Dataset does not contain (competitor prices, costs, segment "
                         "shares, weights, dimensions); keep the JSON keys and name a source for every changed value"},
+    {"type": "Requirements", "folder": "Requirements",
+     "template": "# {Customer benefit title}\n\n## Info\n**Type:** Requirement (purchase driver)\n**ID:** {R-xx}\n"
+                 "**Short:** {short}\n**Category:** {category}\n\n## Why customers buy it\n{1 sentence}\n\n"
+                 "## Customer attribute\n{phrase}\n\n## Target\n{1 sentence}\n\n## Acceptance\n{1 sentence}\n\n"
+                 "## Assumptions\n- {assumption}\n\n## Customer evidence\n{counts and comment IDs}\n\n"
+                 "## Conflicting evidence\n{where evidence disagrees or is thin}\n\n## Sources\n- {source}",
+     "extractionGuide": "Look for: purchase driver texts backed by Dataset evidence; keep req_id and the section headings "
+                        "(Torque reads them); cite comment IDs and finding IDs"},
     {"type": "Feature Classes", "folder": FOLDERS["class"],
      "template": "# {VFC level 2 name}\n\n## Info\n**Type:** Feature class (VFC level 2)\n\n## Connected to\n"
                  "- [[Components/{Part}]]\n- [[Models/{Model}]]\n\n## Key facts\n{Comments per model, VFC level 3 aspects.}",
