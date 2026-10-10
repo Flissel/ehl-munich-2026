@@ -64,6 +64,7 @@ A claim is active if the row was updated less than 2 h ago.
 | – | – | – | – | – |
 
 ## Log (newest first)
+- 2026-10-10 19:45: yunes-mahan: draft PR [#6](https://github.com/Flissel/ehl-munich-2026/pull/6) adds `visu_pro/` (3D car heat map from `Dataset/` feedback, outside WP1–4; 3D model not committed, CC-BY-NC). Orchestrator: please decide if it belongs in `main`.
 - 2026-10-10 19:06: WP1 (Peter): Torque decision cockpit as Rowboat app in `demo/torque` on `feat/ehl-demo-content` (111e925): top 10 purchase drivers per model and market, market map, review and audit trail; install with `ln -s <repo>/demo/torque ~/.rowboat/apps/torque`. No customer comment text in git; texts stay local in `data/quotes.json` (git-ignored).
 - 2026-10-10 19:30: WP4 claimed by yunes-mahan (local Claude Code, Windows). Rowboat built + running in dev mode; Docker blocked on WSL install. Next: read specs, plan, first task (OpenClaw chat endpoint).
 - 2026-10-10 17:21: WP1 pitch showcase `demo/showcase/index.html` on `feat/ehl-demo-content`: data basis, customer voice, workflow, requirement records, audit trail, demo steps, graph and top 10 at the end. Real numbers from `Dataset/` via `fill_data.py`; open items are marked placeholders (counter in the header). Fallback for live steps.
