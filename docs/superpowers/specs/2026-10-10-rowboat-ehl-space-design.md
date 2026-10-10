@@ -46,7 +46,7 @@ Facts about Rowboat Desktop that shape this design (verified in upstream code at
 | # | Decision | Rationale |
 |---|---|---|
 | D1 | Rowboat Desktop **as it is** (no fork, no code changes); our work is data, MCP tools and an agent skill | Least risk by tomorrow; official installer |
-| D2 | **Demo PC only**: notes are written straight into its `~/.rowboat/knowledge/`. No Harbor, GoTrue or Funnel | The graph only exists for vault notes; drops the riskiest part of the old design |
+| D2 | **Live data and agents on the demo PC only**: the bridge writes real notes straight into its `~/.rowboat/knowledge/`. No Harbor, GoTrue or Funnel | The graph only exists for vault notes; drops the riskiest part of the old design |
 | D3 | Notes follow Rowboat's own template plus YAML frontmatter for origin (`source`, ids, `managed_by`) | Graph and entity index work out of the box; frontmatter serves as search filter |
 | D4 | Extra **semantic search** via local Qdrant + MCP, as a separable add-on | "RAG" from the sketch; the demo still works without it |
 | D5 | Embeddings computed **locally** (fastembed, multilingual model) | Data stays on the PC; content is German |
@@ -55,6 +55,7 @@ Facts about Rowboat Desktop that shape this design (verified in upstream code at
 | D8 | Real **companies** from Sales-Claw; **people** only for team members who agreed. No customer individuals, no email addresses or phone numbers; leads marked private are skipped | Projector + embeddings; data minimisation (GDPR) |
 | D9 | Products are the machines **F70, G60, G68, G70** from the test dataset `Dataset/` (option lists, customer studies, feedback, sales volumes); product and roadmap notes are derived from it by WP1 | The team's test data; neither Sales nor Marketing has products (decided 2026-10-10, board Q1) |
 | D10 | The bridge reads Sales/Marketing **read-only** through their interfaces and only ever writes files it owns (`managed_by: ehl-bridge`) | Never clobbers hand-written or agent-written notes |
+| D11 | **Every team member runs Rowboat Desktop on their own PC** for development: repo data (products from `Dataset/`, topics, team), **fake companies** from the bridge's fixtures, and local `ehl-search` + Qdrant. Sales/Marketing agents (`ehl-agents`) and real company data only on the demo PC. Real company notes are never committed to git | Everyone can test in their own graph; Marketing API (loopback) and OpenClaw (Tailscale) are wired once; real data stays on one machine (decided 2026-10-10) |
 
 ## 4. Architecture
 
@@ -216,7 +217,7 @@ skill → dress rehearsal.
 
 ## 11. Out of scope
 
-- Harbor / Spaces / Funnel; other team members' PCs (later possible via folder sync).
+- Harbor / Spaces / Funnel; real company data or agent access on team PCs (D11; later possible via folder sync).
 - Sending or approving from Rowboat.
 - Customer individuals as notes.
 - Changes to Rowboat's code; the Rowboat fork in `vibemind-os/spaces/rowboat`.
@@ -244,6 +245,8 @@ branches merge without conflicts:
 | Qdrant | `127.0.0.1:6333`, collection `ehl_notes` |
 | MCP servers | `ehl-search` (WP3), `ehl-agents` (WP4); stdio; `mcp.json` entries collected by WP1 |
 | Python | 3.12, own `pyproject.toml` per folder, pytest, `logging` (no `print`), secrets in `.env` + `.env.example` |
+| PC roles (D11) | **Team PC:** `demo/install.ps1` → repo notes + `ehl-search`; `bridge --fake` writes fake companies from `bridge/fixtures/`. **Demo PC:** `demo/install.ps1 -Demo` additionally registers `ehl-agents` and runs the bridge against the real sources |
+| Fake companies | `bridge/fixtures/` (WP2): 8–10 invented companies with stages, owners and product interest in F70/G60/G68/G70; same note format as real ones (`managed_by: ehl-bridge`, `source: fixture`) |
 
 **Dependencies:** WP1 publishes the link-target names first (needed by WP2). WP2–WP4 develop
 against a test vault and fakes, so none blocks another; integration happens in WP1's dress rehearsal.
