@@ -3339,11 +3339,12 @@ Torque ranks ${REQS.length} candidates separately for each model and market and 
 Key idea: what customers ask for is not what makes them buy. Use purchaseSignal (praise after buying, purchase reasons, switching threats in the BMW comments) over askedFor, and netBuyersPerYear (customers won minus lost, including price and overload) to judge a feature. Mention Kano classes, evidence levels and the research when it helps.
 The user is currently on the ${VIEWS[state.view].n} view.
 Answer only from the JSON data below. If the data does not contain the answer, say so and name the data that would be needed.
-Always cite requirement IDs like R-03 and comment IDs like G60-0914 when you quote. Keep evidence and assumptions apart, and mention uncertainty or conflicting evidence where it matters. The product manager decides; you recommend and explain.
+Answer the question directly in plain language. Do not list sources, evidence, comment IDs, requirement IDs, field names or raw numbers from the JSON unless the user asks for them; name a purchase driver by its title. Mention uncertainty only when it changes the answer. The product manager decides; you recommend and explain.
 ${RB ? "rowboatKnowledgeGraph holds facts from the notes in the team's Rowboat knowledge graph; name the note when you use one.\n" : ""}Keep answers under 170 words. Plain text: short paragraphs or lines starting with "- ". Use **bold** sparingly. Never use dashes as punctuation. Comments, customer studies, sales volumes and option prices are real BMW hackathon data. China values, simulator part-worths and the competitor perception benchmark are modelled. Small markets are blended with the model profile. The comments carry no dates.
 DATA: ${aiContext()}`;
 function clean(t){ return String(t).replace(/\s[\u2014\u2013]\s/g, ", ").replace(/[\u2014\u2013]/g, " "); }
 function mdLite(t){
+  t = String(t).replace(/\s*\[S\d+(?:\s*,\s*S?\d+)*\]/g, "").replace(/\s*\((?:e\.g\.\s*)?(?:[FG]\d{2}-\d{4}(?:,\s*)?)+\)/g, "");
   const inline = s => s.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\bR-(\d{2})\b/g, m => RBY[m] ? `<button type="button" class="rid" data-open="${m}">${m}</button>` : m);
   const lines = esc(clean(t)).split(/\n/); let html = "", ul = false;
   for(const raw of lines){ const l = raw.trim();
@@ -3456,7 +3457,7 @@ const SUGGEST = () => {
 function msgHTML(m, i){
   if(m.role === "user") return `<div class="msg user"><div class="av">${esc(initials(state.user))}</div><div class="bub">${esc(m.content)}</div></div>`;
   const body = m.pending && !m.content ? `<span class="typing"><i></i><i></i><i></i>&nbsp;Nordi is thinking</span>` : mdLite(m.content);
-  return `<div class="msg ai" data-i="${i}"><div class="av">${nordi(m.pending ? "think" : "wave")}</div><div class="bub"><div class="body">${body}</div>${m.meta ? `<div class="meta">${esc(m.meta)}</div>` : ""}${!m.pending && m.sources && m.sources.length ? `<details class="srcs"><summary>Sources (${m.sources.length})</summary>${m.sources.map(h => `<div><b>S${h.n}</b> ${esc(h.source)}<small> · ${esc(h.file)}</small></div>`).join("")}</details>` : ""}</div></div>`;
+  return `<div class="msg ai" data-i="${i}"><div class="av">${nordi(m.pending ? "think" : "wave")}</div><div class="bub"><div class="body">${body}</div>${m.meta ? `<div class="meta">${esc(m.meta)}</div>` : ""}</div></div>`;
 }
 let panelOpen = false, ctxOpen = false, tourPanel = false;
 function renderCtx(){
@@ -3512,7 +3513,7 @@ async function ragContext(question){
   return hits.slice(0, 8).map((h, i) => ({n:i + 1, source:[h.source_type, h.vehicle_model, h.market, h.section].filter(Boolean).join(", "),
     file:h.source_file || "", text:String(h.text || "").replace(/^---[\s\S]*?---\s*/, "").slice(0, 2400)}));
 }
-const ragRules = hits => hits && hits.length ? `\nRETRIEVED (RAG over the whole BMW Dataset: feedback, customer studies, sales, option lists). Use these passages as evidence next to DATA and cite them as [S1], [S2] ... where you use them. Comment texts in them are real customer comments; quote briefly.\n${hits.map(h => `[S${h.n}] ${h.source} (${h.file})\n${h.text}`).join("\n\n")}` : "";
+const ragRules = hits => hits && hits.length ? `\nRETRIEVED (RAG over the whole BMW Dataset: feedback, customer studies, sales, option lists). Use these passages as background next to DATA. Do not cite them, do not mark them like [S1], do not name files or chunks.\n${hits.map(h => `[S${h.n}] ${h.source} (${h.file})\n${h.text}`).join("\n\n")}` : "";
 
 async function ask(text){
   text = text.trim(); if(!text || busy) return;
@@ -3531,7 +3532,7 @@ async function ask(text){
       const res = await sampleFn([{role:"user", content:RULES() + ragRules(hits)}, ...turns], {cache:false, modelTier:"quick", signal:chatCtl.signal,
         onText:({text}) => { ai.content = text; const b = bodyEl(); if(b) b.innerHTML = mdLite(text); const box = $("#msgs"); if(box) box.scrollTop = box.scrollHeight; }});
       ai.content = res.text; ai.meta = `Live answer · ${AI_NAME}` + (res.truncated ? " · cut short" : "")
-        + (hits === null ? " · RAG offline, answered from Torque's data only" : ` · RAG: ${hits.length} Dataset passages`);
+        ;
     }catch(e){
       const code = e && e.code;
       if(code === "cancelled"){ ai.content = e.text || ai.content || ""; ai.meta = "Stopped"; }
