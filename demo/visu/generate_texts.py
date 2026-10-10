@@ -34,9 +34,10 @@ SEED = DIST / "texts.seed.json"
 FOLDER = "Requirements"
 MARKER = "managed_by: ehl-visu"
 RAG_URL = os.environ.get("RAG_URL", "http://127.0.0.1:8100")
-FIELDS = ["title", "motive", "attr", "target", "accept", "assume", "cs", "conflict"]
+FIELDS = ["title", "motive", "attr", "target", "accept", "assume", "cs", "conflict", "feature_on", "feature_off"]
 LABELS = {"title": "Title", "motive": "Why customers buy it", "attr": "Customer attribute", "target": "Target",
-          "accept": "Acceptance", "assume": "Assumptions", "cs": "Customer evidence", "conflict": "Conflicting evidence"}
+          "accept": "Acceptance", "assume": "Assumptions", "cs": "Customer evidence", "conflict": "Conflicting evidence",
+          "feature_on": "Successor feature", "feature_off": "Today (baseline)"}
 MODELS = {"1": "F70 (1 Series)", "5": "G60 (5 Series) / G68 (5 Series LWB, China)", "7": "G70 (7 Series)"}
 TYPES = {"L": "likes", "W": "wants", "D": "difficult to use", "F": "defects", "P": "purchase reasons",
          "C": "switching threats", "R": "rival comparisons", "K": "conquest"}
@@ -60,7 +61,11 @@ target: 1 sentence, a concrete testable target for the successor
 accept: 1 sentence, how a product manager verifies the target
 assume: list of 1 to 3 short assumptions the target rests on
 cs: 1 sentence, what the BMW customer comments show, with counts and IDs
-conflict: 1 to 3 sentences, where the evidence disagrees or is thin, with counts and IDs"""
+conflict: 1 to 3 sentences, where the evidence disagrees or is thin, with counts and IDs
+feature_on: at most 10 words, the visible feature of the successor that meets the target, as shown on a concept car
+  (for a driver with no visible part say so, e.g. "Privacy controls, no visible change"; for range you may use the
+  placeholders {kwh} and {rangeKm})
+feature_off: at most 8 words, today's baseline from option_today (or "Standard ..." if none)"""
 
 
 def load_env() -> None:

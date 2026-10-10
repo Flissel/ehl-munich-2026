@@ -2785,29 +2785,15 @@ function carConfig(){
     panorama:on("R-04"), knobs:on("R-05"), orb:on("R-08"), lidar:on("R-07"), leather:yes("R-09"), low:yes("R-11"),
     access:on("R-13"), seatVent:yes("R-14"), phone:on("R-15")};
 }
-const FEAT = {
-  "R-01":c => c.charging ? "800 volt charging flap on the rear fender" + (c.flapGlow ? ", lit because it is locked" : "") : "Standard charging flap",
-  "R-02":c => `${c.kwh} kWh battery in the floor for about ${c.rangeKm} km, see X-ray`,
-  "R-03":c => c.lounge ? "130 mm longer wheelbase, reclining lounge seats and rear screens" : c.rearScreens ? "Rear screens, standard wheelbase in this market" : "Standard rear bench",
-  "R-04":c => c.panorama ? "Panoramic display along the windscreen base" : "Single central screen",
-  "R-05":c => c.knobs ? "Row of physical controls on the centre console" : "Touch only controls",
-  "R-06":() => "Central computer, no visible change",
-  "R-07":c => c.lidar ? "Roof lidar and corner radars, see Sensors" : "Front radar only, no lidar",
-  "R-08":c => c.orb ? "Assistant light on the dashboard" : "No assistant light",
-  "R-09":c => c.leather ? "Cognac leather and acoustic glass" : "Dark standard interior",
-  "R-10":c => c.light === "bar" ? "Full width light bar front and rear" : "Slim separate lamps",
-  "R-11":c => (c.wheels === "sport" ? "21 inch sport wheels" : "20 inch aero wheels") + (c.low ? ", 15 mm lower" : ""),
-  "R-12":() => "Privacy controls, no visible change",
-  "R-13":c => c.access ? "Kick sensor under the rear bumper and powered tailgate" : "Manual tailgate",
-  "R-14":c => c.seatVent ? "Ventilated and heated seats, massage in the 7 Series" : "Seats with heating only",
-  "R-15":c => c.phone ? "Cooled wireless phone tray in the centre console" : "Cable connection only",
-  "R-16":() => "Storage and luggage space, no visible change in the model",
-  "R-17":() => "Start-stop setting remembered, no visible change",
-  "R-18":() => "Premium speakers, no visible change in the model",
-  "R-19":() => "Surround view cameras in mirrors and bumpers",
-  "R-20":() => "Climate with physical shortcuts, no visible change",
-  "R-21":() => "Package structure and pricing, no visible change",
-};
+/* Successor feature per driver: which decision switches it on is cockpit logic; the texts are the agent's
+   (feature_on / feature_off in Rowboat notes Requirements/, placeholders like {kwh} filled from the concept). */
+const FEAT_ON = {"R-01":c => c.charging, "R-03":c => c.lounge || c.rearScreens, "R-04":c => c.panorama, "R-05":c => c.knobs,
+  "R-07":c => c.lidar, "R-08":c => c.orb, "R-09":c => c.leather, "R-10":c => c.light === "bar", "R-11":c => c.wheels === "sport" || c.low,
+  "R-13":c => c.access, "R-14":c => c.seatVent, "R-15":c => c.phone};
+const FEAT = Object.fromEntries(REQS.map(r => [r.id, c => {
+  const on = FEAT_ON[r.id] ? FEAT_ON[r.id](c) : true, t = (on ? r.feature_on : r.feature_off) || r.feature_on || r.attr || "";
+  return String(t).replace(/\{(\w+)\}/g, (_, k) => c[k] ?? "");
+}]));
 function conceptTiles(c){
   const cp = CARP[state.model] || CARP["5"], wb = Math.round(cp.wb * 1000);
   return [
