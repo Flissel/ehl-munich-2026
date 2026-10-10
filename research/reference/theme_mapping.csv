@@ -1,0 +1,227 @@
+vfc_level2,theme_id,theme_name,scope
+Anti-theft alarm system,ACCESS,"Access, doors & convenience",in
+Automatic doors,ACCESS,"Access, doors & convenience",in
+Child safety latch,ACCESS,"Access, doors & convenience",in
+Comfort Access,ACCESS,"Access, doors & convenience",in
+Digital Key,ACCESS,"Access, doors & convenience",in
+Display key,ACCESS,"Access, doors & convenience",in
+"Door, front",ACCESS,"Access, doors & convenience",in
+"Door, open / close",ACCESS,"Access, doors & convenience",in
+"Fuel filler flap , open / close",ACCESS,"Access, doors & convenience",in
+Garage door opener,ACCESS,"Access, doors & convenience",in
+"Hood, open / close",ACCESS,"Access, doors & convenience",in
+"Interior mirror, garage door opener",ACCESS,"Access, doors & convenience",in
+non-contact trunk lid opening,ACCESS,"Access, doors & convenience",in
+"Outer door handle, front",ACCESS,"Access, doors & convenience",in
+"Outer door handle, rear",ACCESS,"Access, doors & convenience",in
+Remote Engine Start (Vehicle Key ),ACCESS,"Access, doors & convenience",in
+Resting state after door opening,ACCESS,"Access, doors & convenience",in
+"Side window, open / close",ACCESS,"Access, doors & convenience",in
+Trunk lid,ACCESS,"Access, doors & convenience",in
+"Trunk lid, open / close",ACCESS,"Access, doors & convenience",in
+Vehicle key,ACCESS,"Access, doors & convenience",in
+"Vehicle, access and exit",ACCESS,"Access, doors & convenience",in
+"Vehicle, lock / unlock",ACCESS,"Access, doors & convenience",in
+"Washer fluid, top up",ACCESS,"Access, doors & convenience",in
+(Active) cruise control,ADAS,Driver assistance & parking (experience),in
+All-round view,ADAS,Driver assistance & parking (experience),in
+Back-up Assistant,ADAS,Driver assistance & parking (experience),in
+Blind spot monitoring,ADAS,Driver assistance & parking (experience),borderline
+Cross Traffic Warning Rear with Brake Intervention,ADAS,Driver assistance & parking (experience),borderline
+"Driver assistance, automated driving, overall technology",ADAS,Driver assistance & parking (experience),in
+Emergency Stop Assistant,ADAS,Driver assistance & parking (experience),borderline
+Fatigue Alert,ADAS,Driver assistance & parking (experience),borderline
+Front collision warning,ADAS,Driver assistance & parking (experience),borderline
+High-beam assistant,ADAS,Driver assistance & parking (experience),in
+Highway assistant,ADAS,Driver assistance & parking (experience),in
+Intersection Warning with Brake Intervention,ADAS,Driver assistance & parking (experience),borderline
+Lane Change Assistant,ADAS,Driver assistance & parking (experience),in
+Lane departure warning,ADAS,Driver assistance & parking (experience),borderline
+Night Vision,ADAS,Driver assistance & parking (experience),in
+Park Distance Control (PDC),ADAS,Driver assistance & parking (experience),in
+Parking Assistant,ADAS,Driver assistance & parking (experience),in
+Rear view camera,ADAS,Driver assistance & parking (experience),in
+Rear-end collision warning,ADAS,Driver assistance & parking (experience),borderline
+Remote controlled parking,ADAS,Driver assistance & parking (experience),in
+Side View,ADAS,Driver assistance & parking (experience),in
+Speed Limit Assistant,ADAS,Driver assistance & parking (experience),in
+Steering and lane guide assist,ADAS,Driver assistance & parking (experience),in
+Surround View,ADAS,Driver assistance & parking (experience),in
+Traffic Jam Assistant,ADAS,Driver assistance & parking (experience),in
+Traffic Light And Sign Warning,ADAS,Driver assistance & parking (experience),borderline
+Bidirectional charging,CHARGING,Range & charging (as experienced),in
+Charge high-voltage battery,CHARGING,Range & charging (as experienced),in
+Charging cable,CHARGING,Range & charging (as experienced),in
+Electric Range,CHARGING,Range & charging (as experienced),in
+Fuel tank,CHARGING,Range & charging (as experienced),borderline
+High voltage battery,CHARGING,Range & charging (as experienced),borderline
+"High voltage battery, preconditioning",CHARGING,Range & charging (as experienced),in
+High-voltage charging power socket,CHARGING,Range & charging (as experienced),in
+Opening/closing charging socket cover,CHARGING,Range & charging (as experienced),in
+Public charging / external providers,CHARGING,Range & charging (as experienced),in
+Route optimized for charging,CHARGING,Range & charging (as experienced),in
+"Wallbox, charging / home charging",CHARGING,Range & charging (as experienced),in
+Adjustment of lower lumbar support,COMFORT,"Comfort, seats & climate",in
+"Air conditioning, overall technology",COMFORT,"Comfort, seats & climate",in
+"Air conditioning, setting",COMFORT,"Comfort, seats & climate",in
+Auxiliary heater function,COMFORT,"Comfort, seats & climate",in
+Blower function,COMFORT,"Comfort, seats & climate",in
+Caring Car,COMFORT,"Comfort, seats & climate",in
+"Center armrest, front",COMFORT,"Comfort, seats & climate",in
+"Headrest, adjust",COMFORT,"Comfort, seats & climate",in
+"Headrests, rear",COMFORT,"Comfort, seats & climate",in
+Heated rear window,COMFORT,"Comfort, seats & climate",in
+Heated steering wheel,COMFORT,"Comfort, seats & climate",in
+Interior acoustics,COMFORT,"Comfort, seats & climate",in
+Interior comfort,COMFORT,"Comfort, seats & climate",in
+Panel heating,COMFORT,"Comfort, seats & climate",in
+Seat massage,COMFORT,"Comfort, seats & climate",in
+Seat memory,COMFORT,"Comfort, seats & climate",in
+"Seating, ventilate / heat",COMFORT,"Comfort, seats & climate",in
+Seats,COMFORT,"Comfort, seats & climate",in
+Sun protection,COMFORT,"Comfort, seats & climate",in
+"Vehicle, climatization",COMFORT,"Comfort, seats & climate",in
+Android Auto,DIGITAL,Connectivity & digital services,in
+Apple CarPlay,DIGITAL,Connectivity & digital services,in
+Apps (smartphone),DIGITAL,Connectivity & digital services,in
+BMW ConnectedDrive upgrades/ MINI CONNECTED upgrades,DIGITAL,Connectivity & digital services,in
+BMW Online / MINI Online,DIGITAL,Connectivity & digital services,in
+ConnectedDrive services (smartphone) technology overall,DIGITAL,Connectivity & digital services,in
+Customer Account (My BMW / MINI Portal),DIGITAL,Connectivity & digital services,in
+Drive Recorder,DIGITAL,Connectivity & digital services,in
+Driver's Guide App,DIGITAL,Connectivity & digital services,in
+Interior camera,DIGITAL,Connectivity & digital services,in
+Manage / pair mobile device (Bluetooth),DIGITAL,Connectivity & digital services,in
+Map update,DIGITAL,Connectivity & digital services,in
+"Mobile device, wireless charging",DIGITAL,Connectivity & digital services,in
+My BMW / MINI Portal,DIGITAL,Connectivity & digital services,in
+My BMW App / MINI App,DIGITAL,Connectivity & digital services,in
+Personal eSIM,DIGITAL,Connectivity & digital services,in
+Priorities for telephones,DIGITAL,Connectivity & digital services,in
+Real Time Traffic Information (RTTI),DIGITAL,Connectivity & digital services,in
+Remote 3D View (My BMW App / MINI App),DIGITAL,Connectivity & digital services,in
+Remote Engine Start (My BMW App / MINI App),DIGITAL,Connectivity & digital services,in
+Remote interior camera (My BMW App / MINI App),DIGITAL,Connectivity & digital services,in
+Remote Services & Remote Keyless Entry (My BMW App/MINI App),DIGITAL,Connectivity & digital services,in
+Remote Software Upgrade/RSU,DIGITAL,Connectivity & digital services,in
+Screen mirroring,DIGITAL,Connectivity & digital services,in
+Teleservices,DIGITAL,Connectivity & digital services,in
+Traffic Camera Information,DIGITAL,Connectivity & digital services,in
+USB port,DIGITAL,Connectivity & digital services,in
+Wi-Fi connection,DIGITAL,Connectivity & digital services,in
+WiFi hotspot,DIGITAL,Connectivity & digital services,in
+Automatic engine start-stop function (MSA),DRIVING,Driving experience & performance,in
+Automatic-hold,DRIVING,Driving experience & performance,in
+Brake Energy Regeneration / recuperation,DRIVING,Driving experience & performance,in
+Braking,DRIVING,Driving experience & performance,in
+Cushioning / damping vehicle,DRIVING,Driving experience & performance,in
+"Drive, driving dynamics and chassis, overall technology",DRIVING,Driving experience & performance,in
+Drivetrain,DRIVING,Driving experience & performance,in
+Engine acoustics / engine sound,DRIVING,Driving experience & performance,in
+Exhaust system,DRIVING,Driving experience & performance,borderline
+ground clearance,DRIVING,Driving experience & performance,in
+Handling / Riding,DRIVING,Driving experience & performance,in
+Impression of safety,DRIVING,Driving experience & performance,borderline
+Launch Control,DRIVING,Driving experience & performance,in
+My Modes / driving experience,DRIVING,Driving experience & performance,in
+Parking brake,DRIVING,Driving experience & performance,in
+"Pedals, operate",DRIVING,Driving experience & performance,in
+RSC tire,DRIVING,Driving experience & performance,in
+Self-leveling suspension,DRIVING,Driving experience & performance,in
+Shift paddle,DRIVING,Driving experience & performance,in
+Start engine/switch on drive readiness,DRIVING,Driving experience & performance,in
+Starting engine,DRIVING,Driving experience & performance,in
+Steering,DRIVING,Driving experience & performance,in
+Tire pressure control,DRIVING,Driving experience & performance,borderline
+Transmission,DRIVING,Driving experience & performance,in
+Wheels / tires,DRIVING,Driving experience & performance,in
+"Bumper, front",EXT,Exterior design & lighting,in
+"Bumper, rear",EXT,Exterior design & lighting,in
+Exterior,EXT,Exterior design & lighting,in
+Exterior design,EXT,Exterior design & lighting,in
+Exterior lighting,EXT,Exterior design & lighting,in
+Exterior rearview mirror,EXT,Exterior design & lighting,in
+Flashing,EXT,Exterior design & lighting,in
+Fog light,EXT,Exterior design & lighting,in
+Hood,EXT,Exterior design & lighting,in
+Horns,EXT,Exterior design & lighting,in
+Opening / closing convertible top / hardtop,EXT,Exterior design & lighting,in
+Radiator grille,EXT,Exterior design & lighting,in
+Rain sensor mode,EXT,Exterior design & lighting,in
+Rear wiper,EXT,Exterior design & lighting,in
+Roof,EXT,Exterior design & lighting,in
+Side sill trim panel,EXT,Exterior design & lighting,in
+Welcome Light Carpet,EXT,Exterior design & lighting,in
+Windshield,EXT,Exterior design & lighting,in
+Windshield wiper,EXT,Exterior design & lighting,in
+Air conditioning control panel,HMI,Infotainment & operation (HMI),in
+Apps (in-car),HMI,Infotainment & operation (HMI),in
+"Audio mode, sound",HMI,Infotainment & operation (HMI),in
+"CD / DVD changer, playback",HMI,Infotainment & operation (HMI),in
+"ConnectedDrive and Infotainment, overall technology",HMI,Infotainment & operation (HMI),in
+Controller operation,HMI,Infotainment & operation (HMI),in
+"Display, time",HMI,Infotainment & operation (HMI),in
+Driver profile,HMI,Infotainment & operation (HMI),in
+Experience Modes,HMI,Infotainment & operation (HMI),in
+Gesture control,HMI,Infotainment & operation (HMI),in
+Head-Up Display,HMI,Infotainment & operation (HMI),in
+Instrument cluster,HMI,Infotainment & operation (HMI),in
+Intelligent Personal Assistant,HMI,Infotainment & operation (HMI),in
+"Intelligent Personal Assistant, activation word",HMI,Infotainment & operation (HMI),in
+Light switch operating unit,HMI,Infotainment & operation (HMI),in
+Multi-function steering wheel operation,HMI,Infotainment & operation (HMI),in
+Navigation,HMI,Infotainment & operation (HMI),in
+Operate selector lever,HMI,Infotainment & operation (HMI),in
+"Operating concept, operating system",HMI,Infotainment & operation (HMI),in
+Owner's Manual,HMI,Infotainment & operation (HMI),in
+Radio function,HMI,Infotainment & operation (HMI),in
+Rear seat entertainment,HMI,Infotainment & operation (HMI),in
+Roof function centre,HMI,Infotainment & operation (HMI),in
+Smart POI search,HMI,Infotainment & operation (HMI),in
+Steering wheel,HMI,Infotainment & operation (HMI),in
+Touch Command,HMI,Infotainment & operation (HMI),in
+"Touch screen, operation",HMI,Infotainment & operation (HMI),in
+Video: playback / streaming,HMI,Infotainment & operation (HMI),in
+Voice control / speech recognition,HMI,Infotainment & operation (HMI),in
+Wash / wipe switch,HMI,Infotainment & operation (HMI),in
+Accessories / Parts,INT,Interior design & quality perception,borderline
+Ambient light,INT,Interior design & quality perception,in
+"Body equipment, overall technology",INT,Interior design & quality perception,borderline
+"Door, finisher panel, front",INT,Interior design & quality perception,in
+Instrument panel,INT,Interior design & quality perception,in
+Interior,INT,Interior design & quality perception,in
+Interior design,INT,Interior design & quality perception,in
+Interior rearview mirror,INT,Interior design & quality perception,in
+Panorama glass roof,INT,Interior design & quality perception,in
+"Sun visor, front",INT,Interior design & quality perception,in
+Upholstery / interior trim,INT,Interior design & quality perception,in
+"Vehicle interior, lighting",INT,Interior design & quality perception,in
+Airbags,OUT_SAFETY,Out of scope - safety / regulatory,out
+Dynamic Stability Control,OUT_SAFETY,Out of scope - safety / regulatory,out
+Dynamic Stability Control (DSC),OUT_SAFETY,Out of scope - safety / regulatory,out
+Emergency request,OUT_SAFETY,Out of scope - safety / regulatory,out
+Seat belts,OUT_SAFETY,Out of scope - safety / regulatory,out
+"Vehicle safety, overall technology",OUT_SAFETY,Out of scope - safety / regulatory,out
+Cooling,OUT_TECH,Out of scope - technical / engineering,out
+Engine oil,OUT_TECH,Out of scope - technical / engineering,out
+Towing eye,OUT_TECH,Out of scope - technical / engineering,out
+Vehicle battery,OUT_TECH,Out of scope - technical / engineering,out
+12 V connection,SPACE,"Space, storage & practicality",in
+"Center console, front",SPACE,"Space, storage & practicality",in
+Child restraint seat,SPACE,"Space, storage & practicality",in
+"Child restraint seat, use",SPACE,"Space, storage & practicality",in
+Cupholder,SPACE,"Space, storage & practicality",in
+Floor mat,SPACE,"Space, storage & practicality",in
+Frunk,SPACE,"Space, storage & practicality",in
+Glove box,SPACE,"Space, storage & practicality",in
+Grab handle,SPACE,"Space, storage & practicality",in
+Luggage compartment,SPACE,"Space, storage & practicality",in
+Running board,SPACE,"Space, storage & practicality",in
+Space / spatial impression,SPACE,"Space, storage & practicality",in
+Storage compartments,SPACE,"Space, storage & practicality",in
+Through-loading facility,SPACE,"Space, storage & practicality",in
+Tirefit,SPACE,"Space, storage & practicality",in
+"Trailer, use",SPACE,"Space, storage & practicality",in
+Trunk light,SPACE,"Space, storage & practicality",in
+General enquiry: customer feedback,UNCLASSIFIED,Unclassified - needs AI classification,review
+no_class_found,UNCLASSIFIED,Unclassified - needs AI classification,review

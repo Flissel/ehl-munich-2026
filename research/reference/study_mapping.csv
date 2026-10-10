@@ -1,0 +1,140 @@
+study_item,theme_id,scope
+Overall product satisfaction,OVERALL,context
+Exterior styling,EXT,in
+Interior styling,INT,in
+Quality of interior and materials used,INT,in
+Level of equipment,PACKAGES,in
+Safety,OUT_SAFETY,out
+Freedom from faults/ squeaks/ rattles,INT,in
+Value for money,OTHER_PRICE,context (pricing out of scope)
+Reliability,OUT_TECH,out
+All round visibility,DRIVING,in
+Easy to read and use instruments/ controls/ displays,HMI,in
+Smartphone integration/ connectivity,DIGITAL,in
+Features of information and entertainment system including in-car apps,HMI,in
+Easy to use information and entertainment system including in-car apps,HMI,in
+Integrated navigation system,HMI,in
+Overall seating comfort,COMFORT,in
+Interior storage for small items,SPACE,in
+Acceleration,DRIVING,in
+Roadholding,DRIVING,in
+Fuel economy/ energy efficiency,CHARGING,in
+Braking,DRIVING,in
+Sportiness,DRIVING,in
+Prestige/ manufacturer reputation,OTHER_BRAND,context
+Manoeuvrability,DRIVING,in
+Quality of ride,COMFORT,in
+Front interior roominess,SPACE,in
+Rear interior roominess,SPACE,in
+Ease of loading/ unloading luggage,SPACE,in
+Luggage capacity,SPACE,in
+Ease of entry into and out of car,ACCESS,in
+Environm. friendliness,OTHER_BRAND,context
+Heating/ ventilation/ air conditioning,COMFORT,in
+Overall build quality,INT,in
+Quietness when driving,COMFORT,in
+Driving position,COMFORT,in
+Connected services,DIGITAL,in
+Interior versatility,SPACE,in
+Overall exterior styling,EXT,in
+Size/ proportions,EXT,in
+Appearance of tires/ wheels,EXT,in
+Exterior door handles,ACCESS,in
+Headlight/ taillight design,EXT,in
+Sound of doors/ trunk/ hatch shutting,INT,in
+Overall driving performance,DRIVING,in
+Ground clearance,DRIVING,in
+Riding comfort,COMFORT,in
+Turning radius,DRIVING,in
+Handling/Maneuverability,DRIVING,in
+If applicable: 4WD/AWD performance,DRIVING,in
+Off-Road capability,DRIVING,in
+Overall power and pickup,DRIVING,in
+Acceleration from stop,DRIVING,in
+Passing capability,DRIVING,in
+Overall interior styling/ aesthetics,INT,in
+Interior colors,INT,in
+Interior trim and finish,INT,in
+Interior lighting,INT,in
+Overall interior workmanship,INT,in
+Quality of seat materials,COMFORT,in
+Quality of interior materials,INT,in
+Interior door handles,ACCESS,in
+Overall comfort of the seats,COMFORT,in
+Comfort of front seat,COMFORT,in
+Comfort of 2nd row seat,COMFORT,in
+Overall interior design / layout,INT,in
+Ease of front seat entry,ACCESS,in
+Front seat roominess,SPACE,in
+Ease of 2nd row seat entry,ACCESS,in
+2nd row seat roominess,SPACE,in
+Passenger seating capacity,SPACE,in
+Interior roominess,SPACE,in
+Interior storage,SPACE,in
+Trunk lid/ tailgate and liftgate operations,ACCESS,in
+Ease of loading/unloading cargo,SPACE,in
+Cargo capacity/usefulness,SPACE,in
+Instrument panel (IP),INT,in
+Cupholders,SPACE,in
+Provides a sense of wellbeing,COMFORT,in
+Overall interior versatility/seat stowaway,SPACE,in
+Driver seat adjustability,COMFORT,in
+Passenger seat adjustability,COMFORT,in
+Overall performance of climate control system,COMFORT,in
+Heater performance,COMFORT,in
+Air conditioner performance,COMFORT,in
+Operation of heater/ AC controls,HMI,in
+Overall performance of sound system,HMI,in
+Design and integration of speakers,HMI,in
+Audio clarity,HMI,in
+Bass performance,HMI,in
+Placement/ ease of reading and using controls,HMI,in
+Intuitiveness of controls,HMI,in
+Overall noise/vibration/harshness,COMFORT,in
+Overall vehicle sound,COMFORT,in
+Active noise cancellation,COMFORT,in
+Freedom from squeaks and rattles,INT,in
+Sound of engine,COMFORT,in
+Freedom from wind and road noise,COMFORT,in
+Smoothness of transmission,DRIVING,in
+Overall impression of durability/reliability,OUT_TECH,out
+Solid vehicle construction,INT,in
+Freedom from electrical problems,OUT_TECH,out
+Overall safety of the vehicle,OUT_SAFETY,out
+Front visibility,DRIVING,in
+Rear visibility,DRIVING,in
+Warranty coverage,OTHER_PRICE,context (pricing out of scope)
+Headlight function/ brightness,EXT,in
+Technical innovations,PACKAGES,in
+Level of standard equipment,PACKAGES,in
+Overall value for money,OTHER_PRICE,context (pricing out of scope)
+Price/deal offered,OTHER_PRICE,context (pricing out of scope)
+Future trade-in or resale value,OTHER_PRICE,context (pricing out of scope)
+Gas or electric mileage (fuel economy),CHARGING,in
+Economical to own (cost of ownership),OTHER_PRICE,context (pricing out of scope)
+Affordable to buy,OTHER_PRICE,context (pricing out of scope)
+Overall brand image,OTHER_BRAND,context
+Reputation/prestige of manufacturer,OTHER_BRAND,context
+Overall vehicle image,OTHER_BRAND,context
+Overall driver assist features,ADAS,in
+"If applicable: Backup system (camera, sensors, etc.)",ADAS,in
+"Safety monitoring features (blid spot warning, lane departure warning, etc)",ADAS,in
+"Adaptive driving assists (lane keeping, cruise, braking)",ADAS,in
+Overall driver-vehicle interaction (HMI),HMI,in
+If applicable: Navigation system,HMI,in
+Bluetooth/ smartphone pairing,DIGITAL,in
+WiFi hotspot in vehicle,DIGITAL,in
+Mirroring of smartphone content on vehicle display,DIGITAL,in
+Place for phone,DIGITAL,in
+Phone charging,DIGITAL,in
+Ease of reading and using screen interface,HMI,in
+Head-up Display,HMI,in
+Position/ integration of displays in dashboard,HMI,in
+Menu structure of infotainment system,HMI,in
+"If applicable: Interactive information system (e.g., OnStar, mbrace, iDrive)",HMI,in
+Performance of voice recognition,HMI,in
+Vehicle's Mobile App,DIGITAL,in
+Overall environmental friendliness,OTHER_BRAND,context
+"If applicable: Flat tire preparedness (spare, run flat, etc.)",ACCESS,in
+If applicable: Sunroof/ moonroof,INT,in
+If applicable: Ease of customization,HMI,in

@@ -1,0 +1,250 @@
+scope_type,scope,term,n_comments,share_in_scope_pct,lift,n_scope
+theme,COMFORT,seats,149,27.7,6.23,537
+theme,COMFORT,seat,139,25.9,5.13,537
+theme,COMFORT,climate,81,15.1,5.66,537
+theme,COMFORT,heated,47,8.8,7.42,537
+theme,COMFORT,air,90,16.8,4.51,537
+theme,COMFORT,conditioning,37,6.9,6.71,537
+theme,COMFORT,air conditioning,37,6.9,6.71,537
+theme,COMFORT,massage,27,5.0,7.67,537
+theme,COMFORT,climate control,44,8.2,5.44,537
+theme,COMFORT,heated steering,24,4.5,7.31,537
+theme,COMFORT,vents,36,6.7,5.79,537
+theme,COMFORT,heated seats,18,3.4,8.07,537
+theme,COMFORT,headrest,22,4.1,7.21,537
+theme,COMFORT,airflow,17,3.2,7.63,537
+theme,COMFORT,climate controls,19,3.5,7.04,537
+theme,SPACE,glove,28,9.9,12.98,282
+theme,SPACE,storage,45,16.0,10.14,282
+theme,SPACE,space,55,19.5,8.34,282
+theme,SPACE,glove box,23,8.2,12.44,282
+theme,SPACE,frunk,12,4.3,16.23,282
+theme,SPACE,cargo,13,4.6,15.07,282
+theme,SPACE,room,20,7.1,11.19,282
+theme,SPACE,box,26,9.2,9.81,282
+theme,SPACE,console,43,15.2,6.65,282
+theme,SPACE,cupholders,11,3.9,12.75,282
+theme,SPACE,storage space,12,4.3,12.17,282
+theme,SPACE,trunk,47,16.7,5.49,282
+theme,SPACE,boot,27,9.6,7.07,282
+theme,SPACE,trunk area,9,3.2,12.17,282
+theme,SPACE,centre console,8,2.8,11.8,282
+theme,HMI,screen,234,22.5,3.03,1039
+theme,HMI,display,132,12.7,2.69,1039
+theme,HMI,voice,67,6.4,3.64,1039
+theme,HMI,touch screen,41,3.9,4.1,1039
+theme,HMI,radio,64,6.2,3.24,1039
+theme,HMI,manual,79,7.6,2.9,1039
+theme,HMI,system,163,15.7,1.91,1039
+theme,HMI,navigation,75,7.2,2.8,1039
+theme,HMI,idrive,90,8.7,2.54,1039
+theme,HMI,touch,70,6.7,2.8,1039
+theme,HMI,handbook,30,2.9,4.26,1039
+theme,HMI,controls,93,9.0,2.23,1039
+theme,HMI,feels,188,18.1,1.52,1039
+theme,HMI,good,124,11.9,1.8,1039
+theme,HMI,many,75,7.2,2.28,1039
+theme,DIGITAL,carplay,71,14.3,7.86,498
+theme,DIGITAL,phone,144,28.9,5.05,498
+theme,DIGITAL,app,118,23.7,5.16,498
+theme,DIGITAL,esim,49,9.8,7.76,498
+theme,DIGITAL,apple carplay,39,7.8,7.79,498
+theme,DIGITAL,apple,50,10.0,6.21,498
+theme,DIGITAL,bluetooth,35,7.0,7.31,498
+theme,DIGITAL,connect,46,9.2,6.31,498
+theme,DIGITAL,wireless,33,6.6,7.4,498
+theme,DIGITAL,android,37,7.4,6.8,498
+theme,DIGITAL,connection,43,8.6,6.27,498
+theme,DIGITAL,connected,61,12.2,5.24,498
+theme,DIGITAL,iphone,40,8.0,6.23,498
+theme,DIGITAL,android auto,28,5.6,6.96,498
+theme,DIGITAL,usb,34,6.8,6.25,498
+theme,CHARGING,charging,162,49.8,9.71,325
+theme,CHARGING,range,109,33.5,10.89,325
+theme,CHARGING,charge,81,24.9,8.84,325
+theme,CHARGING,america,34,10.5,12.28,325
+theme,CHARGING,electrify america,32,9.8,12.52,325
+theme,CHARGING,electrify,32,9.8,12.52,325
+theme,CHARGING,battery,76,23.4,7.09,325
+theme,CHARGING,charging stations,25,7.7,12.14,325
+theme,CHARGING,electric range,16,4.9,14.08,325
+theme,CHARGING,stations,37,11.4,8.54,325
+theme,CHARGING,charges,22,6.8,11.07,325
+theme,CHARGING,free charging,13,4.0,14.08,325
+theme,CHARGING,full charge,12,3.7,13.0,325
+theme,CHARGING,driving range,12,3.7,13.0,325
+theme,CHARGING,public,10,3.1,14.08,325
+theme,DRIVING,drive,255,23.7,2.69,1078
+theme,DRIVING,performance,100,9.3,3.69,1078
+theme,DRIVING,engine,152,14.1,2.97,1078
+theme,DRIVING,feels,267,24.8,2.08,1078
+theme,DRIVING,sport,98,9.1,3.44,1078
+theme,DRIVING,suspension,73,6.8,3.83,1078
+theme,DRIVING,ride,82,7.6,3.48,1078
+theme,DRIVING,good,168,15.6,2.35,1078
+theme,DRIVING,driving,249,23.1,1.89,1078
+theme,DRIVING,mode,127,11.8,2.59,1078
+theme,DRIVING,stop,110,10.2,2.73,1078
+theme,DRIVING,handling,52,4.8,3.94,1078
+theme,DRIVING,brake,80,7.4,3.17,1078
+theme,DRIVING,economy,54,5.0,3.76,1078
+theme,DRIVING,brakes,57,5.3,3.51,1078
+theme,EXT,wind,28,8.3,11.22,336
+theme,EXT,wind noise,26,7.7,11.07,336
+theme,EXT,exterior,44,13.1,7.89,336
+theme,EXT,headlights,24,7.1,10.55,336
+theme,EXT,wiper,17,5.1,10.53,336
+theme,EXT,grille,13,3.9,11.07,336
+theme,EXT,mirrors,32,9.5,6.92,336
+theme,EXT,wipers,18,5.4,9.08,336
+theme,EXT,mirror,40,11.9,5.56,336
+theme,EXT,windshield,26,7.7,6.81,336
+theme,EXT,windshield wipers,8,2.4,9.91,336
+theme,EXT,lights,35,10.4,4.46,336
+theme,EXT,side mirror,9,2.7,8.76,336
+theme,EXT,paint,13,3.9,7.08,336
+theme,EXT,wing,11,3.3,7.49,336
+theme,INT,interior,98,18.2,4.22,539
+theme,INT,sunroof,32,5.9,6.79,539
+theme,INT,ambient,32,5.9,6.63,539
+theme,INT,price,42,7.8,5.02,539
+theme,INT,ambient lighting,23,4.3,6.51,539
+theme,INT,dashboard,34,6.3,5.35,539
+theme,INT,technology,38,7.1,4.48,539
+theme,INT,visor,12,2.2,7.84,539
+theme,INT,interior materials,9,1.7,8.49,539
+theme,INT,lighting,40,7.4,3.82,539
+theme,INT,features,68,12.6,2.92,539
+theme,INT,sunroof open,8,1.5,8.49,539
+theme,INT,materials,17,3.2,5.77,539
+theme,INT,dash,30,5.6,4.25,539
+theme,INT,questions,25,4.6,4.62,539
+theme,ACCESS,doors,123,21.1,6.02,584
+theme,ACCESS,door,196,33.6,4.71,584
+theme,ACCESS,key,148,25.3,5.37,584
+theme,ACCESS,unlock,61,10.4,6.37,584
+theme,ACCESS,open,135,23.1,4.15,584
+theme,ACCESS,lock,62,10.6,5.85,584
+theme,ACCESS,digital key,52,8.9,5.99,584
+theme,ACCESS,fob,56,9.6,5.42,584
+theme,ACCESS,trunk,80,13.7,4.51,584
+theme,ACCESS,foot,42,7.2,6.21,584
+theme,ACCESS,tailgate,28,4.8,7.31,584
+theme,ACCESS,opening,54,9.2,5.1,584
+theme,ACCESS,opener,28,4.8,7.08,584
+theme,ACCESS,comfort access,26,4.5,7.28,584
+theme,ACCESS,key fob,49,8.4,5.19,584
+theme,ADAS,cruise,55,12.6,9.29,437
+theme,ADAS,lane,58,13.3,8.93,437
+theme,ADAS,cruise control,47,10.8,9.85,437
+theme,ADAS,assistant,75,17.2,6.95,437
+theme,ADAS,parking,88,20.1,5.59,437
+theme,ADAS,driver assistance,25,5.7,9.03,437
+theme,ADAS,warning,70,16.0,5.24,437
+theme,ADAS,camera,58,13.3,5.68,437
+theme,ADAS,highway assistant,17,3.9,10.47,437
+theme,ADAS,parking assistant,19,4.3,9.48,437
+theme,ADAS,lane departure,17,3.9,9.89,437
+theme,ADAS,assisted,24,5.5,8.11,437
+theme,ADAS,assisted driving,19,4.3,8.65,437
+theme,ADAS,blind spot,19,4.3,8.29,437
+theme,ADAS,departure,18,4.1,8.2,437
+country,GB,good,161,26.1,3.94,616
+country,GB,boot,55,8.9,6.59,616
+country,GB,drive,165,26.8,3.04,616
+country,GB,handbook,29,4.7,6.95,616
+country,GB,touch screen,36,5.8,6.08,616
+country,GB,old,66,10.7,4.3,616
+country,GB,wing,20,3.2,7.43,616
+country,GB,gearbox,25,4.1,6.63,616
+country,GB,happy,69,11.2,3.94,616
+country,GB,overall,108,17.5,3.12,616
+country,GB,extras,20,3.2,7.08,616
+country,GB,standard,58,9.4,3.95,616
+country,GB,great,65,10.6,3.58,616
+country,GB,wing mirrors,15,2.4,7.43,616
+country,GB,pay,35,5.7,4.82,616
+country,JP,fuel consumption,8,4.2,19.37,189
+country,JP,compact,9,4.8,15.57,189
+country,JP,recommend,19,10.1,9.79,189
+country,JP,fuel,30,15.9,6.55,189
+country,JP,ride comfort,8,4.2,12.11,189
+country,JP,fuel economy,17,9.0,8.07,189
+country,JP,consumption,8,4.2,10.76,189
+country,JP,hardly,9,4.8,9.91,189
+country,JP,points,11,5.8,8.88,189
+country,JP,economy,17,9.0,6.75,189
+country,JP,price,18,9.5,6.14,189
+country,JP,performance,23,12.2,4.84,189
+country,JP,navigation,23,12.2,4.72,189
+country,JP,people,15,7.9,5.77,189
+country,JP,sense,11,5.8,6.66,189
+country,US,center,131,3.6,1.22,3614
+country,US,menu,131,3.6,1.21,3614
+country,US,rvg,97,2.7,1.27,3614
+country,US,minor problem,86,2.4,1.27,3614
+country,US,unable,82,2.3,1.24,3614
+country,US,fob,77,2.1,1.2,3614
+country,US,center console,73,2.0,1.23,3614
+country,US,vehicles,72,2.0,1.23,3614
+country,US,steps,72,2.0,1.23,3614
+country,US,located,70,1.9,1.23,3614
+country,US,key fob,71,2.0,1.22,3614
+country,US,recommended,67,1.9,1.25,3614
+country,US,replied,65,1.8,1.27,3614
+country,US,unsure,65,1.8,1.25,3614
+country,US,notes,65,1.8,1.25,3614
+country,KR,performance,11,16.7,6.63,66
+country,KR,interior,13,19.7,4.58,66
+country,KR,seems,9,13.6,3.37,66
+country,KR,good,11,16.7,2.51,66
+country,KR,better,8,12.1,2.82,66
+country,KR,feels,14,21.2,1.78,66
+country,KR,overall,8,12.1,2.16,66
+country,KR,side,8,12.1,2.05,66
+country,KR,driving,11,16.7,1.36,66
+engine,ICE,good,259,8.6,1.29,3015
+engine,ICE,engine,180,6.0,1.26,3015
+engine,ICE,fuel,102,3.4,1.39,3015
+engine,ICE,happy,111,3.7,1.3,3015
+engine,ICE,old,100,3.3,1.33,3015
+engine,ICE,last,112,3.7,1.24,3015
+engine,ICE,automatic,113,3.7,1.23,3015
+engine,ICE,sport,102,3.4,1.28,3015
+engine,ICE,model,104,3.4,1.24,3015
+engine,ICE,manual,100,3.3,1.27,3015
+engine,ICE,standard,93,3.1,1.3,3015
+engine,ICE,boot,60,2.0,1.47,3015
+engine,ICE,touch,87,2.9,1.2,3015
+engine,ICE,ride,80,2.7,1.21,3015
+engine,ICE,economy,57,1.9,1.42,3015
+engine,PHEV,electric range,11,3.4,9.59,328
+engine,PHEV,battery,44,13.4,4.07,328
+engine,PHEV,hybrid,24,7.3,5.07,328
+engine,PHEV,electric,28,8.5,3.87,328
+engine,PHEV,charged,8,2.4,5.58,328
+engine,PHEV,charge,25,7.6,2.7,328
+engine,PHEV,engine light,8,2.4,4.65,328
+engine,PHEV,gas,11,3.4,3.94,328
+engine,PHEV,check engine,8,2.4,4.29,328
+engine,PHEV,range,22,6.7,2.18,328
+engine,PHEV,full,16,4.9,2.4,328
+engine,PHEV,system,38,11.6,1.41,328
+engine,PHEV,around miles,10,3.0,2.74,328
+engine,PHEV,engine,26,7.9,1.67,328
+engine,PHEV,foot,10,3.0,2.63,328
+engine,BEVE,charging,168,13.6,2.65,1234
+engine,BEVE,range,101,8.2,2.66,1234
+engine,BEVE,tesla,52,4.2,3.51,1234
+engine,BEVE,america,39,3.2,3.71,1234
+engine,BEVE,electrify america,36,2.9,3.71,1234
+engine,BEVE,electrify,36,2.9,3.71,1234
+engine,BEVE,charge,84,6.8,2.42,1234
+engine,BEVE,charging stations,28,2.3,3.58,1234
+engine,BEVE,chargers,27,2.2,3.45,1234
+engine,BEVE,stations,44,3.6,2.68,1234
+engine,BEVE,charges,22,1.8,2.91,1234
+engine,BEVE,free charging,13,1.1,3.71,1234
+engine,BEVE,charger,41,3.3,2.03,1234
+engine,BEVE,app,81,6.6,1.43,1234
+engine,BEVE,frunk,12,1.0,3.71,1234

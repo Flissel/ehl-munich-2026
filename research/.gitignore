@@ -1,0 +1,7 @@
+﻿# Processed customer data and run outputs stay local until checked for residual personal data
+# (the repo is public; see docs/superpowers/specs/2026-10-10-ehl-research-mcp-design.md §8).
+data/processed/
+data/raw/
+runs/
+.venv/
+__pycache__/
