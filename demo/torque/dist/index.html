@@ -3401,7 +3401,7 @@ function partHtml(d){
     ${x ? `<small>${fmt(x.comments ?? x.n)} comments (${fmt(x.n)} classified mentions)${x.basis === "specific" ? "" : " (" + esc(x.basis) + " feedback)"} · ${counts} · ${x.positive_share}% positive</small>` : ""}
     ${q ? `<q>${esc(q.text.slice(0, 180))}${q.text.length > 180 ? "…" : ""}</q><small class="muted">${esc(q.type)} · ${esc(q.series)} · ${esc(q.country)}</small>` : ""}
     <small class="muted">${esc(d.data)}${d.fallback ? " · " + esc(d.fallback) : ""}</small>
-    ${GRAPH.parts[d.id] ? `<small class="muted">In Rowboat: ${esc(GRAPH.parts[d.id].note)}</small>` : ""}</div>`;
+    ${GRAPH.parts[d.id]?.notes?.[M().code] ? `<small class="muted">In Rowboat: ${esc(GRAPH.parts[d.id].notes[M().code])}</small>` : ""}</div>`;
 }
 function bConcept(){
   const stage = $("#stage"), card = $("#focusCard"), f = visuFrame(), holder = document.createElement("div");

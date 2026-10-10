@@ -193,7 +193,7 @@ export default function App() {
           <b>{ctx.title || model.displayName}</b>
           <span>{dataLabel}{fromVault}</span>
           {note && <span className="warn">{note}</span>}
-          <span className="muted">3D stand-in: {model.displayName}</span>
+          <span className="muted">3D car: placeholder model</span>
         </div>
       )}
       <div className="viewer-toolbar">

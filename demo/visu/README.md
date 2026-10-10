@@ -43,34 +43,45 @@ Then install Torque as in `demo/torque/README.md`; the 3D view is at Concept 3D.
 
 ## Data in Rowboat's knowledge graph
 
-The part data lives in the vault, so Rowboat (and its AI) is where it is changed:
+All Dataset values live in the vault as one tree; Rowboat (and its AI) is where they are changed:
 
 ```bash
-python demo/dataset_to_notes.py --out ~/.rowboat/knowledge   # WP1: Projects/ and Topics/ (models, themes, markets)
-python demo/torque/sync.py                                    # Torque: Purchase Drivers/
-python demo/visu/vault.py notes                               # Vehicle Parts/ (56 parts) and BMW/ (Dataset graph)
-python demo/visu/vault.py sync --watch                        # keep running: vault -> dist/visu/data/visu.json
+python demo/visu/vault.py notes                 # writes missing notes of <vault>/Brands (brand.py), ~870 notes
+python demo/visu/vault.py sync --watch          # keep running: component notes -> dist/visu/data/visu.json
 ```
 
-- **Graph:** `Vehicle Parts/Vehicle` → `Exterior` / `Interior` → 11 areas (Wheels and brakes, Lighting, Seats,
-  Cockpit and displays, …) → one note per part. Each part note links to its purchase drivers
-  (`Purchase Drivers/…`), WP1 themes (`Topics/…`) and the models (`Projects/F70` …).
-- **Dataset graph** (`brand.py`, folder `BMW/`): brand `BMW` → models (F70, G60, G68, G70) → per model the
-  sub nodes Country, ID, Engine, VFC 1 (Vfc level2, feature class), VFC 2 (Vfc level3, aspect), VFC 3
-  (level 2 3 combined), Source, Sales and Feedback. Every table comes from `Dataset/` (comments per value,
-  rows, likes / difficult to use / defects / wants / untyped; ID lists every comment ID without text). Models
-  link to `Vehicle Parts/Vehicle`, Torque's `Purchase Drivers/<series> top 10` and `Projects/<model>`;
-  VFC 1 rows link to the car part they colour, and every part note links back to the models' VFC 1 nodes.
-- **Fixed links:** what belongs to what (part ↔ area ↔ driver ↔ theme, feature classes per part) is
-  `demo/torque/dist/visu/graph.json`, built by `vault.py graph` and committed. The UI only uses this map, so
-  editing or deleting links in a note never breaks the 3D view. Notes are found by `part_id` in their front
-  matter, so a renamed note still feeds the same part.
-- **Editable data:** the tables in each part note ("Customer feedback heat map" per model and market,
-  "Options today" per model). Change a value in Rowboat, by hand or by asking the AI, and Concept 3D shows it
-  within a few seconds (heat colour, counts and options in the card). The card names the note ("In Rowboat: …").
-- `vault.py notes` only creates missing notes; `--refresh` rewrites notes that still have
-  `managed_by: ehl-visu` (remove that line to protect a note). Quotes never go into the vault (spec D8);
-  they stay in the local `data/feedback-*.json`.
+```
+knowledge/Brands/
+├── Brands.md
+└── BMW/                                   ← brand (a second brand gets Brands/<Brand>/)
+    ├── BMW.md
+    └── Models/
+        ├── Models.md
+        ├── 1er F70/                       ← one folder per model (3D car = placeholder for every model)
+        │   ├── 1er F70.md
+        │   ├── Components/  Exterior|Interior / <area> / <part>.md   ← 56 parts, editable heat + option tables
+        │   ├── VFC/         VFC.md + one note per feature class (level 3 and 2+3 tables inside)
+        │   ├── ID/          ID.md (every comment ID, no text)
+        │   ├── Country/     Country.md + one note per country
+        │   ├── Engine/      Engine.md + ICE / PHEV / BEVE
+        │   ├── Source/      Source.md + Source A … D
+        │   ├── Feedback/    Feedback.md + Likes, Defect, Difficult to Use, Wants
+        │   ├── Sales/       Sales.md
+        │   ├── Studies/     Study Europe / USA / China 2025
+        │   └── Options/     Options.md (price list, linked to components)
+        ├── 5er G60/  …
+        ├── 5er G68/  Sales, Studies (China), Options only: no feedback in the Dataset
+        └── 7er G70/  …
+```
+
+- Every folder has a hub note with its name, so the graph mirrors the folders. All values come from `Dataset/`
+  (and `outputs/markdown/options`); comment texts never go into the vault (spec D8).
+- **Fixed links:** what belongs to what (part ↔ area ↔ feature classes ↔ purchase drivers) is
+  `demo/torque/dist/visu/graph.json` (`vault.py graph`, committed). The UI only uses this map; notes are found by
+  `part_id` + `model` in their front matter, so editing links or renaming a note never breaks the 3D view.
+- **Editable data:** the "Customer feedback heat map" and "Options today" tables in each component note. Change a
+  value in Rowboat, by hand or via the AI, and Concept 3D shows it within a few seconds (the card names the note).
+- `vault.py notes` only creates missing notes; `--refresh` rewrites notes that still have `managed_by: ehl-visu`.
 
 ## How it works
 
