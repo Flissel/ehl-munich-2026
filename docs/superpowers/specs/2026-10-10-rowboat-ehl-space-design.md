@@ -9,13 +9,13 @@
 Rowboat is the product we show. Sales-Claw and Marketing are **data sources and worker agents**
 behind it. Their data lands in Rowboat as Markdown notes, so Rowboat's own knowledge graph shows
 the cluster (companies ↔ products ↔ channels ↔ content). A Rowboat agent works on an intersection
-of that cluster (e.g. product P1 × newsletter), asks the Sales and Marketing agents via chat, and
+of that cluster (e.g. machine F70 × newsletter), asks the Sales and Marketing agents via chat, and
 the result appears as a new, linked note in the graph.
 
 **Demo criterion:**
 1. A contact created live in Sales-Claw appears as (part of) an organization note in Rowboat within
    ~60 s, and the graph grows visibly.
-2. Asked "Create a newsletter about P1 for all interested customers", the Rowboat agent finds the
+2. Asked "Create a newsletter about the F70 for all interested customers", the Rowboat agent finds the
    matching companies, has Marketing draft text and image, and files the result as
    `Content/…` note linked to product, channel and companies. Nothing is sent.
 
@@ -53,7 +53,7 @@ Facts about Rowboat Desktop that shape this design (verified in upstream code at
 | D6 | Rowboat talks to the **Sales and Marketing agents via chat** (MCP wrapper tools) rather than their raw tool sets | Agent-to-agent is the story; each agent keeps its own rules |
 | D7 | No sending and no approving from Rowboat: the raw Marketing MCP (incl. `versand_beauftragen`) is not exposed; the chat path must not trigger sends or approvals | Approval gate stays with the human (WhatsApp / UI) |
 | D8 | Real **companies** from Sales-Claw; **people** only for team members who agreed. No customer individuals, no email addresses or phone numbers; leads marked private are skipped | Projector + embeddings; data minimisation (GDPR) |
-| D9 | Products P1–P3 and roadmaps R1–R3 are **example data**, written by hand | Neither source has them |
+| D9 | Products are the machines **F70, G60, G68, G70** from the test dataset `Dataset/` (option lists, customer studies, feedback, sales volumes); product and roadmap notes are derived from it by WP1 | The team's test data; neither Sales nor Marketing has products (decided 2026-10-10, board Q1) |
 | D10 | The bridge reads Sales/Marketing **read-only** through their interfaces and only ever writes files it owns (`managed_by: ehl-bridge`) | Never clobbers hand-written or agent-written notes |
 
 ## 4. Architecture
@@ -90,7 +90,7 @@ services bind to `127.0.0.1`.
 |---|---|---|
 | `Organizations/` | One note per company from Sales-Claw (leads grouped by company): industry, website, pipeline stage, owner (team member), interest in products, recent activity | bridge |
 | `People/` | Team members only | example data |
-| `Projects/` | Products P1–P3, roadmaps R1–R3 | example data |
+| `Projects/` | Machines F70, G60, G68, G70 and their roadmaps, derived from `Dataset/` | WP1 (from `Dataset/`) |
 | `Topics/` | Channels (Newsletter, Social Media, Email), market research / trends | example data |
 | `Content/` | Marketing campaigns and drafts (bridge); results of demo part 2 (agent) | bridge / agent |
 
@@ -112,7 +112,7 @@ managed_by: ehl-bridge
 **Owner:** [[People/Anna (Team)]]
 
 ## Connected to
-- [[Projects/P1 Route Planner]] – interest from first call
+- [[Projects/F70]] – interest from first call
 - [[Topics/Newsletter]]
 
 ## Activity
@@ -210,9 +210,9 @@ skill → dress rehearsal.
 
 1. Rowboat open on the graph view (companies, products, channels).
 2. Create a contact live in Sales-Claw → the organization note appears/updates, the graph grows (~1 min).
-3. Ask the Rowboat agent: "Create a newsletter about P1 for all interested customers."
+3. Ask the Rowboat agent: "Create a newsletter about the F70 for all interested customers."
 4. The agent finds companies (semantic search / Sales chat), has Marketing draft text and image,
-   and files `Content/…` linked to P1, Newsletter and the companies; the new node appears (2–3 min).
+   and files `Content/…` linked to F70, Newsletter and the companies; the new node appears (2–3 min).
 
 ## 11. Out of scope
 
@@ -228,7 +228,7 @@ branches merge without conflicts:
 
 | # | Branch | Spec | Folder | Owns |
 |---|---|---|---|---|
-| WP1 | `feat/ehl-demo-content` | `2026-10-10-ehl-wp1-demo-content-design.md` | `demo/` | Example data, EHL skill, Rowboat setup (`mcp.json`), demo script, dress rehearsal |
+| WP1 | `feat/ehl-demo-content` | `2026-10-10-ehl-wp1-demo-content-design.md` | `demo/` | Product notes from `Dataset/`, example data (topics, team), EHL skill, Rowboat setup (`mcp.json`), demo script, dress rehearsal |
 | WP2 | `feat/ehl-bridge` | `2026-10-10-ehl-wp2-bridge-design.md` | `bridge/` | Sales/Marketing → `Organizations/`, `Content/` notes |
 | WP3 | `feat/ehl-search` | `2026-10-10-ehl-wp3-search-design.md` | `search/` | Qdrant, indexer, MCP server `ehl-search` |
 | WP4 | `feat/ehl-agent-chat` | `2026-10-10-ehl-wp4-agent-chat-design.md` | `agents-mcp/` | OpenClaw check, MCP server `ehl-agents` (chat tools) |
@@ -240,7 +240,7 @@ branches merge without conflicts:
 | Vault path | env `EHL_VAULT`, default `~/.rowboat/knowledge` |
 | Note format | §5.1 (template, full-path links, `managed_by: ehl-bridge` ownership, http images only) |
 | Folder ownership in the vault | `Organizations/` and bridge-written `Content/` notes: WP2 · `Projects/`, `Topics/`, `People/`: WP1 · agent-written `Content/` notes: the Rowboat agent (no `managed_by`) |
-| Fixed link targets | `Topics/Newsletter`, `Topics/Social Media`, `Topics/Email`, `Topics/Market Research`, `Projects/P1 …`–`P3 …` (exact names defined by WP1 first, then frozen) |
+| Fixed link targets | `Topics/Newsletter`, `Topics/Social Media`, `Topics/Email`, `Topics/Market Research`, `Projects/F70`, `Projects/G60`, `Projects/G68`, `Projects/G70` (exact names incl. roadmaps defined by WP1 first, then frozen) |
 | Qdrant | `127.0.0.1:6333`, collection `ehl_notes` |
 | MCP servers | `ehl-search` (WP3), `ehl-agents` (WP4); stdio; `mcp.json` entries collected by WP1 |
 | Python | 3.12, own `pyproject.toml` per folder, pytest, `logging` (no `print`), secrets in `.env` + `.env.example` |
