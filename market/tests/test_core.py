@@ -104,3 +104,11 @@ def test_export_html_embeds_data(tmp_path):
     explore.export_html(str(out), metrics=["a", "b", "c"], n_boot=50)
     html = out.read_text(encoding="utf-8")
     assert "/*__DATA__*/null" not in html and '"pairs"' in html
+
+
+def test_ranking_external_is_bonus_only():
+    from ehl_market import ranking
+    w = {"frequency": 0.5, "tone": 0.3, "external": 0.2}
+    assert ranking._base(1.0, 1.0, w) == 1.0
+    assert ranking._terms("The writer advised the Head-up display fails") == {
+        "head-up", "display", "fails", "head-up display", "display fails"}

@@ -9,7 +9,7 @@ import logging
 
 from mcp.server.fastmcp import FastMCP
 
-from . import analysis, bmw, explore, fetch, methods, store
+from . import analysis, bmw, explore, fetch, methods, ranking, store
 from .countries import COUNTRIES
 from .sources import NEEDS, TIER_RULES, find
 
@@ -194,6 +194,27 @@ def export_explorer(path: str | None = None, derivative: str | None = None, min_
     """Write the interactive explorer (one self-contained HTML, works offline): clickable correlation
     matrix, per-country scatter with leave-one-country-out, sensitivity slider. Default: market/out/explorer.html."""
     return explore.export_html(path, derivative=derivative, min_n=min_n)
+
+
+@mcp.tool()
+def fetch_nhtsa_themes() -> dict:
+    """Pull NHTSA complaints for the US G60 (5 Series, i5) and G70 (7 Series, i7) models, map NHTSA
+    components to BMW themes and store the share per theme (external evidence for rank_topics)."""
+    return ranking.fetch_nhtsa_themes()
+
+
+@mcp.tool()
+def rank_topics(level: str = "theme", kind: str = "pain", derivative: str | None = None,
+                country: str | None = None, engine_type: str | None = None, theme: str | None = None,
+                weights: dict | None = None, top: int = 25) -> dict:
+    """Rank themes or keywords by how often customers mention them, how often positively vs negatively,
+    plus a bonus from outside evidence on the same theme.
+
+    level: theme | keyword. kind: pain (what to fix: high share negative) | strength (what to protect).
+    weights: {"frequency": 0.5, "tone": 0.3, "external": 0.2} by default.
+    Each row shows base, external_bonus, counts, % negative / % positive and the raw external values.
+    """
+    return ranking.rank(level, kind, derivative, country, engine_type, theme, weights, top)
 
 
 def main() -> None:

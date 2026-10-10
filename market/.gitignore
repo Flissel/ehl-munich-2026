@@ -2,4 +2,6 @@
 __pycache__/
 *.egg-info/
 data/cache/
-out/
+out/*
+!out/explorer.html
+!out/rankings/

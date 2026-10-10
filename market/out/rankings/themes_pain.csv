@@ -1,0 +1,13 @@
+theme,label,score,base,external_bonus,n_comments,share_negative_pct,share_positive_pct,n_countries,frequency_norm,tone,external_norm,scope_note
+ADAS,Driver assistance & parking (experience),0.857,0.739,0.118,636,66.5,34.3,9,0.787,0.659,0.591,
+ACCESS,"Access, doors & convenience",0.818,0.813,0.005,683,84.5,16.5,8,0.799,0.835,0.026,
+HMI,Infotainment & operation (HMI),0.815,0.815,0.0,1439,69.9,32.2,13,0.893,0.685,,
+DRIVING,Driving experience & performance,0.804,0.717,0.087,3278,25.3,78.3,13,1.0,0.245,0.437,
+DIGITAL,Connectivity & digital services,0.8,0.8,0.0,584,84.2,16.3,9,0.778,0.837,,
+OUT_SAFETY,Out of scope - safety / regulatory,0.774,0.574,0.2,86,62.8,37.2,6,0.544,0.625,1.0,out of scope - route to quality/safety
+COMFORT,"Comfort, seats & climate",0.731,0.726,0.005,904,55.6,46.2,11,0.834,0.546,0.026,
+CHARGING,Range & charging (as experienced),0.725,0.725,0.0,446,70.4,30.9,11,0.743,0.694,,
+SPACE,"Space, storage & practicality",0.71,0.71,0.0,394,68.5,32.7,8,0.73,0.676,,
+INT,Interior design & quality perception,0.7,0.7,0.0,1073,45.1,56.1,10,0.852,0.446,,
+EXT,Exterior design & lighting,0.68,0.654,0.026,761,39.4,61.2,11,0.811,0.392,0.128,
+OUT_TECH,Out of scope - technical,0.638,0.638,0.0,52,92.3,7.7,2,0.476,0.907,,out of scope - route to quality/safety

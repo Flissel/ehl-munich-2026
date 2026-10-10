@@ -57,7 +57,8 @@ def _bh(p: list[float]) -> list[float]:
 def matrix(metrics: list[str] | None = None, derivative: str | None = None, min_n: int = 5,
            n_boot: int = 1000) -> dict:
     if metrics is None:
-        metrics = sorted(store.load()["metric"].dropna().unique().tolist()) + DEFAULT_BMW
+        # single-country series (NHTSA theme shares, US-only surveys) cannot be correlated across markets
+        metrics = sorted(r["metric"] for r in store.metrics_summary() if r["n_countries"] >= min_n) + DEFAULT_BMW
     data, meta, notes = {}, [], []
     obs = store.load()
     for m in metrics:

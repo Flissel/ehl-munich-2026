@@ -23,6 +23,8 @@ provenance and computes all statistics.
 | | `correlate(x, y, control?)` | Spearman ρ, p-value, bootstrap 95 % CI, the most influential country, partial ρ controlling for a third metric |
 | | `scan_correlations(y)` | All external metrics against y, ranked, with Benjamini–Hochberg q-values |
 | | `gap_analysis(demand, bmw_metric)` | Markets where external demand is high and the BMW signal is weak |
+| Rank | `fetch_nhtsa_themes()` | NHTSA complaints for the US G60/G70 models (530i, 540i, i5, i7, …), mapped to BMW themes and stored as outside evidence |
+| | `rank_topics(level, kind, ...)` | Ranks themes or keywords. score = base + outside bonus. base = 0.5 × frequency (log, source-weighted) + 0.3 × tone (share negative for `pain`, share positive for `strength`), rescaled. Outside bonus = 0.2 × NHTSA complaint share (pain only) or stated importance `importance.<THEME>`, and 0 when no outside source covers the theme. Filters: derivative, country, engine, theme |
 | Visualise | `correlation_matrix(metrics?)` | All metric pairs: ρ, Pearson r with bootstrap CI, p, q, most influential country, per-country values |
 | | `sensitivity(metric, delta_sd)` | For markets where `metric` is Δ SD higher: expected difference in every other metric (r × Δ), with 95 % interval |
 | | `export_explorer(path?)` | Writes `out/explorer.html`: a self-contained interactive page that works offline (see below) |
