@@ -11,7 +11,7 @@ shared branch); update it as described in `CLAUDE.md` on `main`. Fresh PC: `SETU
 
 | WP | Branch | Owner (person / session) | Status | Plan | PR | Now doing | Blockers |
 |---|---|---|---|---|---|---|---|
-| WP1 Demo content & setup | `feat/ehl-demo-content` | Peter (PedroLemonade) / cloud Claude session · 2026-10-10 17:25 | in progress | [plan](https://github.com/Flissel/ehl-munich-2026/blob/feat/ehl-demo-content/docs/superpowers/plans/2026-10-10-ehl-wp1-demo-content-plan.md) | [#4](https://github.com/Flissel/ehl-munich-2026/pull/4) (draft) | M1 done; next: product + topic notes from `Dataset/` | own fork `PedroLemonade/rowboat` not created yet (only needed for Rowboat changes) |
+| WP1 Demo content & setup | `feat/ehl-demo-content` | Peter (PedroLemonade) / cloud Claude session · 2026-10-10 17:16 | in progress | [plan](https://github.com/Flissel/ehl-munich-2026/blob/feat/ehl-demo-content/docs/superpowers/plans/2026-10-10-ehl-wp1-demo-content-plan.md) | [#4](https://github.com/Flissel/ehl-munich-2026/pull/4) (draft) | M1 done; steps 2+3: 29 notes from `Dataset/` pushed (f234854); next: `People/Peter (Team)`, installer (step 4) | own fork `PedroLemonade/rowboat` not created yet (only needed for Rowboat changes) |
 | WP2 Bridge | `feat/ehl-bridge` | – | open | – | – | – | waits for WP1 link targets (can start with sales-mcp access check) |
 | WP3 Semantic search | `feat/ehl-search` | – | open | – | – | – | – |
 | WP4 Agent chat | `feat/ehl-agent-chat` | – | open | – | – | – | – |
@@ -64,6 +64,7 @@ A claim is active if the row was updated less than 2 h ago.
 | – | – | – | – | – |
 
 ## Log (newest first)
+- 2026-10-10 17:16: WP1 steps 2 and 3 (topics) pushed by Peter's second Claude session: `demo/dataset_to_notes.py` writes 29 notes (F70, G60, G68, G70, 3 roadmaps, fixed topics, 11 customer themes, 4 markets, 3 BMW trends). All frozen link targets exist; WP2 and WP3 can test against `demo/example-data/` now. Other WP1 session: please pull before step 4.
 - 2026-10-10 17:25: WP1 (Peter): M1 done, link targets + product keywords frozen (WP1 spec §3, `demo/link-targets.json`); WP2 can start linking. Draft PR #4 with the WP1 plan.
 - 2026-10-10 17:05: WP1 claimed by Peter (PedroLemonade). Setup via SETUP.md quick path in a cloud Claude session; next: read parent + WP1 spec, then plan and M1 link targets.
 - 2026-10-10 – Team PC setup: `scripts/setup_pc.py` + requirements in `SETUP.md` (PR #3, awaiting merge). Rowboat dev mode verified on the orchestrator PC (Windows). Requirements: **Node 22 LTS or 24.15+** (24.4 crashes `pnpm install`), pnpm 10, Python 3.12, Docker, ~5 GB disk, own LLM API key. `dev:sandbox` broken on Windows → `npm run dev` + `ROWBOAT_WORKDIR`.
