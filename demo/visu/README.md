@@ -23,6 +23,11 @@ reload the car.
 
 ## Set up on a PC (once)
 
+1. **Download the car model** (free Sketchfab account needed):
+   https://sketchfab.com/3d-models/2021-bmw-m4-competition-d3f07b471d9f4a2c9a2acf79d88a3645#download
+   and choose **glTF** (gives `2021_bmw_m4_competitionglTF.zip`). Keep the zip outside the repo.
+2. Generate the data and install the model:
+
 ```bash
 pip install openpyxl
 python demo/visu/prepare_local.py --model <path>/2021_bmw_m4_competitionglTF.zip
@@ -31,8 +36,8 @@ python demo/visu/prepare_local.py --model <path>/2021_bmw_m4_competitionglTF.zip
 This writes two **local, gitignored** folders next to the build:
 - `dist/visu/data/feedback-<series>[-<market>].json`: scores per part for every series and market, with sample customer quotes (kept out of git like Torque's `quotes.json`).
 - `dist/visu/models/bmw-m4-competition-2021/`: the car. "2021 BMW M4 Competition" by Ricy
-  (sketchfab.com/ngon_3d), **CC-BY-NC-4.0**: credit required, no commercial use. Get the zip from
-  Sketchfab or a teammate. It stands in for the 1/5/7 Series.
+  (sketchfab.com/ngon_3d), **CC-BY-NC-4.0**: credit required, no commercial use. Download link in
+  step 1 (or get the zip from a teammate). It stands in for the 1/5/7 Series.
 
 Then install Torque as in `demo/torque/README.md`; the 3D view is at Concept 3D.
 
