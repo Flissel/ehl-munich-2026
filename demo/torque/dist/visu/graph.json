@@ -82,6 +82,15 @@
     "taillight-right"
    ]
   },
+  "Wheels and brakes": {
+   "side": "Exterior",
+   "parts": [
+    "wheel-front-left",
+    "wheel-front-right",
+    "wheel-rear-left",
+    "wheel-rear-right"
+   ]
+  },
   "Exterior details": {
    "side": "Exterior",
    "parts": [
@@ -127,15 +136,6 @@
     "interior-side-panels",
     "interior-mirror",
     "sun-visors"
-   ]
-  },
-  "Wheels and brakes": {
-   "side": "Exterior",
-   "parts": [
-    "wheel-front-left",
-    "wheel-front-right",
-    "wheel-rear-left",
-    "wheel-rear-right"
    ]
   }
  },
@@ -717,6 +717,106 @@
     "G70": "Components/Right taillight"
    }
   },
+  "wheel-front-left": {
+   "name": "Front-left wheel",
+   "side": "Exterior",
+   "area": "Wheels and brakes",
+   "feature_classes": [
+    "Wheels / tires",
+    "RSC tire",
+    "Tirefit",
+    "Tire pressure control",
+    "Braking"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-11"
+   ],
+   "topics": [
+    "Topics/Driving experience"
+   ],
+   "note": "Components/Front-left wheel",
+   "notes": {
+    "F70": "Components/Front-left wheel",
+    "G60": "Components/Front-left wheel",
+    "G70": "Components/Front-left wheel"
+   }
+  },
+  "wheel-front-right": {
+   "name": "Front-right wheel",
+   "side": "Exterior",
+   "area": "Wheels and brakes",
+   "feature_classes": [
+    "Wheels / tires",
+    "RSC tire",
+    "Tirefit",
+    "Tire pressure control",
+    "Braking"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-11"
+   ],
+   "topics": [
+    "Topics/Driving experience"
+   ],
+   "note": "Components/Front-right wheel",
+   "notes": {
+    "F70": "Components/Front-right wheel",
+    "G60": "Components/Front-right wheel",
+    "G70": "Components/Front-right wheel"
+   }
+  },
+  "wheel-rear-left": {
+   "name": "Rear-left wheel",
+   "side": "Exterior",
+   "area": "Wheels and brakes",
+   "feature_classes": [
+    "Wheels / tires",
+    "RSC tire",
+    "Tirefit",
+    "Tire pressure control",
+    "Braking"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-11"
+   ],
+   "topics": [
+    "Topics/Driving experience"
+   ],
+   "note": "Components/Rear-left wheel",
+   "notes": {
+    "F70": "Components/Rear-left wheel",
+    "G60": "Components/Rear-left wheel",
+    "G70": "Components/Rear-left wheel"
+   }
+  },
+  "wheel-rear-right": {
+   "name": "Rear-right wheel",
+   "side": "Exterior",
+   "area": "Wheels and brakes",
+   "feature_classes": [
+    "Wheels / tires",
+    "RSC tire",
+    "Tirefit",
+    "Tire pressure control",
+    "Braking"
+   ],
+   "fallback": "general exterior",
+   "drivers": [
+    "R-11"
+   ],
+   "topics": [
+    "Topics/Driving experience"
+   ],
+   "note": "Components/Rear-right wheel",
+   "notes": {
+    "F70": "Components/Rear-right wheel",
+    "G60": "Components/Rear-right wheel",
+    "G70": "Components/Rear-right wheel"
+   }
+  },
   "exhaust": {
    "name": "Exhaust system",
    "side": "Exterior",
@@ -1191,113 +1291,13 @@
     "G60": "Components/Sun visors",
     "G70": "Components/Sun visors"
    }
-  },
-  "wheel-front-left": {
-   "name": "Front-left wheel",
-   "side": "Exterior",
-   "area": "Wheels and brakes",
-   "feature_classes": [
-    "Wheels / tires",
-    "RSC tire",
-    "Tirefit",
-    "Tire pressure control",
-    "Braking"
-   ],
-   "fallback": "general exterior",
-   "drivers": [
-    "R-11"
-   ],
-   "topics": [
-    "Topics/Driving experience"
-   ],
-   "note": "Components/Front-left wheel",
-   "notes": {
-    "F70": "Components/Front-left wheel",
-    "G60": "Components/Front-left wheel",
-    "G70": "Components/Front-left wheel"
-   }
-  },
-  "wheel-front-right": {
-   "name": "Front-right wheel",
-   "side": "Exterior",
-   "area": "Wheels and brakes",
-   "feature_classes": [
-    "Wheels / tires",
-    "RSC tire",
-    "Tirefit",
-    "Tire pressure control",
-    "Braking"
-   ],
-   "fallback": "general exterior",
-   "drivers": [
-    "R-11"
-   ],
-   "topics": [
-    "Topics/Driving experience"
-   ],
-   "note": "Components/Front-right wheel",
-   "notes": {
-    "F70": "Components/Front-right wheel",
-    "G60": "Components/Front-right wheel",
-    "G70": "Components/Front-right wheel"
-   }
-  },
-  "wheel-rear-left": {
-   "name": "Rear-left wheel",
-   "side": "Exterior",
-   "area": "Wheels and brakes",
-   "feature_classes": [
-    "Wheels / tires",
-    "RSC tire",
-    "Tirefit",
-    "Tire pressure control",
-    "Braking"
-   ],
-   "fallback": "general exterior",
-   "drivers": [
-    "R-11"
-   ],
-   "topics": [
-    "Topics/Driving experience"
-   ],
-   "note": "Components/Rear-left wheel",
-   "notes": {
-    "F70": "Components/Rear-left wheel",
-    "G60": "Components/Rear-left wheel",
-    "G70": "Components/Rear-left wheel"
-   }
-  },
-  "wheel-rear-right": {
-   "name": "Rear-right wheel",
-   "side": "Exterior",
-   "area": "Wheels and brakes",
-   "feature_classes": [
-    "Wheels / tires",
-    "RSC tire",
-    "Tirefit",
-    "Tire pressure control",
-    "Braking"
-   ],
-   "fallback": "general exterior",
-   "drivers": [
-    "R-11"
-   ],
-   "topics": [
-    "Topics/Driving experience"
-   ],
-   "note": "Components/Rear-right wheel",
-   "notes": {
-    "F70": "Components/Rear-right wheel",
-    "G60": "Components/Rear-right wheel",
-    "G70": "Components/Rear-right wheel"
-   }
   }
  },
  "drivers": {
   "R-01": {
-   "title": "Fast charging that fits a coffee stop",
+   "title": "Fast charging for hassle-free long trips",
    "short": "Fast charging",
-   "note": "Purchase Drivers/Fast charging that fits a coffee stop",
+   "note": "Requirements/R-01 Fast charging",
    "topics": [
     "Topics/Range and charging",
     "Topics/Trend Electrification"
@@ -1307,9 +1307,9 @@
    ]
   },
   "R-02": {
-   "title": "Highway range without range anxiety",
+   "title": "Confident highway range for long trips",
    "short": "Real world range",
-   "note": "Purchase Drivers/Highway range without range anxiety",
+   "note": "Requirements/R-02 Real world range",
    "topics": [
     "Topics/Range and charging",
     "Topics/Trend Electrification"
@@ -1319,9 +1319,9 @@
    ]
   },
   "R-03": {
-   "title": "Rear seat as a first class lounge",
+   "title": "Spacious and Comfortable Rear Seat Experience",
    "short": "Rear seat lounge",
-   "note": "Purchase Drivers/Rear seat as a first class lounge",
+   "note": "Requirements/R-03 Rear seat lounge",
    "topics": [
     "Topics/Comfort and seats",
     "Topics/Space and storage"
@@ -1331,9 +1331,9 @@
    ]
   },
   "R-04": {
-   "title": "Find any function in two taps",
+   "title": "Effortless, Intuitive Control of Car Functions",
    "short": "Simple digital UX",
-   "note": "Purchase Drivers/Find any function in two taps",
+   "note": "Requirements/R-04 Simple digital UX",
    "topics": [
     "Topics/Infotainment and operation",
     "Topics/Infotainment Usability"
@@ -1343,9 +1343,9 @@
    ]
   },
   "R-05": {
-   "title": "Physical controls for blind operation",
+   "title": "Intuitive physical controls for distraction-free driving",
    "short": "Physical controls",
-   "note": "Purchase Drivers/Physical controls for blind operation",
+   "note": "Requirements/R-05 Physical controls",
    "topics": [
     "Topics/Infotainment and operation",
     "Topics/Climate Control Usability"
@@ -1356,9 +1356,9 @@
    ]
   },
   "R-06": {
-   "title": "Software that gets better and never freezes",
+   "title": "Seamless and Reliable Digital Experience",
    "short": "Software reliability",
-   "note": "Purchase Drivers/Software that gets better and never freezes",
+   "note": "Requirements/R-06 Software reliability",
    "topics": [
     "Topics/Connectivity and digital services",
     "Topics/Trend Software and connected car"
@@ -1369,9 +1369,9 @@
    ]
   },
   "R-07": {
-   "title": "Hands off highway assist the driver trusts",
+   "title": "Hands-off Highway Driving for Less Stress",
    "short": "Highway assistant",
-   "note": "Purchase Drivers/Hands off highway assist the driver trusts",
+   "note": "Requirements/R-07 Highway assistant",
    "topics": [
     "Topics/Assistance and parking"
    ],
@@ -1381,9 +1381,9 @@
    ]
   },
   "R-08": {
-   "title": "An assistant that knows me",
+   "title": "Voice control that just works",
    "short": "Personal assistant",
-   "note": "Purchase Drivers/An assistant that knows me",
+   "note": "Requirements/R-08 Personal assistant",
    "topics": [
     "Topics/Connectivity and digital services",
     "Topics/Trend Software and connected car"
@@ -1394,9 +1394,9 @@
    ]
   },
   "R-09": {
-   "title": "Interior that feels premium to the touch",
+   "title": "Premium materials and quiet cabin feel",
    "short": "Interior quality",
-   "note": "Purchase Drivers/Interior that feels premium to the touch",
+   "note": "Requirements/R-09 Interior quality",
    "topics": [
     "Topics/Interior design and quality"
    ],
@@ -1408,9 +1408,9 @@
    ]
   },
   "R-10": {
-   "title": "Design that stands out without dividing",
+   "title": "Exterior design that turns heads",
    "short": "Design identity",
-   "note": "Purchase Drivers/Design that stands out without dividing",
+   "note": "Requirements/R-10 Design identity",
    "topics": [
     "Topics/Exterior design",
     "Topics/Trend Neue Klasse"
@@ -1424,9 +1424,9 @@
    ]
   },
   "R-11": {
-   "title": "Agile handling, also as an EV",
+   "title": "Enjoyable, Confident Handling and Ride",
    "short": "Driving dynamics",
-   "note": "Purchase Drivers/Agile handling, also as an EV",
+   "note": "Requirements/R-11 Driving dynamics",
    "topics": [
     "Topics/Driving experience"
    ],
@@ -1438,9 +1438,9 @@
    ]
   },
   "R-12": {
-   "title": "Clear control over my data",
+   "title": "Clear and Controllable Data Privacy Settings",
    "short": "Data privacy",
-   "note": "Purchase Drivers/Clear control over my data",
+   "note": "Requirements/R-12 Data privacy",
    "topics": [
     "Topics/Connectivity and digital services"
    ],
@@ -1449,9 +1449,9 @@
    ]
   },
   "R-13": {
-   "title": "Access that works on the first try",
+   "title": "Effortless, Reliable Hands-Free Tailgate Access",
    "short": "Hands free access",
-   "note": "Purchase Drivers/Access that works on the first try",
+   "note": "Requirements/R-13 Hands free access",
    "topics": [
     "Topics/Access and convenience"
    ],
@@ -1461,9 +1461,9 @@
    ]
   },
   "R-14": {
-   "title": "Seats that stay comfortable in heat and on long drives",
+   "title": "Seats that stay comfortable on long drives",
    "short": "Seat comfort",
-   "note": "Purchase Drivers/Seats that stay comfortable in heat and on long drives",
+   "note": "Requirements/R-14 Seat comfort",
    "topics": [
     "Topics/Comfort and seats"
    ],
@@ -1473,9 +1473,9 @@
    ]
   },
   "R-15": {
-   "title": "Phone and car work as one",
+   "title": "Effortless smartphone pairing and daily use",
    "short": "Phone integration",
-   "note": "Purchase Drivers/Phone and car work as one",
+   "note": "Requirements/R-15 Phone integration",
    "topics": [
     "Topics/Connectivity and digital services",
     "Topics/Phone Charging"
@@ -1485,9 +1485,9 @@
    ]
   },
   "R-16": {
-   "title": "Space that works for daily life",
+   "title": "Roomy cabin and practical storage",
    "short": "Space and storage",
-   "note": "Purchase Drivers/Space that works for daily life",
+   "note": "Requirements/R-16 Space and storage",
    "topics": [
     "Topics/Space and storage"
    ],
@@ -1496,9 +1496,9 @@
    ]
   },
   "R-17": {
-   "title": "Start-stop that stays off when I say so",
+   "title": "Manual Control Over Start-Stop System",
    "short": "Smart start-stop",
-   "note": "Purchase Drivers/Start-stop that stays off when I say so",
+   "note": "Requirements/R-17 Smart start-stop",
    "topics": [
     "Topics/Driving experience"
    ],
@@ -1507,9 +1507,9 @@
    ]
   },
   "R-18": {
-   "title": "Sound that matches the price",
+   "title": "Immersive sound for every journey",
    "short": "Premium audio",
-   "note": "Purchase Drivers/Sound that matches the price",
+   "note": "Requirements/R-18 Premium audio",
    "topics": [
     "Topics/Infotainment and operation"
    ],
@@ -1519,9 +1519,9 @@
    ]
   },
   "R-19": {
-   "title": "Parking without stress",
+   "title": "Stress-free parking with camera support",
    "short": "Parking and cameras",
-   "note": "Purchase Drivers/Parking without stress",
+   "note": "Requirements/R-19 Parking and cameras",
    "topics": [
     "Topics/Assistance and parking"
    ],
@@ -1531,9 +1531,9 @@
    ]
   },
   "R-20": {
-   "title": "Climate that just works",
+   "title": "Intuitive, Effective Multi-Zone Climate Control",
    "short": "Climate comfort",
-   "note": "Purchase Drivers/Climate that just works",
+   "note": "Requirements/R-20 Climate comfort",
    "topics": [
     "Topics/Comfort and seats",
     "Topics/Climate Control Usability"
@@ -1543,9 +1543,9 @@
    ]
   },
   "R-21": {
-   "title": "Value that justifies the premium",
+   "title": "Standard features that match expectations",
    "short": "Value for money",
-   "note": "Purchase Drivers/Value that justifies the premium",
+   "note": "Requirements/R-21 Value for money",
    "topics": [
     "Topics/Value and overall impression"
    ],

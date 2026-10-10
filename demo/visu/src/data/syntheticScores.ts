@@ -5,7 +5,7 @@
  * via getScores().
  */
 export const SYNTHETIC_SCORES: Record<string, Record<string, number>> = {
-  "bmw-m4-competition-2021": {
+  default: {
     "hood": 76,
     "roof": 92,
     "trunk-lid": 68,
@@ -52,5 +52,5 @@ export const SYNTHETIC_SCORES: Record<string, Record<string, number>> = {
 };
 
 export async function getScores(modelId: string): Promise<Record<string, number>> {
-  return SYNTHETIC_SCORES[modelId] ?? {};
+  return SYNTHETIC_SCORES[modelId] ?? SYNTHETIC_SCORES.default; // component ids are shared by all cars
 }

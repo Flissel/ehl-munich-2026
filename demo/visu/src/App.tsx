@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CarViewer, LoadingOverlay, type CameraView, type ViewMode } from "./viewer/CarViewer";
-import { MODELS, DEFAULT_MODEL_ID } from "./models/registry";
+import { MODELS, DEFAULT_MODEL_ID, SERIES_MODEL } from "./models/registry";
 import type { ScoredComponent } from "./models/types";
 import { getScores } from "./data/syntheticScores";
 import { clampScore, LEGEND_GRADIENT } from "./lib/heatmap";
@@ -29,6 +29,8 @@ const toSource = (s: string | null | undefined): Source =>
 // Embedded in Torque's Concept 3D (?embed=1): Torque owns model, market, the purchase driver list and the
 // info card. Torque -> app: {type: "visu:context", series, market, title, focus, focusSignal}.
 // App -> Torque: {type: "visu:ready"} and {type: "visu:select", ...} whenever a part is selected.
+// Cars imported into the Unreal project (visu_pro/unreal); the X1/X5/X7 are not yet.
+const UNREAL_MODELS: string[] = [];
 const PARAMS = new URLSearchParams(location.search);
 const EMBED = PARAMS.has("embed");
 /** Scores Torque computes itself where no comments exist (China: its customer study per purchase driver). */
@@ -41,10 +43,11 @@ type Vault = { generated?: string; parts: Record<string, { note: string; heat: R
 const post = (msg: unknown) => { if (EMBED) window.parent.postMessage(msg, location.origin); };
 
 export default function App() {
-  const model = MODELS[DEFAULT_MODEL_ID];
   const [ctx, setCtx] = useState<Context>({ series: PARAMS.get("series"), market: PARAMS.get("market") ?? "",
     title: "", focus: null, focusSignal: 0 });
   const [source, setSource] = useState<Source>(() => toSource(PARAMS.get("series")));
+  // The car of the selected model family (X1 / X5 / X7); switching series loads that car.
+  const model = MODELS[SERIES_MODEL[source === "synthetic" ? "ALL" : source] ?? DEFAULT_MODEL_ID];
   const [feedback, setFeedback] = useState<FeedbackScores | null>(null);
   const [fallback, setFallback] = useState<string | null>(null);
   const [synthetic, setSynthetic] = useState<Record<string, number>>({});
@@ -90,6 +93,7 @@ export default function App() {
   }, [ctx.focusSignal]);
 
   useEffect(() => { getScores(model.id).then(setSynthetic); }, [model.id]);
+  useEffect(() => { setLoad({ kind: "loading" }); setSelectedId(null); }, [model.id]);
   useEffect(() => {
     if (source === "synthetic") { setScoreError(null); setFallback(null); return; }
     let cancelled = false, timer: number | undefined;
@@ -183,7 +187,7 @@ export default function App() {
   const report = load.kind === "ready" ? load.report : null;
   const viewer = (
     <div className="viewer">
-      <CarViewer model={model} scores={scores} mode={mode} design={design} selectedId={selectedId}
+      <CarViewer key={model.id} model={model} scores={scores} mode={mode} design={design} selectedId={selectedId}
         onSelect={setSelectedId} onLoaded={onLoaded} onError={onError} resetSignal={resetSignal} view={view}
         focusId={ctx.focus} focusSignal={ctx.focusSignal} />
       {load.kind === "loading" && <LoadingOverlay />}
@@ -193,7 +197,7 @@ export default function App() {
           <b>{ctx.title || model.displayName}</b>
           <span>{dataLabel}{fromVault}</span>
           {note && <span className="warn">{note}</span>}
-          <span className="muted">3D car: placeholder model</span>
+          <span className="muted">3D car: {model.displayName} (stand-in)</span>
         </div>
       )}
       <div className="viewer-toolbar">
@@ -224,7 +228,7 @@ export default function App() {
           Design view{isEmptyDesign(design) ? " · original car" : " · modified (Level 1/2 changes applied)"}
         </div>
       )}
-      {EMBED && <div className="embed-unreal"><UnrealButton modelId={model.id} design={unrealDesign} /></div>}
+      {EMBED && <div className="embed-unreal"><UnrealButton modelId={model.id} design={unrealDesign} unavailable={UNREAL_MODELS.includes(model.id) ? undefined : "Not imported in Unreal yet"} /></div>}
       {EMBED && panel && (
         <div className="embed-panel">
           <button className="ghost close" onClick={() => setPanel(false)} aria-label="Close">✕</button>
@@ -247,7 +251,7 @@ export default function App() {
           <span className="dot" />
           {load.kind === "loading" ? "Loading model…" : load.kind === "ready" ? "Model loaded" : "Model failed to load"}
         </div>
-        <UnrealButton modelId={model.id} design={unrealDesign} />
+        <UnrealButton modelId={model.id} design={unrealDesign} unavailable={UNREAL_MODELS.includes(model.id) ? undefined : "Not imported in Unreal yet"} />
       </header>
 
       <main className="layout">
@@ -274,7 +278,7 @@ export default function App() {
             {usingFeedback && (
               <p className="muted small">
                 {feedback!.rows_used.toLocaleString()} classified comments from the EHL dataset. The 1/5/7 Series
-                feedback is mapped onto this M4 model as a stand-in. Score = rank of positive share among parts.
+                feedback is shown on {model.displayName} as the stand-in for this model family. Score = rank of positive share among parts.
               </p>
             )}
           </div>

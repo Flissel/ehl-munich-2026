@@ -12,7 +12,8 @@ const LABEL: Record<UnrealStatus["phase"], string> = {
 };
 
 /** Launches the separate Unreal Engine viewer; never blocks the web heat map. */
-export function UnrealButton({ modelId, design }: { modelId: string; design: UnrealDesign }) {
+/** `unavailable`: why this car cannot be shown in Unreal (only imported cars can). */
+export function UnrealButton({ modelId, design, unavailable }: { modelId: string; design: UnrealDesign; unavailable?: string }) {
   const [status, setStatus] = useState<UnrealStatus | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,6 +42,12 @@ export function UnrealButton({ modelId, design }: { modelId: string; design: Unr
   };
 
   const phase = status?.phase;
+  if (unavailable) return (
+    <div className="unreal">
+      <button className="unreal-btn" disabled title={unavailable}>Visualize in Unreal Engine</button>
+      <span className="unreal-status" title={unavailable}>{unavailable}</span>
+    </div>
+  );
   return (
     <div className="unreal">
       <button className="unreal-btn" onClick={launch} disabled={busy || phase === "not_configured"}

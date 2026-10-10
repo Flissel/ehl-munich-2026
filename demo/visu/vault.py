@@ -35,7 +35,7 @@ REPO = HERE.parents[1]
 DIST = HERE.parent / "torque" / "dist"
 GRAPH = DIST / "visu" / "graph.json"
 OUT_DATA = DIST / "visu" / "data"
-MODEL_TS = HERE / "src" / "models" / "bmw-m4-competition-2021.ts"
+MODEL_TS = HERE / "src" / "models" / "template.ts"  # shared component catalogue
 
 # Purchase driver -> parts of the car (first = where the camera flies). Same reasoning as Torque's drivers.
 DRIVER_PARTS = {
@@ -66,15 +66,14 @@ def safe_name(title: str) -> str:
 
 
 def torque_drivers() -> dict[str, dict]:
-    """Driver ids and titles from Torque's REQS (the note names Torque's sync.py writes)."""
-    html = (DIST / "index.html").read_text(encoding="utf-8")
+    """Driver ids, titles and short names from Torque's texts (dist/texts.seed.json, the agent output; REQS no
+    longer lives in the page code). Note names follow the Requirements notes (generate_texts.py)."""
     sys.path.insert(0, str(HERE.parent / "torque"))
-    import sync  # Torque's sync: same note names and theme topics
-    out = {}
-    for rid, title, short in re.findall(r'\{id:"(R-\d+)", title:"([^"]+)", short:"([^"]+)"', html):
-        out[rid] = {"title": title, "short": short, "note": f"{sync.FOLDER}/{safe_name(title)}",
-                    "topics": [f"Topics/{t}" for t in sync.TOPICS.get(rid, [])], "parts": DRIVER_PARTS.get(rid, [])}
-    return out
+    import sync  # Torque's sync: theme topics per driver
+    reqs = json.loads((DIST / "texts.seed.json").read_text(encoding="utf-8"))["requirements"]
+    return {rid: {"title": r["title"], "short": r["short"], "note": f"Requirements/{rid} {safe_name(r['short'])}",
+                  "topics": [f"Topics/{t}" for t in sync.TOPICS.get(rid, [])], "parts": DRIVER_PARTS.get(rid, [])}
+            for rid, r in reqs.items()}
 
 
 def build_graph() -> dict:

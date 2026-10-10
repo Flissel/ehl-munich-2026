@@ -23,21 +23,30 @@ reload the car.
 
 ## Set up on a PC (once)
 
-1. **Download the car model** (free Sketchfab account needed):
-   https://sketchfab.com/3d-models/2021-bmw-m4-competition-d3f07b471d9f4a2c9a2acf79d88a3645#download
-   and choose **glTF** (gives `2021_bmw_m4_competitionglTF.zip`). Keep the zip outside the repo.
-2. Generate the data and install the model:
+1. **Download the three cars** (free Sketchfab account, format **glTF**) into one folder, e.g. `car models/`:
+   - 1 Series (F70) → [2020 BMW X1 xDrive18d](https://sketchfab.com/3d-models/2020-bmw-x1-xdrive-18d-4ca3a2247af44e51919074565ed93486#download) → `2020_bmw_x1_xdrive_18d.zip`
+   - 5 Series (G60) → [2019 BMW X5 xDrive30d](https://sketchfab.com/3d-models/2019-bmw-x5-xdrive30d-850fb32f984c4630969840fc61f44902#download) → `2019_bmw_x5_xdrive30d.zip`
+   - 7 Series (G70) → [2019 BMW X7 xDrive40i](https://sketchfab.com/3d-models/2019-bmw-x7-xdrive40i-a4b1edf1ec614f06b5d4db7208fe9650#download) → `2019_bmw_x7_xdrive40i.zip`
+
+   All by Ddiaz Design (sketchfab.com/ddiaz-design), **CC-BY-NC-SA-4.0**: credit the author, no commercial use,
+   share alike. Keep the zips outside the repo.
+2. Generate the data and install the cars:
 
 ```bash
 pip install openpyxl
-python demo/visu/prepare_local.py --model <path>/2021_bmw_m4_competitionglTF.zip
+python demo/visu/prepare_local.py --cars "<path>/car models"
 ```
 
 This writes two **local, gitignored** folders next to the build:
 - `dist/visu/data/feedback-<series>[-<market>].json`: scores per part for every series and market, with sample customer quotes (kept out of git like Torque's `quotes.json`).
-- `dist/visu/models/bmw-m4-competition-2021/`: the car. "2021 BMW M4 Competition" by Ricy
-  (sketchfab.com/ngon_3d), **CC-BY-NC-4.0**: credit required, no commercial use. Download link in
-  step 1 (or get the zip from a teammate). It stands in for the 1/5/7 Series.
+- `dist/visu/models/bmw-x1-2020/`, `bmw-x5-2019/`, `bmw-x7-2019/`: the cars. The selected model family shows its
+  car (Torque's "Successor of", or the data selector in the stand-alone page).
+
+**How the cars are mapped** (`src/models/template.ts`, `cars.ts`): the 56 components (same ids everywhere: heat
+map, Torque drivers, Rowboat `Components/` notes) are built from each car's material roles (paint, trim, glass,
+lights, tyres, rims, seats, dashboard, ...) plus regions in the normalized car frame; spatial parts are
+approximate (≈ in the list). The front splitter (all three) and the rear diffuser (X7) do not exist on these SUVs.
+The Unreal viewer only has the M4 imported, so its button is disabled for these cars.
 
 Then install Torque as in `demo/torque/README.md`; the 3D view is at Concept 3D.
 
