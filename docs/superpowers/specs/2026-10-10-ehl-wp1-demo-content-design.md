@@ -28,17 +28,34 @@ the demo flow (parent spec §10) has run twice end to end.
 
 ## 3. First task: freeze link targets (blocks WP2)
 
-Publish the exact note names WP2 links to, as a table in this spec, then commit and tell the team:
+Publish the exact note names WP2 links to, as a table in this spec, then commit and tell the team.
 
-| Link target | Example |
-|---|---|
-| Products | `Projects/F70`, `Projects/G60`, `Projects/G68`, `Projects/G70` (confirm or adjust) |
-| Roadmaps | e.g. `Projects/F70 Roadmap` – only if `Dataset/` supports it |
-| Channels | `Topics/Newsletter`, `Topics/Social Media`, `Topics/Email` |
-| Research | `Topics/Market Research` |
-| Team | `People/<Name> (Team)` |
+**Frozen 2026-10-10 by WP1 (Peter).** Machine-readable copy: `demo/link-targets.json`.
+Links are full vault paths without `.md`, e.g. `[[Projects/G60]]`.
 
-Also publish the **product keyword list** per product (used by WP2 to link companies to products).
+| Link target | Exact note names | Basis |
+|---|---|---|
+| Products | `Projects/F70`, `Projects/G60`, `Projects/G68`, `Projects/G70` | confirmed: the four derivatives in `Dataset/` |
+| Roadmaps | `Projects/F70 Roadmap`, `Projects/G60 Roadmap`, `Projects/G70 Roadmap` | `sales_volumes.xlsx` has volumes 2024, 2025 and a 2030 plan per region. G60 and G68 share one sheet, so `Projects/G60 Roadmap` covers both and links both products; there is no separate G68 roadmap |
+| Channels | `Topics/Newsletter`, `Topics/Social Media`, `Topics/Email` | confirmed |
+| Research | `Topics/Market Research` | confirmed |
+| Team | `People/<Display name> (Team)`, so far `People/Peter (Team)` | pattern frozen; further names only after the person agrees (spec D8), announced on the board |
+
+**Product keywords** (WP2 links a company to a product when one of these appears; case-insensitive,
+whole words). Generic words like "BMW", "Limousine" or a bare "Series" link nothing.
+
+| Product | Model | Keywords |
+|---|---|---|
+| `Projects/F70` | BMW 1 Series | `F70`, `1 Series`, `1er`, `BMW 1`, `116`, `118d`, `120`, `120d`, `123 xDrive`, `M135`, `M135 xDrive` |
+| `Projects/G60` | BMW 5 Series (sedan) | `G60`, `5 Series`, `5er`, `BMW 5`, `520i`, `520d`, `520d xDrive`, `530e`, `530e xDrive`, `540d xDrive`, `550e xDrive`, `i5`, `i5 eDrive40`, `i5 xDrive40`, `i5 M60` |
+| `Projects/G68` | BMW 5 Series long wheelbase (China) | `G68`, `5 Series G68`, `5 Series Long Wheelbase`, `5 Series LWB` |
+| `Projects/G70` | BMW 7 Series | `G70`, `7 Series`, `7er`, `BMW 7`, `740 xDrive`, `i7`, `i7 eDrive50`, `i7 xDrive60`, `i7 M70`, `i7 M70 xDrive` |
+
+Rules for overlaps: the bare numbers (`116`, `120`) only count together with "BMW" or a series word
+in the same note. `5 Series`/`5er`/`i5` go to G60; G68 only on its own keywords or when the company is
+in China and names the 5 Series. Model names come from the option lists (German price lists, July
+2026), the customer studies and the feedback files; the G68 long-wheelbase keywords are general
+knowledge, not from `Dataset/`.
 
 ## 4. EHL skill (agent instructions)
 
