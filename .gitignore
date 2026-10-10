@@ -1,0 +1,8 @@
+# Nur zum Lesen geklonte Fremd-Repos (eigene Git-Historie)
+/sales-claw/
+/vibemind-os/
+
+# Geheimnisse
+.env
+*.env
+!*.env.example
