@@ -75,6 +75,32 @@ python demo/visu/vault.py sync --watch          # keep running: Components notes
 - Notes are only created when missing; `--refresh` rewrites notes that still have `managed_by: ehl-visu`. The
   workbook is regenerated on every run. Comment texts never go into the vault (spec D8).
 
+## Agent, RAG and data (2026-10-10)
+
+Torque's page holds cockpit logic and UI wording only; content comes from data files and Rowboat:
+
+| What | Source | Edit in |
+|---|---|---|
+| Dataset aggregates (`BMW`) | `dist/bmw.json`, checked against `Dataset/` by `check_bmw.py` (0 mismatches) | regenerate |
+| Driver texts (title, motive, target, acceptance, assumptions, evidence, conflict, successor feature) | agent: `generate_texts.py` (gpt-4.1, `research/AGENT.md` rules, RAG + findings + `bmw.json`; cited comment IDs checked against the Dataset) | Rowboat `Requirements/` |
+| Values without a Dataset source (competitors, feature prices, segments, weights, dimensions, feasibility, external research) | seed `dist/assumptions.seed.json` | Rowboat `Assumptions/` (JSON block per note) |
+| Nordi answers | Rowboat model + RAG passages (`src/rag_backend`, `/search` on :8100), cited as [S1] … | — |
+
+```bash
+# once per PC (after Docker is running)
+docker compose -f docker-compose.qdrant.yml up -d
+python -m venv search/.venv && search/.venv/Scripts/python -m pip install -r requirements.txt   # OPENAI_API_KEY in search/.env
+search/.venv/Scripts/python scripts/ingest_qdrant.py --chunks-path outputs/chunks/chunks.jsonl
+search/.venv/Scripts/python -m uvicorn app:app --port 8100                                       # keep running (RAG)
+python demo/visu/assumptions.py notes                                                             # Assumptions/ notes
+search/.venv/Scripts/python demo/visu/generate_texts.py                                           # Requirements/ notes (agent)
+python demo/visu/vault.py sync --watch                                                            # keep running
+```
+
+Market MCP (`market/`, from main): `ehl-market` in `~/.rowboat/config/mcp.json` gives Rowboat's agent the
+correlation tools (see `market/README.md`). UI wording (view names, method definitions, the tour) stays in
+the page.
+
 ## How it works
 
 - **Heat map:** score = rank of the weighted positive share of comments per part (0 = most criticised,
