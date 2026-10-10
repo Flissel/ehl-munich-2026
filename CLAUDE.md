@@ -106,8 +106,11 @@ Only `WORKBOARD.md` is committed on `board`. Never `--force`.
   orchestrator decides and updates the parent spec.
 - Python 3.12, own `pyproject.toml` per folder, pytest, `logging` (no `print`), secrets only in
   `.env` (gitignored) with a `.env.example`. Scripts must run on **Windows and macOS**.
-- Privacy: no customer individuals, emails or phone numbers in the vault, Qdrant or git; private
-  leads are skipped (spec D8). The repo is **public**.
+- Data (orchestrator decision 2026-10-11): `Dataset/` is **dummy data**. It and everything derived
+  from it (comments incl. names, `outputs/` chunks, notes) may be committed. OpenAI embeddings are
+  allowed (also committed under `outputs/`). **Real** data stays out of git (public repo): real
+  Sales-Claw contacts/companies, team members' private data, Rowboat vaults (`~/.rowboat*`); private
+  leads are skipped (spec D8).
 - Never send, approve or schedule anything in Sales-Claw or Marketing from our code (spec D7).
 - Machine-wide changes on the orchestrator's machines (mini PC `vibemind-offload-1`, OpenClaw config,
   Docker stacks, secrets): ask the orchestrator first.
