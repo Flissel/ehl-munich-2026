@@ -27,8 +27,11 @@ branch). **§12 lists the shared contracts – do not change them on your own.**
 | `Flissel/ehl-munich-2026` | `main` | protected: PR + orchestrator review only |
 | | `feat/ehl-*` (one per WP) | your work; push freely; PR into `main` |
 | | `board` | **WORKBOARD.md lives here**; every session pushes board updates directly |
-| `Flissel/rowboat` (fork) | `ehl` | protected; our Rowboat base, pinned to upstream `72e9d8c` |
-| | `ehl/<wp>-<topic>` | your Rowboat changes; PR into `ehl` |
+| `Flissel/rowboat` (team fork of `rowboatlabs/rowboat`) | `ehl` | protected; our Rowboat base, pinned to upstream `72e9d8c`. Nobody but the orchestrator pushes here |
+| `<your-login>/rowboat` (**your own fork of `Flissel/rowboat`**) | `ehl/<wp>-<topic>` | your Rowboat changes; PR from your fork into `Flissel/rowboat:ehl` |
+
+**Rowboat remotes in your clone:** `origin` = your fork (you push here), `upstream` = `Flissel/rowboat`
+(you only fetch from here). Never add `rowboatlabs/rowboat` as a push target.
 
 ## Work packages
 
@@ -40,7 +43,8 @@ branch). **§12 lists the shared contracts – do not change them on your own.**
 | WP4 Agent chat tools | `feat/ehl-agent-chat` | `agents-mcp/` | `docs/superpowers/specs/2026-10-10-ehl-wp4-agent-chat-design.md` |
 
 Your WP is the one whose branch you are on. If you are on `main` or unsure, ask the user which WP.
-Any WP may change Rowboat itself if its package needs it – in the fork, on `ehl/<wp>-<topic>`.
+Any WP may change Rowboat itself if its package needs it – in **your own fork**, on
+`ehl/<wp>-<topic>` branched from `upstream/ehl`, then a PR into `Flissel/rowboat:ehl`.
 
 ## Your PC vs. the demo PC (spec D11)
 
@@ -85,8 +89,11 @@ Only `WORKBOARD.md` is committed on `board`. Never `--force`.
 
 ## Pull requests
 
-- Open a PR from your WP branch into `main` (and from `ehl/<wp>-<topic>` into `ehl` in the fork):
+- Open a PR from your WP branch into `main`:
   `gh pr create --base main --draft --title "WPn: <what>" --body "<summary, tests run, open points>"`.
+- Rowboat changes: keep your branch current (`git fetch upstream && git rebase upstream/ehl`), push to
+  your fork (`git push -u origin ehl/<wp>-<topic>`), then
+  `gh pr create --repo Flissel/rowboat --base ehl --head <your-login>:ehl/<wp>-<topic> --draft --title "WPn: <what>"`.
 - Mark it ready (`gh pr ready`) when tests pass; put the PR link in your board row.
 - Keep PRs small and per WP; the orchestrator reviews and merges. Address review comments on your
   branch; do not merge `main` into another WP's branch.
