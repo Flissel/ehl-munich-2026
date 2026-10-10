@@ -62,7 +62,7 @@ A claim is active if the row was updated less than 2 h ago.
 
 | # | Change | Requested by | Agreed by | State |
 |---|---|---|---|---|
-| C1 | New vault folders `Vehicle Parts/` and `BMW/` (Dataset graph: brand -> model -> Country, ID, Engine, VFC 1-3, Source, Sales, Feedback; managed_by: ehl-visu): hub, sides, areas and 56 car-part notes linked to Purchase Drivers, Topics, Projects; data tables editable in Rowboat, read by Torque Concept 3D (PR #7) | yunes-mahan | – | proposed |
+| C1 | New vault tree `Brands/<Brand>/Models/<model>/` (Components, VFC, ID, Country, Engine, Source, Feedback, Sales, Studies, Options; managed_by: ehl-visu) replacing Projects/, Topics/, Purchase Drivers/ on the team PC of yunes-mahan; WP1 + Torque sync still write the old folders: hub, sides, areas and 56 car-part notes linked to Purchase Drivers, Topics, Projects; data tables editable in Rowboat, read by Torque Concept 3D (PR #7) | yunes-mahan | – | proposed |
 
 ## Log (newest first)
 - 2026-10-10 21:40: WP1 (Peter): Torque on `feat/ehl-demo-content` (07f5e20, with Yunes' a2cb125): Essentials leaner (top 10 plus the most criticised car parts from `Vehicle Parts/`), Analyst clearly marked (grey background, blue switch and badge). Each purchase driver shows its themes and car parts from the vault; `sync.py` now reads `BMW/` and `Vehicle Parts/` too. Pull, then reload Torque in Rowboat.
