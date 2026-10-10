@@ -24,6 +24,14 @@ branch). **§12 of that spec lists the shared contracts – do not change them o
 
 Your WP is the one whose branch you are on. If you are on `main` or unsure, ask the user which WP.
 
+## Your PC vs. the demo PC (spec D11)
+
+Every team member runs Rowboat Desktop on their own PC to test in their own graph: repo notes via
+`demo/install.ps1`, fake companies via `bridge --fake`, local Qdrant + `ehl-search`. Until WP1/WP2
+deliver these, use a test vault (`EHL_VAULT` pointing to a temp folder). The Sales/Marketing agents
+(`ehl-agents`) and real company data exist **only on the demo PC** (`install.ps1 -Demo`). Never commit
+real company notes or a real vault to git.
+
 ## Session start (do this first, every time)
 
 1. `git fetch origin` and read the live board: `git show origin/main:WORKBOARD.md`.
