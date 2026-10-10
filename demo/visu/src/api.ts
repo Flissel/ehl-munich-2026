@@ -15,6 +15,7 @@ export type FeedbackDetail = {
   positive_share: number;
   basis: "specific" | "general exterior";
   n: number;
+  comments?: number;
   counts: Record<string, number>;
   classes: string[];
   quotes: { type: string; series: string; country: string; text: string }[];
@@ -24,6 +25,7 @@ export type FeedbackScores = {
   series: string;
   series_label: string;
   rows_used: number;
+  comments?: number;
   market?: string;
   market_label?: string;
   method: string;

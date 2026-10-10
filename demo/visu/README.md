@@ -10,6 +10,12 @@ car model coloured part by part with the customer comments from `Dataset/` (`F70
 - **Driver ↔ part:** clicking a top 10 driver flies to its part (`PART` in `demo/torque/dist/index.html`,
   e.g. R-11 → wheels, R-14 → front seats). Clicking a part focuses its best ranked driver. The card
   shows Torque's driver, status, rank and evidence plus the part's heat score, comment counts and a quote.
+- **Counts as in Torque:** "comments" are unique comment IDs (one comment has one row per classification,
+  shown as "classified mentions"), so the numbers match Torque's data chip.
+- **China:** no owner comments, so parts are coloured by Torque's own China customer study values
+  (`BMW.study`, G68/G70) of their linked drivers, ranked like the comment heat map.
+- **Options:** the card lists Torque's option for the driver plus matching entries of the model's price list
+  (`outputs/markdown/options/processed/*_options_features.md` → `data/options-<model>.json`, `options.py`).
 - **Design prompt** (Design / Design prompt buttons) and **Visualize in Unreal Engine** as in the
   stand-alone app.
 

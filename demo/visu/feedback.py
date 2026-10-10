@@ -108,6 +108,7 @@ PRIOR = 2.0  # Bayesian prior (pseudo-counts on each side) so tiny samples stay 
 class Row:
     series: str
     country: str
+    cid: str  # comment ID: one comment has one row per classification
     ftype: str
     vfc: str
     text: str
@@ -142,6 +143,8 @@ class FeedbackDataset:
     def __init__(self, dataset_dir: Path):
         self.dir = dataset_dir
         self.rows: list[Row] = []
+        # (series, country, comment ID) of every row, classified or not: the comment counts Torque shows
+        self.ids: set[tuple[str, str, str]] = set()
         self.error: str | None = None
 
     def load(self) -> None:
@@ -162,11 +165,13 @@ class FeedbackDataset:
             it = ws.iter_rows(values_only=True)
             header = list(next(it))
             col = {name: header.index(name) for name in
-                   ("Country", "Feedback Type", "Customer Feedback", "Vfc level2 Name")}
+                   ("ID", "Country", "Feedback Type", "Customer Feedback", "Vfc level2 Name")}
             for r in it:
+                cid, country = str(r[col["ID"]] or ""), str(r[col["Country"]] or "")
+                self.ids.add((code, country, cid))
                 ftype, vfc = r[col["Feedback Type"]], r[col["Vfc level2 Name"]]
                 if ftype in WEIGHTS and vfc and vfc != "no_class_found":
-                    self.rows.append(Row(code, str(r[col["Country"]] or ""), ftype, str(vfc),
+                    self.rows.append(Row(code, country, cid, ftype, str(vfc),
                                          str(r[col["Customer Feedback"]] or "")[:400]))
         if not self.rows:
             self.error = f"No feedback rows found in {self.dir}"
@@ -208,6 +213,7 @@ class FeedbackDataset:
             positives = [q for q in src.quotes if WEIGHTS[q.ftype] > 0]
             sample = rnd.sample(negatives, min(2, len(negatives))) + rnd.sample(positives, min(1, len(positives)))
             out[cid] = {
+                "comments": len({q.cid for q in src.quotes}),
                 "score": ((rank_int if cid in INTERIOR else rank_ext)[round(src.positive_share(), 6)]
                           if basis == "specific" else 50),
                 "group": "interior" if cid in INTERIOR else "exterior",
@@ -216,7 +222,7 @@ class FeedbackDataset:
                 "n": src.n,
                 "counts": dict(src.counts),
                 "classes": sorted({q.vfc for q in src.quotes})[:8],
-                "quotes": [{"type": q.ftype, "series": q.series, "country": q.country, "text": q.text} for q in sample],
+                "quotes": [{"id": q.cid, "type": q.ftype, "series": q.series, "country": q.country, "text": q.text} for q in sample],
             }
         return {
             "series": series or "ALL",
@@ -224,6 +230,8 @@ class FeedbackDataset:
             "market": market or "ALL",
             "market_label": MARKETS.get(market, "All markets"),
             "rows_used": len(rows),
+            "comments": len({i for s_, c, i in self.ids if (not series or s_ == series)
+                             and (not market or market_of(c) == market)}),
             "no_geometry": [{"feature": k, "reason": NO_GEOMETRY[k], "n": b.n,
                              "positive_share": round(100 * b.positive_share(), 1)} for k, b in no_geometry.items()],
             "components": out,

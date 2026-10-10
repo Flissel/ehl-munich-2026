@@ -5,6 +5,7 @@
 1. data/feedback-<series>[-<market>].json: heat map scores per series (ALL, F70, G60, G70) and
    Torque market (EU, CN, US, RoW) from Dataset/*_feedback_hackathon.xlsx
    (they contain customer comment quotes, so like Torque's quotes.json they stay local).
+   data/options-<series>.json: option list features linked to car parts (outputs/markdown/options).
 2. models/bmw-m4-competition-2021/: the glTF car (CC-BY-NC-4.0, not redistributed via git).
    Without --model only the data is refreshed.
 """
@@ -19,9 +20,11 @@ import zipfile
 from pathlib import Path
 
 import feedback
+import options
 
 log = logging.getLogger("visu.prepare")
 OUT = Path(__file__).resolve().parents[1] / "torque" / "dist" / "visu"
+OPTIONS_MD = Path(__file__).resolve().parents[2] / "outputs" / "markdown" / "options" / "processed"
 MODEL_ID = "bmw-m4-competition-2021"
 
 
@@ -35,7 +38,8 @@ def write_data(out: Path) -> None:
             name = f"feedback-{series or 'ALL'}{'-' + market if market else ''}.json"
             scores = ds.scores(series, market)
             (out / "data" / name).write_text(json.dumps(scores, ensure_ascii=False), encoding="utf-8")
-            log.info("wrote %s (%d comments)", name, scores["rows_used"])
+            log.info("wrote %s (%d comments, %d classified mentions)", name, scores["comments"], scores["rows_used"])
+    options.write_all(OPTIONS_MD, out / "data", list(feedback.SERIES))
 
 
 def install_model(src: Path, out: Path) -> None:
