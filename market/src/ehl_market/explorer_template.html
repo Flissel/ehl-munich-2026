@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market Correlation Explorer</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,0.10);
+  --pos: #2a78d6; --neg: #e34948; --mid: #f0efec; --series: #2a78d6; --focus: #0b0b0b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+    --pos: #3987e5; --neg: #e66767; --mid: #383835; --series: #3987e5; --focus: #f0efec;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+  --pos: #3987e5; --neg: #e66767; --mid: #383835; --series: #3987e5; --focus: #f0efec;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 1280px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 22px; margin: 0 0 4px; font-weight: 650; }
+h2 { font-size: 15px; margin: 0 0 2px; font-weight: 600; }
+.sub { color: var(--ink-2); margin: 0; max-width: 80ch; }
+.meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.controls { display: flex; min-width: 0; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 20px 0 16px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: var(--surface); color: var(--ink-2); padding: 6px 12px; font: inherit;
+  cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--border); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+label.chk { color: var(--ink-2); display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; }
+.col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-content: start; }
+#scatter, #sens { display: block; max-width: 100%; height: auto; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+  min-width: 0; }
+.card .hint { color: var(--muted); font-size: 12px; margin: 0 0 10px; }
+.scroll { overflow-x: auto; }
+svg text { fill: var(--ink-2); font-size: 11px; }
+svg .axis-label { fill: var(--muted); }
+.cell { cursor: pointer; }
+.cell:hover, .cell:focus { stroke: var(--focus); stroke-width: 1.5; outline: none; }
+.rowlab { cursor: pointer; }
+.rowlab:hover { fill: var(--ink); text-decoration: underline; }
+.stats { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 4px; }
+.stat b { font-size: 18px; font-weight: 650; color: var(--ink); display: block; }
+.stat span { color: var(--muted); font-size: 12px; }
+.warn { color: var(--ink-2); font-size: 12px; margin: 6px 0 0; }
+.legend { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; margin-top: 8px;
+  flex-wrap: wrap; }
+.ramp { width: 160px; height: 10px; border-radius: 3px;
+  background: linear-gradient(90deg, var(--neg), var(--mid), var(--pos)); }
+.sens-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0 10px; }
+select, input[type=range] { font: inherit; color: var(--ink); background: var(--surface); }
+select { border: 1px solid var(--border); border-radius: 6px; padding: 4px 6px; max-width: 100%; }
+.delta { font-weight: 650; min-width: 64px; display: inline-block; }
+.bar { cursor: pointer; }
+#tip { position: fixed; pointer-events: none; z-index: 10; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; max-width: 280px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12); display: none; }
+#tip b { font-size: 14px; }
+#tip .k { color: var(--ink-2); }
+details { margin-top: 16px; }
+summary { cursor: pointer; color: var(--ink-2); }
+table { border-collapse: collapse; width: 100%; font-size: 12px; margin-top: 8px; }
+th, td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.notes { color: var(--muted); font-size: 12px; padding-left: 18px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Market–BMW correlation explorer</h1>
+  <p class="sub" id="caveat"></p>
+  <p class="meta" id="meta"></p>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Metrics shown" id="groupSeg">
+      <button data-g="all" aria-pressed="true">All metrics</button>
+      <button data-g="external">External only</button>
+      <button data-g="bmw">BMW only</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="onlySig"> Fade pairs with q ≥ 0.10</label>
+  </div>
+
+  <div class="layout">
+    <section class="card">
+      <h2>Correlation matrix (Spearman ρ across countries)</h2>
+      <p class="hint">Click a cell to open the pair. Click a row name to use it in the sensitivity view.</p>
+      <div class="scroll"><svg id="matrix" role="img" aria-label="Correlation matrix"></svg></div>
+      <div class="legend">
+        <span>−1</span><div class="ramp" aria-hidden="true"></div><span>+1</span>
+        <span>· ring = q &lt; 0.10 (survives multiple testing)</span><span>· blank = fewer than <span id="minn"></span> shared countries</span>
+      </div>
+    </section>
+
+    <div class="col">
+      <section class="card">
+        <h2 id="pairTitle">Select a pair</h2>
+        <p class="hint">Each dot is a country. Click a dot to see how much ρ depends on that one market.</p>
+        <div class="stats" id="pairStats"></div>
+        <svg id="scatter" role="img" aria-label="Scatter plot of the selected pair"></svg>
+        <p class="warn" id="pairWarn"></p>
+      </section>
+
+      <section class="card">
+        <h2>Sensitivity</h2>
+        <div class="sens-head">
+          <span>Markets where</span>
+          <select id="focusSel" aria-label="Metric that changes"></select>
+          <span>is</span>
+          <input type="range" id="delta" min="-2" max="2" step="0.5" value="1" aria-label="Change in standard deviations">
+          <span class="delta" id="deltaLab"></span>
+          <span>tend to show:</span>
+        </div>
+        <p class="hint">Expected difference in each other metric, in its own standard deviations (r × Δ), with 95 % bootstrap interval.
+          Grey = interval includes zero. This is an association between markets, not the effect of changing a feature.</p>
+        <svg id="sens" role="img" aria-label="Sensitivity bars"></svg>
+      </section>
+    </div>
+  </div>
+
+  <details>
+    <summary>Table view: all pairs</summary>
+    <div class="scroll"><table id="tbl"><thead><tr>
+      <th>Metric x</th><th>Metric y</th><th class="num">n</th><th class="num">ρ</th><th class="num">r 95 % CI</th>
+      <th class="num">p</th><th class="num">q (BH)</th><th>Most influential</th></tr></thead><tbody></tbody></table></div>
+  </details>
+  <details>
+    <summary>Data notes</summary>
+    <ul class="notes" id="notes"></ul>
+  </details>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const NS = "http://www.w3.org/2000/svg";
+const $ = (id) => document.getElementById(id);
+const meta = Object.fromEntries(DATA.metrics.map((m) => [m.id, m]));
+const pairKey = (a, b) => (a < b ? a + "|" + b : b + "|" + a);
+const pairs = {};
+for (const p of DATA.pairs) pairs[pairKey(p.x, p.y)] = p;
+const state = { group: "all", x: null, y: null, focus: null, country: null, delta: 1, onlySig: false };
+
+function el(tag, attrs = {}, parent) {
+  const n = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function txt(parent, x, y, s, attrs = {}) { const t = el("text", { x, y, ...attrs }, parent); t.textContent = s; return t; }
+const fmt = (v, d = 2) => (v == null || Number.isNaN(v) ? "–" : Number(v).toFixed(d));
+const sgn = (v, d = 2) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(d);
+function fmtVal(v) {
+  const a = Math.abs(v);
+  if (a >= 10000) return Math.round(v).toLocaleString("en");
+  if (a >= 100) return v.toFixed(0);
+  if (a >= 1) return v.toFixed(1);
+  return v.toFixed(3);
+}
+function color(rho) {
+  const pct = Math.round(Math.min(1, Math.abs(rho)) * 5) * 20; // 5 bins, readable
+  return `color-mix(in oklab, ${rho >= 0 ? "var(--pos)" : "var(--neg)"} ${pct}%, var(--mid))`;
+}
+
+// ---------- tooltip ----------
+const tip = $("tip");
+function showTip(evt, lines) {
+  tip.replaceChildren();
+  lines.forEach(([cls, s], i) => {
+    const d = document.createElement(i === 0 ? "b" : "div");
+    if (cls) d.className = cls;
+    d.textContent = s;
+    tip.appendChild(d);
+  });
+  tip.style.display = "block";
+  const r = tip.getBoundingClientRect();
+  let x = evt.clientX + 14, y = evt.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = evt.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = evt.clientY - r.height - 14;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+function focusTip(node, lines) {
+  const b = node.getBoundingClientRect();
+  showTip({ clientX: b.right, clientY: b.top }, lines);
+}
+const hideTip = () => (tip.style.display = "none");
+
+// ---------- stats in JS (for leave-one-out on click) ----------
+function ranks(a) {
+  const idx = a.map((v, i) => [v, i]).sort((p, q) => p[0] - q[0]);
+  const r = new Array(a.length);
+  for (let i = 0; i < idx.length; ) {
+    let j = i;
+    while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++;
+    for (let k = i; k <= j; k++) r[idx[k][1]] = (i + j) / 2 + 1;
+    i = j + 1;
+  }
+  return r;
+}
+function pearson(x, y) {
+  const n = x.length, mx = x.reduce((s, v) => s + v, 0) / n, my = y.reduce((s, v) => s + v, 0) / n;
+  let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) { sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; }
+  return sxy / Math.sqrt(sxx * syy);
+}
+const spearman = (x, y) => pearson(ranks(x), ranks(y));
+
+// ---------- matrix ----------
+function visibleMetrics() {
+  return DATA.metrics.filter((m) => state.group === "all" || m.group === state.group).map((m) => m.id);
+}
+function drawMatrix() {
+  const ms = visibleMetrics();
+  const svg = $("matrix"); svg.replaceChildren();
+  const cell = ms.length > 14 ? 22 : 28, left = 190, top = 150;
+  const W = left + cell * ms.length + 110, H = top + cell * ms.length + 8;
+  svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  ms.forEach((m, i) => {
+    const rl = txt(svg, left - 8, top + cell * i + cell / 2 + 4, meta[m].label, { "text-anchor": "end", class: "rowlab" });
+    if (m === state.focus) { rl.style.fill = "var(--ink)"; rl.style.fontWeight = 650; }
+    rl.addEventListener("click", () => { state.focus = m; render(); });
+    const cx = left + cell * i + cell / 2;
+    txt(svg, cx, top - 8, meta[m].label, { transform: `rotate(-55 ${cx} ${top - 8})` });
+    ms.forEach((n, j) => {
+      const x = left + cell * j, y = top + cell * i;
+      if (i === j) { el("rect", { x: x + 1, y: y + 1, width: cell - 2, height: cell - 2, rx: 3, fill: "var(--grid)" }, svg); return; }
+      const p = pairs[pairKey(m, n)];
+      if (!p || p.rho == null) {
+        el("rect", { x: x + 1, y: y + 1, width: cell - 2, height: cell - 2, rx: 3, fill: "none", stroke: "var(--grid)" }, svg);
+        return;
+      }
+      const sig = p.q < 0.1;
+      const r = el("rect", { x: x + 1, y: y + 1, width: cell - 2, height: cell - 2, rx: 3, fill: color(p.rho),
+        class: "cell", tabindex: 0, "aria-label": `${meta[m].label} vs ${meta[n].label}: rho ${fmt(p.rho)}, n ${p.n}` }, svg);
+      if (state.onlySig && !sig) r.setAttribute("opacity", 0.25);
+      if (sig) el("circle", { cx: x + cell / 2, cy: y + cell / 2, r: 4, fill: "none", stroke: "var(--surface)", "stroke-width": 1.5, "pointer-events": "none" }, svg);
+      if ((state.x === m && state.y === n) || (state.x === n && state.y === m))
+        el("rect", { x: x + 0.5, y: y + 0.5, width: cell - 1, height: cell - 1, rx: 3, fill: "none", stroke: "var(--focus)", "stroke-width": 2, "pointer-events": "none" }, svg);
+      const lines = () => [[null, `ρ ${sgn(p.rho)}`], ["k", `${meta[m].label} × ${meta[n].label}`],
+        ["k", `n ${p.n} countries · p ${fmt(p.p, 3)} · q ${fmt(p.q, 3)}`]];
+      r.addEventListener("pointermove", (e) => showTip(e, lines()));
+      r.addEventListener("pointerleave", hideTip);
+      r.addEventListener("focus", () => focusTip(r, lines()));
+      r.addEventListener("blur", hideTip);
+      const pick = () => { state.x = m; state.y = n; state.focus = m; state.country = null; render(); };
+      r.addEventListener("click", pick);
+      r.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+    });
+  });
+}
+
+// ---------- scatter ----------
+function niceTicks(lo, hi, n = 4) {
+  const span = hi - lo || Math.abs(hi) || 1, step0 = span / n, mag = 10 ** Math.floor(Math.log10(step0));
+  const step = [1, 2, 2.5, 5, 10].map((f) => f * mag).find((s) => s >= step0);
+  const out = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(10));
+  return out;
+}
+function drawScatter() {
+  const svg = $("scatter"); svg.replaceChildren();
+  const stats = $("pairStats"); stats.replaceChildren(); $("pairWarn").textContent = "";
+  const { x: mx, y: my } = state;
+  if (!mx) { $("pairTitle").textContent = "Select a pair in the matrix"; svg.setAttribute("height", 0); return; }
+  const p = pairs[pairKey(mx, my)];
+  $("pairTitle").textContent = `${meta[mx].label} × ${meta[my].label}`;
+  const cs = p.countries, xs = cs.map((c) => DATA.values[mx][c]), ys = cs.map((c) => DATA.values[my][c]);
+  let rho = p.rho, note = "";
+  if (state.country && cs.includes(state.country)) {
+    const k = cs.indexOf(state.country);
+    const rx = xs.filter((_, i) => i !== k), ry = ys.filter((_, i) => i !== k);
+    note = `Without ${state.country}: ρ ${sgn(spearman(rx, ry))} (with: ${sgn(rho)}). Click the dot again to clear.`;
+  }
+  const add = (v, l) => { const d = document.createElement("div"); d.className = "stat";
+    const b = document.createElement("b"); b.textContent = v; const s = document.createElement("span"); s.textContent = l;
+    d.append(b, s); stats.appendChild(d); };
+  add(sgn(rho), "Spearman ρ"); add(`${sgn(p.r_ci95[0])} … ${sgn(p.r_ci95[1])}`, "Pearson r, 95 % CI");
+  add(String(p.n), "countries"); add(fmt(p.q, 3), "q (multiple-test adj.)");
+  const warns = [];
+  if (note) warns.push(note);
+  if (p.r_ci95[0] <= 0 && p.r_ci95[1] >= 0) warns.push("The interval includes zero: no reliable direction.");
+  if (Math.abs(p.influential.rho_without - p.rho) > 0.2)
+    warns.push(`Result hinges on ${p.influential.country} (ρ ${sgn(p.influential.rho_without)} without it).`);
+  $("pairWarn").textContent = warns.join(" ");
+
+  const W = Math.max(300, svg.parentElement.clientWidth - 32), H = 280, L = 56, R = 16, T = 12, B = 44;
+  svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const pad = (lo, hi) => { const d = (hi - lo) * 0.08 || Math.abs(hi) * 0.1 || 1; return [lo - d, hi + d]; };
+  const [x0, x1] = pad(Math.min(...xs), Math.max(...xs)), [y0, y1] = pad(Math.min(...ys), Math.max(...ys));
+  const sx = (v) => L + ((v - x0) / (x1 - x0)) * (W - L - R), sy = (v) => T + (1 - (v - y0) / (y1 - y0)) * (H - T - B);
+  for (const t of niceTicks(y0, y1)) {
+    el("line", { x1: L, x2: W - R, y1: sy(t), y2: sy(t), stroke: "var(--grid)" }, svg);
+    txt(svg, L - 6, sy(t) + 4, fmtVal(t), { "text-anchor": "end", class: "axis-label" });
+  }
+  for (const t of niceTicks(x0, x1)) txt(svg, sx(t), H - B + 16, fmtVal(t), { "text-anchor": "middle", class: "axis-label" });
+  el("line", { x1: L, x2: W - R, y1: H - B, y2: H - B, stroke: "var(--axis)" }, svg);
+  txt(svg, (L + W - R) / 2, H - 6, `${meta[mx].label} (${meta[mx].unit})`, { "text-anchor": "middle", class: "axis-label" });
+  txt(svg, 12, (T + H - B) / 2, meta[my].label, { "text-anchor": "middle", class: "axis-label", transform: `rotate(-90 12 ${(T + H - B) / 2})` });
+  // least-squares line (Pearson slope), clipped to the data range
+  const mxv = xs.reduce((s, v) => s + v, 0) / xs.length, myv = ys.reduce((s, v) => s + v, 0) / ys.length;
+  const b = p.slope_y_per_x, xa = Math.min(...xs), xb = Math.max(...xs);
+  el("line", { x1: sx(xa), y1: sy(myv + b * (xa - mxv)), x2: sx(xb), y2: sy(myv + b * (xb - mxv)),
+    stroke: "var(--muted)", "stroke-width": 2, "stroke-dasharray": "5 4" }, svg);
+  cs.forEach((c, i) => {
+    const g = el("g", { tabindex: 0, role: "button", "aria-label": `${c}: ${fmtVal(xs[i])}, ${fmtVal(ys[i])}` }, svg);
+    const sel = state.country === c;
+    el("circle", { cx: sx(xs[i]), cy: sy(ys[i]), r: 12, fill: "transparent" }, g);
+    el("circle", { cx: sx(xs[i]), cy: sy(ys[i]), r: 5, fill: sel ? "var(--surface)" : "var(--series)",
+      stroke: sel ? "var(--series)" : "var(--surface)", "stroke-width": 2 }, g);
+    txt(g, sx(xs[i]) + 8, sy(ys[i]) - 7, c, { style: "fill: var(--ink)" });
+    const lines = () => [[null, c], ["k", `${meta[mx].label}: ${fmtVal(xs[i])}`], ["k", `${meta[my].label}: ${fmtVal(ys[i])}`]];
+    g.addEventListener("pointermove", (e) => showTip(e, lines()));
+    g.addEventListener("pointerleave", hideTip);
+    g.addEventListener("focus", () => focusTip(g, lines()));
+    g.addEventListener("blur", hideTip);
+    const pick = () => { state.country = state.country === c ? null : c; drawScatter(); };
+    g.style.cursor = "pointer";
+    g.addEventListener("click", pick);
+    g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+  });
+}
+
+// ---------- sensitivity ----------
+function sd(v) { const m = v.reduce((s, x) => s + x, 0) / v.length; return Math.sqrt(v.reduce((s, x) => s + (x - m) ** 2, 0) / v.length); }
+function drawSens() {
+  const f = state.focus, d = state.delta, svg = $("sens"); svg.replaceChildren();
+  $("deltaLab").textContent = `${sgn(d, 1)} SD`;
+  if (!f) return;
+  const rows = [];
+  for (const p of DATA.pairs) {
+    if (p.r == null || (p.x !== f && p.y !== f)) continue;
+    const o = p.x === f ? p.y : p.x;
+    if (!visibleMetrics().includes(o)) continue;
+    const lo = Math.min(p.r_ci95[0] * d, p.r_ci95[1] * d), hi = Math.max(p.r_ci95[0] * d, p.r_ci95[1] * d);
+    const ov = p.countries.map((c) => DATA.values[o][c]);
+    rows.push({ o, p, v: p.r * d, lo, hi, unc: p.r_ci95[0] <= 0 && p.r_ci95[1] >= 0, units: p.r * d * sd(ov) });
+  }
+  rows.sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
+  const W = Math.max(300, svg.parentElement.clientWidth - 32), rowH = 24, L = Math.min(180, W * 0.42), R = 52, T = 18;
+  const H = T + rows.length * rowH + 8;
+  svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const lim = Math.max(Math.abs(d), 0.5), sx = (v) => L + ((v + lim) / (2 * lim)) * (W - L - R);
+  for (const t of [-lim, 0, lim]) txt(svg, sx(t), 12, sgn(t, 1), { "text-anchor": "middle", class: "axis-label" });
+  el("line", { x1: sx(0), x2: sx(0), y1: T - 2, y2: H - 4, stroke: "var(--axis)" }, svg);
+  if (!rows.length) txt(svg, L, T + 16, "No other metric shares enough countries with this one.");
+  rows.forEach((r, i) => {
+    const y = T + i * rowH, g = el("g", { class: "bar", tabindex: 0, role: "button" }, svg);
+    const fill = r.unc ? "var(--axis)" : r.v >= 0 ? "var(--pos)" : "var(--neg)";
+    el("rect", { x: 0, y, width: W, height: rowH, fill: "transparent" }, g);
+    const maxCh = Math.floor((L - 12) / 6.2), lab = meta[r.o].label;
+    txt(g, L - 8, y + rowH / 2 + 4, lab.length > maxCh ? lab.slice(0, maxCh - 1) + "…" : lab, { "text-anchor": "end" });
+    const xa = sx(Math.min(0, r.v)), xb = sx(Math.max(0, r.v));
+    el("rect", { x: xa, y: y + 6, width: Math.max(1, xb - xa), height: rowH - 12, rx: 3, fill }, g);
+    el("line", { x1: sx(Math.max(-lim, r.lo)), x2: sx(Math.min(lim, r.hi)), y1: y + rowH / 2, y2: y + rowH / 2,
+      stroke: "var(--ink-2)", "stroke-width": 1.5 }, g);
+    txt(g, W - 4, y + rowH / 2 + 4, sgn(r.v), { "text-anchor": "end", style: "fill: var(--ink)" });
+    const lines = () => [[null, `${sgn(r.v)} SD`], ["k", meta[r.o].label],
+      ["k", `≈ ${sgn(r.units, 2)} ${meta[r.o].unit}`], ["k", `95 % interval ${sgn(r.lo)} … ${sgn(r.hi)} SD · n ${r.p.n}`],
+      ["k", r.unc ? "Interval includes zero: uncertain" : `q ${fmt(r.p.q, 3)}`]];
+    g.addEventListener("pointermove", (e) => showTip(e, lines()));
+    g.addEventListener("pointerleave", hideTip);
+    g.addEventListener("focus", () => focusTip(g, lines()));
+    g.addEventListener("blur", hideTip);
+    const pick = () => { state.x = f; state.y = r.o; state.country = null; render(); };
+    g.addEventListener("click", pick);
+    g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+  });
+}
+
+// ---------- table, notes, controls ----------
+function drawTable() {
+  const tb = $("tbl").tBodies[0]; tb.replaceChildren();
+  const rows = DATA.pairs.filter((p) => p.rho != null).sort((a, b) => a.q - b.q);
+  for (const p of rows) {
+    const tr = document.createElement("tr");
+    const cells = [meta[p.x].label, meta[p.y].label, p.n, sgn(p.rho), `${sgn(p.r_ci95[0])} … ${sgn(p.r_ci95[1])}`,
+      fmt(p.p, 3), fmt(p.q, 3), `${p.influential.country} (ρ ${sgn(p.influential.rho_without)} without)`];
+    cells.forEach((v, i) => { const td = document.createElement("td"); td.textContent = v; if (i >= 2 && i <= 6) td.className = "num"; tr.appendChild(td); });
+    tb.appendChild(tr);
+  }
+}
+function render() {
+  const sel = $("focusSel");
+  const vis = visibleMetrics();
+  if (state.focus && !vis.includes(state.focus)) state.focus = vis[0];
+  sel.replaceChildren(...vis.map((m) => { const o = document.createElement("option"); o.value = m; o.textContent = meta[m].label; return o; }));
+  sel.value = state.focus;
+  drawMatrix(); drawScatter(); drawSens();
+}
+
+$("caveat").textContent = DATA.caveat;
+$("meta").textContent = `Generated ${DATA.generated} · ${DATA.metrics.length} metrics · ${DATA.pairs.filter((p) => p.rho != null).length} pairs with ≥ ${DATA.min_n} shared countries` + (DATA.derivative ? ` · derivative ${DATA.derivative}` : "");
+$("minn").textContent = DATA.min_n;
+for (const n of DATA.notes) { const li = document.createElement("li"); li.textContent = n; $("notes").appendChild(li); }
+$("groupSeg").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  state.group = b.dataset.g;
+  for (const x of $("groupSeg").children) x.setAttribute("aria-pressed", x === b);
+  const vis = visibleMetrics();
+  if (!vis.includes(state.x) || !vis.includes(state.y)) { state.x = state.y = null; }
+  render();
+});
+$("onlySig").addEventListener("change", (e) => { state.onlySig = e.target.checked; drawMatrix(); });
+$("focusSel").addEventListener("change", (e) => { state.focus = e.target.value; render(); });
+$("delta").addEventListener("input", (e) => { state.delta = +e.target.value; drawSens(); });
+addEventListener("resize", () => { drawScatter(); drawSens(); });
+
+// start on the strongest computed pair that involves a BMW metric
+const start = DATA.pairs.filter((p) => p.rho != null && (meta[p.x].group !== meta[p.y].group))
+  .sort((a, b) => Math.abs(b.rho) - Math.abs(a.rho))[0] || DATA.pairs.find((p) => p.rho != null);
+if (start) { state.x = start.x; state.y = start.y; state.focus = start.x; }
+else state.focus = DATA.metrics[0] && DATA.metrics[0].id;
+render(); drawTable();
+</script>
+</body>
+</html>
