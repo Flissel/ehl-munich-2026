@@ -6,3 +6,7 @@
 .env
 *.env
 !*.env.example
+
+# Python/runtime output
+__pycache__/
+*.py[cod]
