@@ -38,7 +38,7 @@ A claim is active if the row was updated less than 2 h ago.
 | MCP servers | `ehl-search` (WP3), `ehl-agents` (WP4), stdio | frozen |
 | Products in the graph | The machines from `Dataset/`: F70, G60, G68, G70 (test data; replaces invented P1–P3, spec D9) | frozen |
 | PC roles (spec D11) | Every team member runs Rowboat (dev mode, fork `ehl`) locally: WP1 installer (repo notes + `ehl-search`) and `bridge --fake` (fake companies). Demo PC only: installer `--demo` (+ `ehl-agents`, bridge on real sources). Real company notes never in git | frozen |
-| Rowboat source (replaces D1) | Fork `Flissel/rowboat`, branch `ehl` (pinned `72e9d8c`), run with `npm run dev`; changes on `ehl/<wp>-<topic>` via PR | frozen |
+| Rowboat source (replaces D1) | Team fork `Flissel/rowboat`, branch `ehl` (pinned `72e9d8c`), run with `npm run dev`; each member forks `Flissel/rowboat` and PRs `ehl/<wp>-<topic>` from their fork into `ehl` | frozen |
 | Link targets (exact note names for products, roadmaps, topics, team) | – | **pending WP1 (M1)** |
 
 ## Handoffs
@@ -65,6 +65,7 @@ A claim is active if the row was updated less than 2 h ago.
 
 ## Log (newest first)
 
+- 2026-10-10 – Rowboat changes now via **personal forks**: fork `Flissel/rowboat`, push `ehl/<wp>-<topic>` to your fork, PR into `Flissel/rowboat:ehl` (CLAUDE.md + SETUP.md updated, PR #2 merged). Open for review: PR #1 (Paolabeiia) – data pipeline plan + deliverables for the BMW challenge.
 - 2026-10-10 – Orchestration set up: `main` PR-only (review by Flissel, CODEOWNERS); board moved to `board` branch; `SETUP.md` for team PCs. Rowboat now runs **from source in dev mode** (fork `Flissel/rowboat`, branch `ehl` pinned to `72e9d8c`; changes via `ehl/<wp>-<topic>` + PR) – replaces spec D1. Installer scripts must run on Windows and macOS (WP1: `install.ps1` → cross-platform).
 - 2026-10-10 – Decided (spec D11): everyone runs Rowboat on their own PC with repo notes + fake companies + local search; Sales/Marketing agents and real data only on the demo PC. WP1/WP2 specs updated.
 - 2026-10-10 – Q1 decided: `Dataset/` is the test data; products = F70, G60, G68, G70 (spec D9 updated on `feat/rowboat-ehl-space` and in the WP1 spec).
