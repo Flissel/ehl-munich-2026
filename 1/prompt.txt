@@ -1,0 +1,1 @@
+Update README.md: add a short section 'Team & Setup' noting this is our EHL Munich 2026 Grand Finale project (10-11 Oct 2026, Garching) and that agent sessions are tracked with Entire. Keep it brief. Only edit README.md.
