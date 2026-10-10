@@ -49,6 +49,7 @@ A claim is active if the row was updated less than 2 h ago.
 | WP3 → WP1 | `mcp.json` entry for `ehl-search` | open |
 | WP4 → WP1 | `mcp.json` entry for `ehl-agents` | open |
 | WP2 → all | `bridge/fixtures/` fake companies + `bridge --fake` (needed on every team PC – deliver early) | open |
+| yunes-mahan → WP1 | Review PR #7 (heat map in Torque Concept 3D); port the `dist/index.html` Concept-view change to the prototype source | open |
 | WP1 → all | `demo/install.py` (Windows + macOS, replaces `install.ps1`) + `demo/SETUP.md` for team PCs | open |
 
 ## Open questions
@@ -64,6 +65,7 @@ A claim is active if the row was updated less than 2 h ago.
 | – | – | – | – | – |
 
 ## Log (newest first)
+- 2026-10-10 20:30: yunes-mahan: draft PR [#7](https://github.com/Flissel/ehl-munich-2026/pull/7) into `feat/ehl-demo-content`: Torque's Concept 3D now shows a real-car customer-feedback heat map (`demo/visu/`, F70/G60/G70 follow the model switch, prompt on the Rowboat model). Data + car model local only (`demo/visu/prepare_local.py`). Peter: `dist/index.html` edited directly, please port to the prototype source.
 - 2026-10-10 19:45: yunes-mahan: draft PR [#6](https://github.com/Flissel/ehl-munich-2026/pull/6) adds `visu_pro/` (3D car heat map from `Dataset/` feedback, outside WP1–4; 3D model not committed, CC-BY-NC). Orchestrator: please decide if it belongs in `main`.
 - 2026-10-10 19:06: WP1 (Peter): Torque decision cockpit as Rowboat app in `demo/torque` on `feat/ehl-demo-content` (111e925): top 10 purchase drivers per model and market, market map, review and audit trail; install with `ln -s <repo>/demo/torque ~/.rowboat/apps/torque`. No customer comment text in git; texts stay local in `data/quotes.json` (git-ignored).
 - 2026-10-10 19:30: WP4 claimed by yunes-mahan (local Claude Code, Windows). Rowboat built + running in dev mode; Docker blocked on WSL install. Next: read specs, plan, first task (OpenClaw chat endpoint).
