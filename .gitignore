@@ -16,3 +16,6 @@ __pycache__/
 .DS_Store
 # Python/runtime output
 *.py[cod]
+
+# RAG backend (feat/ehl-search) venv
+search/.venv/

@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from typing import Any
 
+import os
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from .config import Settings
@@ -23,6 +26,10 @@ class ChatRequest(BaseModel):
 
 def create_app() -> FastAPI:
     app = FastAPI(title="EHL BMW RAG Backend")
+    # Torque (a Rowboat app, served at torque.apps.localhost:3210) calls /search from the browser for Nordi.
+    origins = os.getenv("RAG_CORS_ORIGINS", "http://torque.apps.localhost:3210").split(",")
+    app.add_middleware(CORSMiddleware, allow_origins=[o.strip() for o in origins if o.strip()],
+                       allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
     service = RagService(Settings.from_env())
 
     @app.get("/health")
