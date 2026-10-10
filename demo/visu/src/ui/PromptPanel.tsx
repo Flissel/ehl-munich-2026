@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, type PromptResponse } from "../api";
 import type { CarModel, ScoredComponent } from "../models/types";
 import type { ActionResult, WebAction } from "../lib/design";
@@ -9,17 +9,20 @@ const EXAMPLES = [
   ["Geometry", "Change the front bumper to a more aggressive design"],
 ];
 
-export function PromptPanel({ model, selected, components, onApply, onReset }: {
+export function PromptPanel({ model, selected, components, onApply, onReset, preset }: {
   model: CarModel;
   selected: ScoredComponent | null;
   components: { id: string; name: string }[];
   onApply: (actions: WebAction[]) => ActionResult[];
   onReset: () => void;
+  /** Prompt written elsewhere (Design from customer feedback); a new key replaces the text. */
+  preset?: { text: string; key: number };
 }) {
   const [prompt, setPrompt] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ res: PromptResponse; applied: ActionResult[] } | null>(null);
+  useEffect(() => { if (preset) { setPrompt(preset.text); setError(null); } }, [preset?.key]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const submit = async () => {
     const text = prompt.trim();
@@ -46,8 +49,8 @@ export function PromptPanel({ model, selected, components, onApply, onReset }: {
         {EXAMPLES.map(([label, text]) => (
           <button key={label} className="link" onClick={() => setPrompt(text)}>Example: {label}</button>
         ))}
-        <button className="ghost small-btn" onClick={() => { onReset(); setResult(null); }}>Reset design</button>
-        <button className="primary" disabled={busy} onClick={submit}>{busy ? "Thinking…" : "Submit"}</button>
+        <button className="ghost small-btn" onClick={() => { onReset(); setResult(null); }}>Back to original</button>
+        <button className="primary" disabled={busy} onClick={submit}>{busy ? "Thinking…" : "Visualize"}</button>
       </div>
       <div className="prompt-status" aria-live="polite">
         {error && <p className="err">{error}</p>}

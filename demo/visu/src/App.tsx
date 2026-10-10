@@ -9,6 +9,7 @@ import { applyWebActions, EMPTY_DESIGN, isEmptyDesign, type WebAction, type WebD
 import { ComponentPanel, SelectionCard } from "./ui/ComponentPanel";
 import { PromptPanel } from "./ui/PromptPanel";
 import { AdjustPanel } from "./ui/AdjustPanel";
+import { FeedbackDesign } from "./ui/FeedbackDesign";
 import { UnrealButton } from "./ui/UnrealButton";
 import { api, type FeedbackScores, type UnrealDesign } from "./api";
 
@@ -60,6 +61,23 @@ export default function App() {
   const [view, setView] = useState<CameraView>("exterior");
   const [panel, setPanel] = useState(false);
   const [vault, setVault] = useState<Vault | null>(null);
+  const [preset, setPreset] = useState({ text: "", key: 0 });
+  const [showOriginal, setShowOriginal] = useState(false);
+  const [targets, setTargets] = useState<Record<string, string>>({});
+
+  // Agent targets per part: graph.json links parts to purchase drivers, texts carry the agent's target per driver.
+  useEffect(() => {
+    const get = (u: string) => fetch(u, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    Promise.all([get("graph.json"), get("data/texts.json").then((t) => t ?? get("../texts.seed.json"))]).then(([g, t]) => {
+      if (!g || !t) return;
+      const out: Record<string, string> = {};
+      for (const [pid, p] of Object.entries(g.parts as Record<string, { drivers: string[] }>)) {
+        const target = p.drivers.map((d) => t.requirements?.[d]?.target).find(Boolean);
+        if (target) out[pid] = target;
+      }
+      setTargets(out);
+    });
+  }, []);
 
   // Rowboat is the source of the part data: re-read the synced vault every few seconds.
   useEffect(() => {
@@ -174,6 +192,7 @@ export default function App() {
   const applyActions = (actions: WebAction[]) => {
     const { design: next, results } = applyWebActions(model, design, actions);
     setDesign(next);
+    setShowOriginal(false);
     if (results.some((r) => r.applied && r.level === 1)) setMode("design");
     return results;
   };
@@ -187,7 +206,7 @@ export default function App() {
   const report = load.kind === "ready" ? load.report : null;
   const viewer = (
     <div className="viewer">
-      <CarViewer key={model.id} model={model} scores={scores} mode={mode} design={design} selectedId={selectedId}
+      <CarViewer key={model.id} model={model} scores={scores} mode={mode} design={showOriginal ? EMPTY_DESIGN : design} selectedId={selectedId}
         onSelect={setSelectedId} onLoaded={onLoaded} onError={onError} resetSignal={resetSignal} view={view}
         focusId={ctx.focus} focusSignal={ctx.focusSignal} />
       {load.kind === "loading" && <LoadingOverlay />}
@@ -225,15 +244,24 @@ export default function App() {
       )}
       {mode === "design" && (
         <div className="legend design-legend">
-          Design view{isEmptyDesign(design) ? " · original car" : " · modified (Level 1/2 changes applied)"}
+          Design view{isEmptyDesign(design) ? " · original car" : showOriginal ? " · original (compare)" : " · adjusted (Level 1/2 changes applied)"}
+        </div>
+      )}
+      {!isEmptyDesign(design) && (
+        <div className="compare segmented" role="group" aria-label="Compare">
+          <button className={showOriginal ? "on" : ""} onClick={() => setShowOriginal(true)}>Original</button>
+          <button className={showOriginal ? "" : "on"} onClick={() => setShowOriginal(false)}>Adjusted</button>
         </div>
       )}
       {EMBED && <div className="embed-unreal"><UnrealButton modelId={model.id} design={unrealDesign} unavailable={UNREAL_MODELS.includes(model.id) ? undefined : "Not imported in Unreal yet"} /></div>}
       {EMBED && panel && (
         <div className="embed-panel">
           <button className="ghost close" onClick={() => setPanel(false)} aria-label="Close">✕</button>
+          <FeedbackDesign components={components} details={partDetail} targets={targets}
+            scope={EMBED && ctx.title ? ctx.title.replace(" · ", " successor, ").replace(" successor successor", " successor") : (feedback ? `${feedback.series_label} · ${fallback ? "all markets" : feedback.market_label ?? "all markets"}` : model.displayName)}
+            onPrompt={(text) => setPreset((p) => ({ text, key: p.key + 1 }))} />
           <PromptPanel model={model} selected={selected} components={components.map((c) => ({ id: c.id, name: c.name }))}
-            onApply={applyActions} onReset={() => setDesign(EMPTY_DESIGN)} />
+            onApply={applyActions} onReset={() => { setDesign(EMPTY_DESIGN); setShowOriginal(false); }} preset={preset} />
           <AdjustPanel design={design} selected={selected} onChange={setDesign} />
         </div>
       )}
@@ -259,8 +287,11 @@ export default function App() {
           {viewer}
           <SelectionCard component={selected} sourceLabel={sourceLabel} onClear={() => setSelectedId(null)}
             detail={usingFeedback && selected ? feedback!.components[selected.id] : undefined} />
+          <FeedbackDesign components={components} details={partDetail} targets={targets}
+            scope={EMBED && ctx.title ? ctx.title.replace(" · ", " successor, ").replace(" successor successor", " successor") : (feedback ? `${feedback.series_label} · ${fallback ? "all markets" : feedback.market_label ?? "all markets"}` : model.displayName)}
+            onPrompt={(text) => setPreset((p) => ({ text, key: p.key + 1 }))} />
           <PromptPanel model={model} selected={selected} components={components.map((c) => ({ id: c.id, name: c.name }))}
-            onApply={applyActions} onReset={() => setDesign(EMPTY_DESIGN)} />
+            onApply={applyActions} onReset={() => { setDesign(EMPTY_DESIGN); setShowOriginal(false); }} preset={preset} />
           <AdjustPanel design={design} selected={selected} onChange={setDesign} />
         </section>
 

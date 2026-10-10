@@ -131,8 +131,8 @@ const CORNERS: Record<string, Region> = {
 const R = {
   mirror: { absX: [0.86, 1], y: [0.6, 0.88], z: [0.12, 0.36] } as Region,
   hood: { z: [0.42, 1], y: [0.6, 1], absX: [0, 0.74] } as Region,
-  frontBumper: { z: [0.76, 1], y: [0, 0.62] } as Region,
-  rearBumper: { z: [-1, -0.8], y: [0, 0.55] } as Region,
+  frontBumper: { z: [0.84, 1], y: [0, 0.5] } as Region,
+  rearBumper: { z: [-1, -0.86], y: [0, 0.47] } as Region,
   spoiler: { z: [-1, -0.8], y: [0.86, 1] } as Region,
   tailgate: { z: [-1, -0.74], y: [0.4, 1], absX: [0, 0.78] } as Region,
   roof: { y: [0.88, 1], z: [-0.82, 0.28] } as Region,
