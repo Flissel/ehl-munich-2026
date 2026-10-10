@@ -1,0 +1,55 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4HZ3VJ2F0RE0Y7S4STJ19HF",
+  "session_id": "1e058145-e28a-4582-a9cd-135d6132ae84",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T03:53:45.8160703Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "README.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-haiku-4-5-20251001",
+  "turn_id": "70003f0cdc61",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 15441,
+    "cache_read_tokens": 130626,
+    "output_tokens": 730,
+    "api_call_count": 4
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T03:53:45.8050865Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 7,
+    "human_removed": 2,
+    "total_committed": 0,
+    "total_lines_changed": 9,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 108,
+      "user_lines_removed": 2,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.json": 101,
+        "README.md": 7
+      },
+      "user_removed_per_file": {
+        "README.md": 2
+      }
+    }
+  ]
+}

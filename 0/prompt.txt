@@ -1,0 +1,1 @@
+The staged changes (README.md, .entire/, .claude/) are ready. Run: git commit -m 'Set up EHL Munich 2026 project with Entire', then git push origin main. Report the full output of the push, including any [entire] lines.
