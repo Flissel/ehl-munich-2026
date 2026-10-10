@@ -1,0 +1,13 @@
+derivative_group,market_code,volume_2024,volume_2025,volume_2030,growth_2025_2030_pct,quality_flag,origin
+F70,CN,,0.0,0.0,,formula cell in source - treated as missing,provided_data (BMW plan)
+F70,EU,80000.0,85000.0,87000.0,2.4,,provided_data (BMW plan)
+F70,RoW,25000.0,28000.0,31000.0,10.7,,provided_data (BMW plan)
+F70,US,0.0,0.0,0.0,,no volume in this market,provided_data (BMW plan)
+G60_G68,CN,68000.0,75000.0,78000.0,4.0,,provided_data (BMW plan)
+G60_G68,EU,110000.0,115000.0,127000.0,10.4,,provided_data (BMW plan)
+G60_G68,RoW,25000.0,28000.0,31000.0,10.7,,provided_data (BMW plan)
+G60_G68,US,75600.0,78000.0,80000.0,2.6,,provided_data (BMW plan)
+G70,CN,8000.0,10000.0,12000.0,20.0,,provided_data (BMW plan)
+G70,EU,11000.0,13000.0,17000.0,30.8,,provided_data (BMW plan)
+G70,RoW,5000.0,7000.0,9000.0,28.6,,provided_data (BMW plan)
+G70,US,10000.0,12000.0,14000.0,16.7,,provided_data (BMW plan)

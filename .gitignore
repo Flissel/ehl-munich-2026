@@ -13,3 +13,6 @@ demo/torque/dist/visu/models/
 demo/visu/node_modules/
 __pycache__/
 *.tsbuildinfo
+
+# macOS
+.DS_Store

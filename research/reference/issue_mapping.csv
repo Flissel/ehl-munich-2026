@@ -1,0 +1,85 @@
+vfc_level3,signal_type,polarity,requirement_relevance
+Battery discharge,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Blank / frozen screen,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Capacity loss,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Cavity sealant: wax residue,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Communication fault,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Condensation,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Connection fault,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Damage,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Dirty contamination,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Excessive opening,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Fitting fault,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Installation: fault,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Leak,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Leak: air,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Leak: water ingress/condensation,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+"Locking, detent: fault",defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Malfunction,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Odor/smoke,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+"Opening, closing: not possible / not complete",defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Pulls to one side,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Stiff movement,defect,negative,low (quality topic; requirement only if recurring + design-caused)
+Charging infrastructure inadequate,performance_gap,negative,high
+Dislike: price-performance ratio,performance_gap,negative,high
+Drivability not OK,performance_gap,negative,high
+Drive power/driving performance not OK,performance_gap,negative,high
+"Effect, power not OK",performance_gap,negative,high
+Fuel / power consumption too high,performance_gap,negative,high
+insufficient storage space,performance_gap,negative,high
+Light intensity not OK,performance_gap,negative,high
+Noise,performance_gap,negative,high
+Not comfortable,performance_gap,negative,high
+"Range, not OK",performance_gap,negative,high
+Reception quality not OK,performance_gap,negative,high
+Response characteristics not OK,performance_gap,negative,high
+Response characteristics: too fast,performance_gap,negative,high
+Response characteristics: too jerky/too abrupt,performance_gap,negative,high
+Response characteristics: too sluggish,performance_gap,negative,high
+Shift characteristics not OK,performance_gap,negative,high
+Too slow,performance_gap,negative,high
+"Vibration, oscillation",performance_gap,negative,high
+Wind noise,performance_gap,negative,high
+Workmanship does not appeal,performance_gap,negative,high
+Like: Efficiency,strength,positive,protect (keep / do not degrade)
+Like: function,strength,positive,protect (keep / do not degrade)
+Like: odor,strength,positive,protect (keep / do not degrade)
+Like: performance,strength,positive,protect (keep / do not degrade)
+Like: price-performance ratio,strength,positive,protect (keep / do not degrade)
+Like: Range,strength,positive,protect (keep / do not degrade)
+Like: responsiveness,strength,positive,protect (keep / do not degrade)
+Like: sound,strength,positive,protect (keep / do not degrade)
+Like: Space / spatial impression,strength,positive,protect (keep / do not degrade)
+Like: storage space,strength,positive,protect (keep / do not degrade)
+Like: usability,strength,positive,protect (keep / do not degrade)
+Like: vehicle equipment,strength,positive,protect (keep / do not degrade)
+Like: view/panoramic view,strength,positive,protect (keep / do not degrade)
+Likes comfort,strength,positive,protect (keep / do not degrade)
+Likes size,strength,positive,protect (keep / do not degrade)
+Look / design appeals,strength,positive,protect (keep / do not degrade)
+Workmanship appeals,strength,positive,protect (keep / do not degrade)
+Customer request: comfort,unmet_need,negative,high
+Customer request: compatibility,unmet_need,negative,high
+Customer request: design,unmet_need,negative,high
+Customer request: function,unmet_need,negative,high
+Customer request: material quality,unmet_need,negative,high
+Customer request: performance,unmet_need,negative,high
+Customer request: size,unmet_need,negative,high
+Customer request: sound,unmet_need,negative,high
+Customer request: space / spatial impression,unmet_need,negative,high
+Customer request: usability,unmet_need,negative,high
+too few,unmet_need,negative,high
+Vehicle equipment: not available,unmet_need,negative,high
+Vehicle equipment: not standard / too costly,unmet_need,negative,high
+Accidental triggering,usability_pain,negative,high
+Ergonomics do not appeal,usability_pain,negative,high
+Information / accuracy insufficient,usability_pain,negative,high
+Information / Accuracy insufficient (electric range),usability_pain,negative,high
+Installation and set-up: difficult,usability_pain,negative,high
+Not user-friendly,usability_pain,negative,high
+Operating force not OK,usability_pain,negative,high
+Permanent switch-off not possible,usability_pain,negative,high
+Size not user friendly,usability_pain,negative,high
+Switch off not possible,usability_pain,negative,high
+View/restricted panoramic view,usability_pain,negative,high
+Warning / notification active,usability_pain,negative,high

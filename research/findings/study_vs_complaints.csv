@@ -1,0 +1,21 @@
+study,market,derivative,theme_id,theme_name,study_items,study_pct_negative_mean,complaint_share_pct,n_pain
+US_2025,US,G60,COMFORT,"Comfort, seats & climate",16,4.5,9.7,1800
+US_2025,US,G60,SPACE,"Space, storage & practicality",9,4.0,7.0,1800
+US_2025,US,G60,HMI,Infotainment & operation,16,7.3,19.0,1800
+US_2025,US,G60,DIGITAL,Connectivity & digital services,6,6.6,11.4,1800
+US_2025,US,G60,CHARGING,Range & charging (as experienced),1,7.0,8.8,1800
+US_2025,US,G60,DRIVING,Driving experience & performance,13,4.1,16.8,1800
+US_2025,US,G60,EXT,Exterior design & lighting,5,2.9,6.5,1800
+US_2025,US,G60,INT,Interior design & quality perception,12,3.7,10.8,1800
+US_2025,US,G60,ACCESS,"Access, doors & convenience",6,5.8,14.2,1800
+US_2025,US,G60,ADAS,Driver assistance & parking (experience),4,1.6,9.9,1800
+US_2025,US,G70,COMFORT,"Comfort, seats & climate",16,5.2,12.6,1814
+US_2025,US,G70,SPACE,"Space, storage & practicality",9,5.7,4.9,1814
+US_2025,US,G70,HMI,Infotainment & operation,16,15.5,18.4,1814
+US_2025,US,G70,DIGITAL,Connectivity & digital services,6,15.5,11.7,1814
+US_2025,US,G70,CHARGING,Range & charging (as experienced),1,7.3,6.3,1814
+US_2025,US,G70,DRIVING,Driving experience & performance,13,3.4,14.6,1814
+US_2025,US,G70,EXT,Exterior design & lighting,5,4.6,7.1,1814
+US_2025,US,G70,INT,Interior design & quality perception,12,5.0,11.0,1814
+US_2025,US,G70,ACCESS,"Access, doors & convenience",6,8.0,12.2,1814
+US_2025,US,G70,ADAS,Driver assistance & parking (experience),4,8.1,9.6,1814
