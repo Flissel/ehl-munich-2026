@@ -1,8 +1,8 @@
 """The 3D car in Rowboat's knowledge graph: fixed links, editable data.
 
     python demo/visu/vault.py graph                  # rebuild the link map demo/torque/dist/visu/graph.json
-    python demo/visu/vault.py notes [--vault V]      # write missing notes: <vault>/Vehicle Parts and <vault>/BMW (brand.py)
-    python demo/visu/vault.py notes --refresh        # also rewrite existing notes (overwrites edits)
+    python demo/visu/vault.py notes [--vault V]      # write missing notes: Brands, Models, Components, Feature Classes + Data workbook (brand.py)
+    python demo/visu/vault.py notes --refresh        # also rewrite existing managed notes (overwrites edits)
     python demo/visu/vault.py sync [--watch]         # vault -> demo/torque/dist/visu/data/visu.json
 
 Links (which part belongs to which area, purchase driver, theme, model and market) come from graph.json,
@@ -11,8 +11,8 @@ attached to a part (heat map rows per model and market, option rows) lives in th
 may edit them and `sync --watch` hands every change to Torque's Concept 3D within seconds. Notes are only
 created when missing, so edits survive a re-run. Customer quotes never go into the vault (spec D8).
 
-Graph: Vehicle -> Exterior / Interior -> area -> part; parts also link to Purchase Drivers (Torque),
-Topics (WP1 themes and markets) and Projects (models).
+Schema (brand.py, Rowboat style: one top-level folder per note type, hierarchy in the links): Brands -> Models ->
+Components -> Feature Classes, plus Data/BMW Dataset.xlsx for analysis.
 """
 from __future__ import annotations
 
@@ -25,8 +25,8 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+import brand
 import feedback
-import options
 
 log = logging.getLogger("visu.vault")
 
@@ -35,10 +35,7 @@ REPO = HERE.parents[1]
 DIST = HERE.parent / "torque" / "dist"
 GRAPH = DIST / "visu" / "graph.json"
 OUT_DATA = DIST / "visu" / "data"
-MODEL_TS = HERE / "src" / "models" / "bmw-m4-competition-2021.ts"
-OPTIONS_MD = REPO / "outputs" / "markdown" / "options" / "processed"
-FOLDER = "Vehicle Parts"
-MARKER = "managed_by: ehl-visu"
+MODEL_TS = HERE / "src" / "models" / "template.ts"  # shared component catalogue
 
 # Purchase driver -> parts of the car (first = where the camera flies). Same reasoning as Torque's drivers.
 DRIVER_PARTS = {
@@ -62,11 +59,6 @@ INTERIOR_AREAS = {
 }
 AREA_NAMES = {"Body panels": "Body panels", "Bumpers & aero": "Bumpers and aero", "Doors": "Doors and mirrors",
               "Glass": "Glass", "Lighting": "Lighting", "Wheels": "Wheels and brakes", "Trim & details": "Exterior details"}
-MODELS = {"F70": "Projects/F70", "G60": "Projects/G60", "G68": "Projects/G68", "G70": "Projects/G70"}
-MARKETS = {"EU": "Topics/Market Europe", "CN": "Topics/Market China", "US": "Topics/Market USA", "RoW": "Topics/Market Rest of World"}
-HEAT_COLS = ["Model", "Market", "Heat", "Comments", "Mentions", "Likes", "Difficult to use", "Defects", "Wants", "Positive %"]
-OPT_COLS = ["Model", "Option", "Code", "Price EUR", "Availability"]
-MIN_COMMENTS = 1
 
 
 def safe_name(title: str) -> str:
@@ -74,15 +66,14 @@ def safe_name(title: str) -> str:
 
 
 def torque_drivers() -> dict[str, dict]:
-    """Driver ids and titles from Torque's REQS (the note names Torque's sync.py writes)."""
-    html = (DIST / "index.html").read_text(encoding="utf-8")
+    """Driver ids, titles and short names from Torque's texts (dist/texts.seed.json, the agent output; REQS no
+    longer lives in the page code). Note names follow the Requirements notes (generate_texts.py)."""
     sys.path.insert(0, str(HERE.parent / "torque"))
-    import sync  # Torque's sync: same note names and theme topics
-    out = {}
-    for rid, title, short in re.findall(r'\{id:"(R-\d+)", title:"([^"]+)", short:"([^"]+)"', html):
-        out[rid] = {"title": title, "short": short, "note": f"{sync.FOLDER}/{safe_name(title)}",
-                    "topics": [f"Topics/{t}" for t in sync.TOPICS.get(rid, [])], "parts": DRIVER_PARTS.get(rid, [])}
-    return out
+    import sync  # Torque's sync: theme topics per driver
+    reqs = json.loads((DIST / "texts.seed.json").read_text(encoding="utf-8"))["requirements"]
+    return {rid: {"title": r["title"], "short": r["short"], "note": f"Requirements/{rid} {safe_name(r['short'])}",
+                  "topics": [f"Topics/{t}" for t in sync.TOPICS.get(rid, [])], "parts": DRIVER_PARTS.get(rid, [])}
+            for rid, r in reqs.items()}
 
 
 def build_graph() -> dict:
@@ -101,15 +92,17 @@ def build_graph() -> dict:
         area = interior_area.get(pid, "Cabin trim") if side == "Interior" else AREA_NAMES[cat]
         drv = [rid for rid, d in drivers.items() if pid in d["parts"]]
         topics = sorted({t for rid in drv for t in drivers[rid]["topics"]})
-        parts[pid] = {"name": name, "side": side, "area": area, "note": f"{FOLDER}/{safe_name(name)}",
+        parts[pid] = {"name": name, "side": side, "area": area,
                       "feature_classes": classes.get(pid, []),
                       "fallback": "general interior" if side == "Interior" else "general exterior",
                       "drivers": drv, "topics": topics}
-        a = areas.setdefault(area, {"side": side, "note": f"{FOLDER}/{area}", "parts": []})
+        parts[pid]["note"] = brand.part_note(parts[pid])
+        parts[pid]["notes"] = {code: parts[pid]["note"] for code in brand.models_with_feedback()}
+        a = areas.setdefault(area, {"side": side, "parts": []})
         a["parts"].append(pid)
-    return {"version": 1, "folder": FOLDER,
-            "hub": {"note": f"{FOLDER}/Vehicle", "sides": {s: f"{FOLDER}/{s}" for s in ("Exterior", "Interior")}},
-            "areas": areas, "parts": parts, "drivers": drivers, "models": MODELS, "markets": MARKETS}
+    return {"version": 3, "folders": brand.FOLDERS, "brand": brand.BRAND,
+            "models": {c: {"folder": m["folder"], "note": brand.model_note(c)} for c, m in brand.MODELS.items()},
+            "areas": areas, "parts": parts, "drivers": drivers}
 
 
 def write_graph() -> dict:
@@ -121,101 +114,6 @@ def write_graph() -> dict:
 
 
 # --------------------------------------------------------------------------- notes
-def link(note: str) -> str:
-    return f"[[{note}]]"
-
-
-def table(cols: list[str], rows: list[list]) -> list[str]:
-    return ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)] + \
-           ["| " + " | ".join("" if v is None else str(v) for v in r) + " |" for r in rows]
-
-
-def heat_rows(pid: str, scores: dict) -> list[list]:
-    rows = []
-    for (series, market), s in scores.items():
-        c = s["components"].get(pid)
-        if not c or not c.get("comments"):
-            continue
-        k = c["counts"]
-        rows.append([series, market, c["score"], c["comments"], c["n"], k.get("Likes", 0), k.get("Difficult to Use", 0),
-                     k.get("Defect", 0), k.get("Wants", 0), c["positive_share"]])
-    return rows
-
-
-def option_rows(pid: str, opts: dict) -> list[list]:
-    return [[code, o["name"].replace("|", "/"), o["package"] if o["package"] not in ("", "unclear") else "",
-             o["price_eur"] or "", o["availability"]]
-            for code, lst in opts.items() for o in lst if pid in o["parts"]]
-
-
-def part_note(pid: str, p: dict, g: dict, scores: dict, opts: dict, today: str) -> str:
-    d = g["drivers"]
-    lines = ["---", "source: dataset", MARKER, f"part_id: {pid}", f"updated: {today}", "---", f"# {p['name']}", "",
-             "## Info", f"**Type:** Car part (3D model)", f"**Part ID:** {pid}", f"**Area:** {link(g['areas'][p['area']]['note'])}",
-             f"**Feature classes:** {', '.join(p['feature_classes']) or 'none of its own, uses ' + p['fallback'] + ' feedback'}",
-             "", "## Connected to", f"- {link(g['areas'][p['area']]['note'])}"]
-    lines += [f"- {link(d[r]['note'])}: {r} {d[r]['short']}" for r in p["drivers"]]
-    lines += [f"- {link(t)}" for t in p["topics"]]
-    lines += [f"- {link(n)}" for n in MODELS.values()]
-    # Dataset graph (brand.py): the feature classes of this part per model
-    lines += [f"- {link(f'BMW/{code} VFC 1')}: feature classes in the {code} feedback" for code in feedback.SERIES
-              if any(c["components"].get(pid, {}).get("comments") for (s, m), c in scores.items() if s == code and m == "ALL")]
-    lines += ["", "## Activity", f"- {today}: created from Dataset/ (feedback) and outputs/markdown/options",
-              "", "## Key facts", "",
-              "### Customer feedback heat map",
-              "Heat 0 = most criticised part, 100 = best rated part of this model and market. Comments = unique comment IDs,",
-              "mentions = classified rows. Edit values here; Torque's Concept 3D shows them.", ""]
-    lines += table(HEAT_COLS, heat_rows(pid, scores)) or []
-    lines += ["", "### Options today", "From the German price lists (Dataset/*_OptionList.PDF).", ""]
-    lines += table(OPT_COLS, option_rows(pid, opts))
-    lines += ["", "## Open items", "- Check the heat map values against the latest feedback export."]
-    return "\n".join(lines) + "\n"
-
-
-def hub_notes(g: dict, today: str) -> dict[str, str]:
-    head = "\n".join(["---", "source: dataset", MARKER, f"updated: {today}", "---"])
-    out = {g["hub"]["note"]: "\n".join([head, "# Vehicle", "", "## Info", "**Type:** 3D car (stand-in: BMW M4 Competition 2021)",
-                                         "", "## Connected to"] + [f"- {link(n)}" for n in g["hub"]["sides"].values()]
-                                        + [f"- {link(n)}" for n in MODELS.values()]
-                                        + ["", "## Key facts", f"- {len(g['parts'])} parts in {len(g['areas'])} areas, linked to "
-                                           f"{len(g['drivers'])} purchase drivers.", ""])}
-    for side, note in g["hub"]["sides"].items():
-        areas = [a for a, v in g["areas"].items() if v["side"] == side]
-        out[note] = "\n".join([head, f"# {side}", "", "## Info", "**Type:** Vehicle side", "", "## Connected to",
-                               f"- {link(g['hub']['note'])}"] + [f"- {link(g['areas'][a]['note'])}" for a in areas] + [""])
-    for area, a in g["areas"].items():
-        out[a["note"]] = "\n".join([head, f"# {area}", "", "## Info", "**Type:** Vehicle area", "", "## Connected to",
-                                    f"- {link(g['hub']['sides'][a['side']])}"]
-                                   + [f"- {link(g['parts'][p]['note'])}" for p in a["parts"]] + [""])
-    return out
-
-
-def write_notes(vault: Path, refresh: bool) -> int:
-    g = json.loads(GRAPH.read_text(encoding="utf-8")) if GRAPH.exists() else write_graph()
-    ds = feedback.get_dataset()
-    if ds.error:
-        raise SystemExit(ds.error)
-    scores = {(s or "ALL", m or "ALL"): ds.scores(s, m) for s in [None, *feedback.SERIES] for m in [None, *feedback.MARKETS]}
-    opts = {code: options.parse(OPTIONS_MD / f"{code.lower()}_options_features.md")
-            for code in feedback.SERIES if (OPTIONS_MD / f"{code.lower()}_options_features.md").is_file()}
-    today = datetime.now().strftime("%Y-%m-%d")
-    texts = hub_notes(g, today)
-    for pid, p in g["parts"].items():
-        texts[p["note"]] = part_note(pid, p, g, scores, opts, today)
-    written = 0
-    for note, text in texts.items():
-        path = vault / f"{note}.md"
-        if path.exists() and not refresh:
-            continue
-        if path.exists() and MARKER not in path.read_text(encoding="utf-8")[:300]:
-            continue  # someone took the note over (removed managed_by): never touch it
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding="utf-8")
-        written += 1
-    log.info("%d note(s) written to %s/%s (%d in the graph)", written, vault, FOLDER, len(texts))
-    return written
-
-
 # --------------------------------------------------------------------------- vault -> UI
 def num(v: str):
     v = v.strip().replace(",", "")
@@ -237,36 +135,40 @@ def read_table(body: str, heading: str) -> list[dict]:
 
 
 def read_vault(vault: Path, g: dict) -> dict:
-    """Part data from the notes, keyed by the fixed part ids of graph.json (links in the notes are ignored)."""
-    # Found by the fixed part_id in the front matter, so a renamed or moved note still feeds the same 3D part.
-    by_id = {}
-    for f in vault.rglob("*.md"):
-        m = re.match(r"---\n.*?^part_id:\s*([a-z-]+)\s*$.*?\n---", f.read_text(encoding="utf-8", errors="ignore")[:600],
-                     flags=re.S | re.M)
-        if m and m[1] in g["parts"]:
-            by_id.setdefault(m[1], f)
-    parts = {}
-    for pid, p in g["parts"].items():
-        path = by_id.get(pid) or vault / f"{p['note']}.md"
-        if not path.exists():
+    """Component data from the notes, keyed by the fixed part_id (+ model) in their front matter, so a renamed
+    or moved note still feeds the same 3D part. Links in the notes are never read."""
+    parts = {pid: {"notes": {}, "heat": {}, "options": {}} for pid in g["parts"]}
+    for f in sorted((vault / brand.FOLDERS["part"]).rglob("*.md")):
+        text = f.read_text(encoding="utf-8", errors="ignore")
+        head = re.match(r"---\n(.*?)\n---", text, flags=re.S)
+        meta = dict(re.findall(r"^(\w+):\s*(.+?)\s*$", head[1], flags=re.M)) if head else {}
+        pid, code = meta.get("part_id"), meta.get("model", "")
+        if pid not in parts:
             continue
-        body = path.read_text(encoding="utf-8")
-        heat = {}
-        for r in read_table(body, "Customer feedback heat map"):
-            key = f"{r.get('Model', 'ALL')}|{r.get('Market', 'ALL')}"
-            heat[key] = {"score": num(r.get("Heat", "")), "comments": num(r.get("Comments", "")), "n": num(r.get("Mentions", "")),
-                         "counts": {"Likes": num(r.get("Likes", "0")) or 0, "Difficult to Use": num(r.get("Difficult to use", "0")) or 0,
-                                    "Defect": num(r.get("Defects", "0")) or 0, "Wants": num(r.get("Wants", "0")) or 0},
-                         "positive_share": num(r.get("Positive %", ""))}
-        opts = {}
-        for r in read_table(body, "Options today"):
-            opts.setdefault(r.get("Model", ""), []).append({"name": r.get("Option", ""), "package": r.get("Code", ""),
-                                                            "price_eur": num(r.get("Price EUR", "")), "availability": r.get("Availability", "")})
-        parts[pid] = {"note": path.relative_to(vault).with_suffix("").as_posix(), "heat": heat, "options": opts}
-    return parts
+        p = parts[pid]
+        note = f.relative_to(vault).with_suffix("").as_posix()
+        p["notes"].update({c: note for c in brand.models_with_feedback()} if not code else {code: note})
+        for r in read_table(text, "Customer feedback heat map"):
+            p["heat"][f"{r.get('Model') or code}|{r.get('Market', 'ALL')}"] = {
+                "score": num(r.get("Heat", "")), "comments": num(r.get("Comments", "")), "n": num(r.get("Mentions", "")),
+                "counts": {"Likes": num(r.get("Likes", "0")) or 0, "Difficult to Use": num(r.get("Difficult to use", "0")) or 0,
+                           "Defect": num(r.get("Defects", "0")) or 0, "Wants": num(r.get("Wants", "0")) or 0},
+                "positive_share": num(r.get("Positive %", ""))}
+        for r in read_table(text, "Options today"):
+            p["options"].setdefault(r.get("Model") or code, []).append(
+                {"name": r.get("Option", ""), "package": r.get("Code", ""), "price_eur": num(r.get("Price EUR", "")),
+                 "availability": r.get("Availability", "")})
+    return {pid: p for pid, p in parts.items() if p["notes"]}
 
 
 def sync_once(vault: Path, out: Path) -> bool:
+    import assumptions  # Assumptions/*.md -> assumptions.json (Torque reads it before its seed copy)
+    write_json(out / "assumptions.json", assumptions.read(vault))
+    import generate_texts  # Requirements/*.md (agent output, editable) -> texts.json, on top of the seed
+    seed = json.loads(generate_texts.SEED.read_text(encoding="utf-8"))
+    for rid, t in generate_texts.read_notes(vault).items():
+        seed["requirements"][rid] = {**seed["requirements"].get(rid, {}), **{k: v for k, v in t.items() if v}}
+    write_json(out / "texts.json", {**seed, "source": "Rowboat notes Requirements/ (agent output, editable)"})
     g = json.loads(GRAPH.read_text(encoding="utf-8"))
     data = {"source": str(vault), "parts": read_vault(vault, g)}
     dst = out / "visu.json"
@@ -282,13 +184,40 @@ def sync_once(vault: Path, out: Path) -> bool:
     tmp = dst.with_name("visu.json.tmp")
     tmp.write_text(json.dumps({"generated": datetime.now().astimezone().isoformat(timespec="seconds"), **data},
                               ensure_ascii=False), encoding="utf-8")
-    tmp.replace(dst)
+    for attempt in range(10):  # Windows: the app server may hold the file open for a moment
+        try:
+            tmp.replace(dst)
+            break
+        except PermissionError:
+            time.sleep(0.2)
+    else:
+        log.warning("could not replace %s (locked); next change retries", dst)
+        return False
     log.info("synced %d part notes -> %s", len(data["parts"]), dst)
     return True
 
 
+def write_json(dst: Path, data: dict) -> bool:
+    """Writes only on change; retries while the app server holds the file (Windows)."""
+    text = json.dumps(data, ensure_ascii=False)
+    if dst.exists() and dst.read_text(encoding="utf-8") == text:
+        return False
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    tmp = dst.with_name(dst.name + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    for _ in range(10):
+        try:
+            tmp.replace(dst)
+            log.info("wrote %s", dst.name)
+            return True
+        except PermissionError:
+            time.sleep(0.2)
+    return False
+
+
 def signature(vault: Path) -> tuple:
-    files = list(vault.rglob("*.md")) + [GRAPH]
+    files = (list((vault / brand.FOLDERS["part"]).rglob("*.md")) + list((vault / "Assumptions").glob("*.md"))
+             + list((vault / "Requirements").glob("*.md")) + [GRAPH])
     return tuple(sorted((str(f), f.stat().st_mtime_ns, f.stat().st_size) for f in files if f.exists()))
 
 
@@ -305,9 +234,13 @@ def main() -> int:
     if args.command == "graph":
         write_graph()
     elif args.command == "notes":
-        write_notes(vault, args.refresh)
-        import brand  # Dataset graph: Brand -> Model -> Country, ID, Engine, VFC 1-3, Source, Sales, Feedback
-        brand.write(vault, args.refresh)
+        brand.write(vault, args.refresh, json.loads(GRAPH.read_text(encoding="utf-8")) if GRAPH.exists() else write_graph())
+        import assumptions, generate_texts  # Assumptions/ (seed values) and Requirements/ (committed agent output)
+        assumptions.write_notes(vault, args.refresh)
+        generate_texts.notes_from_seed(vault, args.refresh)
+        config = vault.parent / "config" / "notes.json"  # Rowboat's note types (its agents write these folders alike)
+        if config.exists():
+            brand.register_types(config)
     else:
         last = None
         while True:

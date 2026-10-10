@@ -78,7 +78,7 @@ def price_eur(text: str) -> int | None:
     return int(digits) if digits.isdigit() else None
 
 
-def parse(path: Path) -> list[dict]:
+def parse(path: Path, linked_only: bool = True) -> list[dict]:
     options, section, cur = [], "", None
     for line in path.read_text(encoding="utf-8").splitlines():
         if line.startswith("### "):
@@ -98,7 +98,7 @@ def parse(path: Path) -> list[dict]:
     for o in options:
         key = o["name"].lower()
         parts = parts_for(o["name"] + " " + o["category"] if o["category"].lower() in ("wheels & tires",) else o["name"])
-        if key in seen or not parts or not o["availability"]:
+        if key in seen or (linked_only and not parts) or not o["availability"]:
             continue
         seen.add(key)
         out.append({**o, "price_eur": price_eur(o["price"]), "parts": parts})

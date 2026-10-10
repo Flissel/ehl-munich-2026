@@ -1,0 +1,1230 @@
+{
+ "modelExtra": {
+  "1": {
+   "seg": "premium compact",
+   "comps": [
+    [
+     "Mercedes CLA",
+     [
+      74,
+      78,
+      55,
+      66,
+      64,
+      70,
+      72,
+      74,
+      60
+     ]
+    ],
+    [
+     "Audi A3",
+     [
+      50,
+      52,
+      52,
+      63,
+      60,
+      72,
+      74,
+      62,
+      62
+     ]
+    ],
+    [
+     "Tesla Model 3",
+     [
+      80,
+      76,
+      50,
+      58,
+      70,
+      66,
+      52,
+      58,
+      71
+     ]
+    ]
+   ],
+   "current": [
+    52,
+    55,
+    48,
+    61,
+    58,
+    84,
+    70,
+    66,
+    57
+   ]
+  },
+  "5": {
+   "seg": "executive sedan",
+   "comps": [
+    [
+     "Mercedes E-Class",
+     [
+      66,
+      68,
+      78,
+      63,
+      70,
+      72,
+      84,
+      70,
+      56
+     ]
+    ],
+    [
+     "Audi A6 e-tron",
+     [
+      83,
+      76,
+      70,
+      64,
+      65,
+      74,
+      79,
+      68,
+      57
+     ]
+    ],
+    [
+     "Xiaomi SU7",
+     [
+      86,
+      74,
+      64,
+      86,
+      78,
+      70,
+      66,
+      80,
+      82
+     ]
+    ]
+   ],
+   "current": [
+    58,
+    62,
+    71,
+    60,
+    66,
+    85,
+    80,
+    64,
+    58
+   ]
+  },
+  "7": {
+   "seg": "luxury sedan",
+   "comps": [
+    [
+     "Mercedes S-Class",
+     [
+      70,
+      72,
+      90,
+      64,
+      76,
+      68,
+      91,
+      72,
+      48
+     ]
+    ],
+    [
+     "NIO ET9",
+     [
+      88,
+      70,
+      92,
+      85,
+      80,
+      62,
+      82,
+      74,
+      66
+     ]
+    ],
+    [
+     "Lucid Air",
+     [
+      84,
+      90,
+      72,
+      60,
+      62,
+      80,
+      74,
+      76,
+      58
+     ]
+    ]
+   ],
+   "current": [
+    62,
+    64,
+    86,
+    58,
+    72,
+    74,
+    86,
+    52,
+    50
+   ]
+  }
+ },
+ "rivals": {
+  "1": [
+   {
+    "n": "Mercedes CLA",
+    "m": [
+     "EU",
+     "CN",
+     "US",
+     "RoW"
+    ],
+    "price": 46000,
+    "f": [
+     "R-01",
+     "R-04",
+     "R-08",
+     "R-10",
+     "R-19"
+    ],
+    "range": 700,
+    "cx": 1.5,
+    "b": [
+     0.1,
+     -0.1,
+     0.2,
+     0
+    ]
+   },
+   {
+    "n": "Audi A3",
+    "m": [
+     "EU",
+     "CN",
+     "RoW"
+    ],
+    "price": 34000,
+    "f": [
+     "R-05",
+     "R-09",
+     "R-16"
+    ],
+    "range": 600,
+    "cx": 0.9,
+    "b": [
+     -0.1,
+     0.1,
+     0.1,
+     0.1
+    ]
+   },
+   {
+    "n": "Tesla Model 3",
+    "m": [
+     "EU",
+     "CN",
+     "US",
+     "RoW"
+    ],
+    "price": 40000,
+    "f": [
+     "R-06",
+     "R-07",
+     "R-15",
+     "R-21"
+    ],
+    "range": 600,
+    "cx": 1.4,
+    "b": [
+     0.4,
+     0.05,
+     -0.2,
+     0.05
+    ]
+   }
+  ],
+  "5": [
+   {
+    "n": "Mercedes E-Class",
+    "m": [
+     "EU",
+     "CN",
+     "US",
+     "RoW"
+    ],
+    "price": 66000,
+    "f": [
+     "R-05",
+     "R-06",
+     "R-07",
+     "R-09",
+     "R-14",
+     "R-18",
+     "R-19"
+    ],
+    "range": 600,
+    "cx": 1.2,
+    "b": [
+     0,
+     -0.1,
+     0.35,
+     0
+    ]
+   },
+   {
+    "n": "Audi A6 e-tron",
+    "m": [
+     "EU",
+     "CN",
+     "US",
+     "RoW"
+    ],
+    "price": 63000,
+    "f": [
+     "R-01",
+     "R-04",
+     "R-05",
+     "R-09",
+     "R-18"
+    ],
+    "range": 650,
+    "cx": 1.1,
+    "b": [
+     0.05,
+     0.1,
+     0.1,
+     0
+    ]
+   },
+   {
+    "n": "Xiaomi SU7",
+    "m": [
+     "CN"
+    ],
+    "price": 32000,
+    "f": [
+     "R-01",
+     "R-04",
+     "R-06",
+     "R-07",
+     "R-08",
+     "R-10",
+     "R-15",
+     "R-19",
+     "R-21"
+    ],
+    "range": 700,
+    "cx": 1.6,
+    "b": [
+     0.4,
+     -0.2,
+     -0.5,
+     0.1
+    ]
+   }
+  ],
+  "7": [
+   {
+    "n": "Mercedes S-Class",
+    "m": [
+     "EU",
+     "CN",
+     "US",
+     "RoW"
+    ],
+    "price": 125000,
+    "f": [
+     "R-03",
+     "R-05",
+     "R-06",
+     "R-07",
+     "R-09",
+     "R-13",
+     "R-14",
+     "R-18",
+     "R-19",
+     "R-20"
+    ],
+    "range": 600,
+    "cx": 1.3,
+    "b": [
+     0,
+     -0.1,
+     0.45,
+     0
+    ]
+   },
+   {
+    "n": "NIO ET9",
+    "m": [
+     "CN"
+    ],
+    "price": 105000,
+    "f": [
+     "R-01",
+     "R-03",
+     "R-04",
+     "R-06",
+     "R-07",
+     "R-08",
+     "R-09",
+     "R-10",
+     "R-14",
+     "R-18",
+     "R-19",
+     "R-21"
+    ],
+    "range": 650,
+    "cx": 1.7,
+    "b": [
+     0.4,
+     -0.2,
+     0.05,
+     -0.1
+    ]
+   },
+   {
+    "n": "Lucid Air",
+    "m": [
+     "EU",
+     "US"
+    ],
+    "price": 100000,
+    "f": [
+     "R-01",
+     "R-04",
+     "R-07",
+     "R-09",
+     "R-16"
+    ],
+    "range": 800,
+    "cx": 1.3,
+    "b": [
+     0.2,
+     0.15,
+     0,
+     -0.2
+    ]
+   }
+  ]
+ },
+ "features": {
+  "R-01": {
+   "n": "Fast charging, 800 volt",
+   "pw": [
+    0.35,
+    0.25,
+    0.2,
+    0.15
+   ],
+   "mk": {
+    "CN": 0.05
+   },
+   "cost": 900,
+   "cx": 0
+  },
+  "R-02": {
+   "n": "Range",
+   "range": true,
+   "pw": [
+    0.45,
+    0.5,
+    0.5,
+    0.35
+   ],
+   "mk": {
+    "US": 0.08,
+    "CN": -0.06
+   },
+   "cost": 2900,
+   "cx": 0
+  },
+  "R-03": {
+   "n": "Long wheelbase rear lounge",
+   "pw": [
+    0.05,
+    -0.05,
+    0.55,
+    0
+   ],
+   "mk": {
+    "CN": 0.3
+   },
+   "only": [
+    "CN"
+   ],
+   "cost": {
+    "1": 3500,
+    "5": 3500,
+    "7": 7450
+   },
+   "cx": 0
+  },
+  "R-04": {
+   "n": "Simple UX, fixed screen layout",
+   "pw": [
+    0.3,
+    0.05,
+    0.2,
+    0.1
+   ],
+   "mk": {},
+   "cost": 800,
+   "cx": -0.2
+  },
+  "R-05": {
+   "n": "Physical controls and rotary controller",
+   "pw": [
+    -0.15,
+    0.3,
+    0.1,
+    0.35
+   ],
+   "mk": {
+    "CN": -0.25,
+    "EU": 0.1
+   },
+   "cost": 40,
+   "cx": -0.3
+  },
+  "R-06": {
+   "n": "Reliable software and updates",
+   "pw": [
+    0.3,
+    0.2,
+    0.25,
+    0.3
+   ],
+   "mk": {
+    "CN": 0.05
+   },
+   "cost": 400,
+   "cx": 0
+  },
+  "R-07": {
+   "n": "Hands off highway assist",
+   "pw": [
+    0.45,
+    0.05,
+    0.35,
+    0.1
+   ],
+   "mk": {
+    "CN": 0.15,
+    "EU": -0.1
+   },
+   "cost": {
+    "1": 2280,
+    "5": 2100,
+    "7": 1980
+   },
+   "cx": 0.25
+  },
+  "R-08": {
+   "n": "Personal AI assistant",
+   "pw": [
+    0.4,
+    -0.1,
+    0.15,
+    -0.15
+   ],
+   "mk": {
+    "CN": 0.2,
+    "EU": -0.12
+   },
+   "cost": 600,
+   "cx": 0.6
+  },
+  "R-09": {
+   "n": "Premium interior",
+   "pw": [
+    0.2,
+    0.25,
+    0.6,
+    0.1
+   ],
+   "mk": {
+    "CN": 0.05
+   },
+   "cost": {
+    "1": 1800,
+    "5": 1600,
+    "7": 700
+   },
+   "cx": 0
+  },
+  "R-10": {
+   "n": "Light signature design",
+   "pw": [
+    0.2,
+    -0.05,
+    0.1,
+    -0.1
+   ],
+   "mk": {
+    "CN": 0.08,
+    "EU": -0.06
+   },
+   "cost": {
+    "1": 550,
+    "5": 550,
+    "7": 2150
+   },
+   "cx": 0
+  },
+  "R-11": {
+   "n": "Agile handling as an EV",
+   "pw": [
+    0.2,
+    1.1,
+    0.25,
+    0.05
+   ],
+   "mk": {
+    "CN": -0.15
+   },
+   "cost": 1200,
+   "cx": 0
+  },
+  "R-12": {
+   "n": "Privacy controls",
+   "pw": [
+    0.05,
+    0.1,
+    0.05,
+    0.15
+   ],
+   "mk": {
+    "EU": 0.1,
+    "CN": -0.05
+   },
+   "cost": 100,
+   "cx": -0.05
+  },
+  "R-13": {
+   "n": "Reliable hands free access",
+   "pw": [
+    0.15,
+    0.05,
+    0.3,
+    0.2
+   ],
+   "mk": {
+    "CN": 0.08
+   },
+   "cost": {
+    "1": 1900,
+    "5": 1900,
+    "7": 0
+   },
+   "cx": 0
+  },
+  "R-14": {
+   "n": "Ventilated comfort seats",
+   "pw": [
+    0.1,
+    0.1,
+    0.5,
+    0.2
+   ],
+   "mk": {
+    "US": 0.08,
+    "CN": 0.06
+   },
+   "cost": {
+    "1": 900,
+    "5": 2750,
+    "7": 3200
+   },
+   "cx": 0
+  },
+  "R-15": {
+   "n": "Seamless phone integration",
+   "pw": [
+    0.35,
+    0.05,
+    0.15,
+    0.3
+   ],
+   "mk": {
+    "CN": -0.1
+   },
+   "cost": 300,
+   "cx": 0
+  },
+  "R-16": {
+   "n": "Smarter storage and luggage space",
+   "pw": [
+    0.1,
+    0.05,
+    0.25,
+    0.3
+   ],
+   "mk": {
+    "CN": 0.05
+   },
+   "cost": 300,
+   "cx": 0
+  },
+  "R-17": {
+   "n": "Start-stop that remembers off",
+   "pw": [
+    0.02,
+    0.15,
+    0.05,
+    0.15
+   ],
+   "mk": {
+    "CN": -0.1
+   },
+   "cost": 20,
+   "cx": -0.1
+  },
+  "R-18": {
+   "n": "Premium audio",
+   "pw": [
+    0.25,
+    0.1,
+    0.35,
+    0
+   ],
+   "mk": {
+    "CN": 0.12
+   },
+   "cost": {
+    "1": 700,
+    "5": 750,
+    "7": 6050
+   },
+   "cx": 0
+  },
+  "R-19": {
+   "n": "Automated parking and surround view",
+   "pw": [
+    0.3,
+    0,
+    0.3,
+    0.15
+   ],
+   "mk": {
+    "CN": 0.15
+   },
+   "cost": {
+    "1": 250,
+    "5": 1150,
+    "7": 0
+   },
+   "cx": 0.1
+  },
+  "R-20": {
+   "n": "Fast, quiet climate comfort",
+   "pw": [
+    0.1,
+    0.05,
+    0.35,
+    0.2
+   ],
+   "mk": {
+    "US": 0.05
+   },
+   "cost": {
+    "1": 600,
+    "5": 1450,
+    "7": 0
+   },
+   "cx": 0
+  },
+  "R-21": {
+   "n": "More standard, no hardware subscriptions",
+   "pw": [
+    0,
+    0.05,
+    0.1,
+    0.6
+   ],
+   "mk": {
+    "CN": 0.1
+   },
+   "cost": 900,
+   "cx": -0.05
+  }
+ },
+ "baseOn": {
+  "1": [
+   "R-11"
+  ],
+  "5": [
+   "R-05",
+   "R-09",
+   "R-11",
+   "R-15"
+  ],
+  "7": [
+   "R-04",
+   "R-09",
+   "R-11",
+   "R-13",
+   "R-15",
+   "R-18",
+   "R-19",
+   "R-20"
+  ]
+ },
+ "segments": {
+  "SEGS": [
+   {
+    "k": "T",
+    "n": "Tech seekers"
+   },
+   {
+    "k": "D",
+    "n": "Driving purists"
+   },
+   {
+    "k": "C",
+    "n": "Comfort and status"
+   },
+   {
+    "k": "S",
+    "n": "Simplicity and value"
+   }
+  ],
+  "SEG_MK": {
+   "EU": [
+    0.2,
+    0.3,
+    0.25,
+    0.25
+   ],
+   "CN": [
+    0.38,
+    0.1,
+    0.37,
+    0.15
+   ],
+   "US": [
+    0.27,
+    0.22,
+    0.28,
+    0.23
+   ],
+   "RoW": [
+    0.26,
+    0.24,
+    0.28,
+    0.22
+   ]
+  },
+  "SEG_ADJ": {
+   "1": [
+    -0.05,
+    0.03,
+    -0.1,
+    0.12
+   ],
+   "5": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "7": [
+    0.02,
+    -0.05,
+    0.15,
+    -0.12
+   ]
+  },
+  "SEG_TARGET": [
+   0.9,
+   1.3,
+   1,
+   0.8
+  ],
+  "BETA": [
+   0.05,
+   0.045,
+   0.03,
+   0.09
+  ],
+  "BETA_M": {
+   "1": 1.3,
+   "5": 1,
+   "7": 0.7
+  },
+  "GAMMA": [
+   -0.18,
+   0.35,
+   0.15,
+   0.6
+  ],
+  "PW_SCALE": 0.3,
+  "CX_SCALE": 0.4,
+  "SHARE0": {
+   "1": {
+    "EU": 0.17,
+    "CN": 0.12,
+    "US": 0.15,
+    "RoW": 0.12
+   },
+   "5": {
+    "EU": 0.24,
+    "CN": 0.15,
+    "US": 0.2,
+    "RoW": 0.15
+   },
+   "7": {
+    "EU": 0.28,
+    "CN": 0.2,
+    "US": 0.18,
+    "RoW": 0.18
+   }
+  }
+ },
+ "weights": {
+  "DERIVED": {
+   "buy": 34,
+   "net": 28,
+   "gap": 16,
+   "evidence": 12,
+   "feas": 10
+  },
+  "PRESETS": {
+   "Customer first": {
+    "buy": 50,
+    "net": 25,
+    "gap": 10,
+    "evidence": 10,
+    "feas": 5
+   },
+   "Fix weak spots": {
+    "buy": 20,
+    "net": 20,
+    "gap": 40,
+    "evidence": 15,
+    "feas": 5
+   },
+   "Cost aware": {
+    "buy": 25,
+    "net": 25,
+    "gap": 10,
+    "evidence": 10,
+    "feas": 30
+   }
+  }
+ },
+ "carDims": {
+  "1": {
+   "fo": 0.8,
+   "wb": 2.67,
+   "ro": 0.89,
+   "W": 1.8,
+   "H": 1.46,
+   "hatch": true
+  },
+  "5": {
+   "fo": 0.95,
+   "wb": 2.995,
+   "ro": 1.115,
+   "W": 1.9,
+   "H": 1.5,
+   "hatch": false
+  },
+  "7": {
+   "fo": 1,
+   "wb": 3.215,
+   "ro": 1.175,
+   "W": 1.95,
+   "H": 1.54,
+   "hatch": false
+  }
+ },
+ "requirements": {
+  "R-01": {
+   "feas": 62,
+   "cn": {
+    "w": 0.99,
+    "b": 0.97,
+    "k": "M",
+    "rev": 1
+   },
+   "pa": 0
+  },
+  "R-02": {
+   "feas": 48,
+   "cn": {
+    "w": 0.65,
+    "b": 0.59,
+    "k": "P",
+    "rev": 2
+   },
+   "pa": 1
+  },
+  "R-03": {
+   "feas": 58,
+   "cn": {
+    "w": 3,
+    "b": 3,
+    "k": "M",
+    "rev": 0
+   },
+   "pa": 2
+  },
+  "R-04": {
+   "feas": 76,
+   "cn": {
+    "w": 0.69,
+    "b": 0.7,
+    "k": "P",
+    "rev": 2
+   },
+   "pa": 3
+  },
+  "R-05": {
+   "feas": 84,
+   "cn": {
+    "w": 0.39,
+    "b": 0.35,
+    "k": "R",
+    "rev": 21
+   },
+   "pa": null,
+   "gap": 48
+  },
+  "R-06": {
+   "feas": 55,
+   "cn": {
+    "w": 1.24,
+    "b": 1.21,
+    "k": "M",
+    "rev": 0
+   },
+   "pa": null,
+   "gap": 66
+  },
+  "R-07": {
+   "feas": 44,
+   "cn": {
+    "w": 1.39,
+    "b": 1.67,
+    "k": "M",
+    "rev": 2
+   },
+   "pa": 4
+  },
+  "R-08": {
+   "feas": 60,
+   "cn": {
+    "w": 1.65,
+    "b": 2.85,
+    "k": "A",
+    "rev": 3
+   },
+   "pa": null,
+   "gap": 82
+  },
+  "R-09": {
+   "feas": 70,
+   "cn": {
+    "w": 1.16,
+    "b": 1.11,
+    "k": "P",
+    "rev": 0
+   },
+   "pa": 6
+  },
+  "R-10": {
+   "feas": 72,
+   "cn": {
+    "w": 1.53,
+    "b": 1.46,
+    "k": "A",
+    "rev": 8
+   },
+   "pa": 7
+  },
+  "R-11": {
+   "feas": 52,
+   "cn": {
+    "w": 0.48,
+    "b": 0.38,
+    "k": "I",
+    "rev": 2
+   },
+   "pa": 5
+  },
+  "R-12": {
+   "feas": 82,
+   "cn": {
+    "w": 0.4,
+    "b": 0.38,
+    "k": "I",
+    "rev": 1
+   },
+   "pa": null,
+   "gap": 44
+  },
+  "R-13": {
+   "feas": 78,
+   "cn": {
+    "w": 1.2,
+    "b": 1.1,
+    "k": "M",
+    "rev": 3
+   },
+   "pa": null,
+   "gap": 52
+  },
+  "R-14": {
+   "feas": 70,
+   "cn": {
+    "w": 1.1,
+    "b": 1.1,
+    "k": "P",
+    "rev": 2
+   },
+   "pa": null,
+   "gap": 46
+  },
+  "R-15": {
+   "feas": 74,
+   "cn": {
+    "w": 0.8,
+    "b": 0.9,
+    "k": "M",
+    "rev": 1
+   },
+   "pa": null,
+   "gap": 58
+  },
+  "R-16": {
+   "feas": 66,
+   "cn": {
+    "w": 1.1,
+    "b": 1.1,
+    "k": "P",
+    "rev": 1
+   },
+   "pa": null,
+   "gap": 52
+  },
+  "R-17": {
+   "feas": 92,
+   "cn": {
+    "w": 0.6,
+    "b": 0.5,
+    "k": "R",
+    "rev": 35
+   },
+   "pa": null,
+   "gap": 40
+  },
+  "R-18": {
+   "feas": 80,
+   "cn": {
+    "w": 1.3,
+    "b": 1.3,
+    "k": "A",
+    "rev": 2
+   },
+   "pa": null,
+   "gap": 48
+  },
+  "R-19": {
+   "feas": 70,
+   "cn": {
+    "w": 1.5,
+    "b": 1.4,
+    "k": "M",
+    "rev": 2
+   },
+   "pa": null,
+   "gap": 50
+  },
+  "R-20": {
+   "feas": 74,
+   "cn": {
+    "w": 1.1,
+    "b": 1,
+    "k": "M",
+    "rev": 3
+   },
+   "pa": null,
+   "gap": 55
+  },
+  "R-21": {
+   "feas": 50,
+   "cn": {
+    "w": 1.4,
+    "b": 1.3,
+    "k": "P",
+    "rev": 0
+   },
+   "pa": 8
+  }
+ },
+ "research": [
+  {
+   "k": "fatigue",
+   "t": "Feature fatigue",
+   "s": "Before use, 66 percent chose the model with the most features. After using it, 56 percent preferred a simpler one.",
+   "src": "Thompson, Hamilton and Rust, Journal of Marketing Research 2005",
+   "url": "https://www.rhsmith.umd.edu/news/feature-fatigue-research-proves-simpler-products-are-better-manufacturers-advised-lose-extra"
+  },
+  {
+   "k": "intent",
+   "t": "Saying is not buying",
+   "s": "In one panel, 9.87 percent said they would buy a car within 12 months. 5.01 percent did.",
+   "src": "Study on purchase intentions and purchases, automobiles",
+   "url": "https://english.ckgsb.edu.cn/wp-content/uploads/2017/12/intention.pdf"
+  },
+  {
+   "k": "touch",
+   "t": "Touch costs attention",
+   "s": "Four basic tasks at 110 km/h took 10 seconds in a 2005 car with buttons and 44.6 seconds in the slowest touchscreen car.",
+   "src": "Vi Bilägare test 2022, via ETSC",
+   "url": "https://etsc.eu/physical-buttons-outperform-touchscreens-in-new-cars/"
+  },
+  {
+   "k": "ncap",
+   "t": "Regulation pulls buttons back",
+   "s": "From 2026 Euro NCAP expects physical controls for indicators, hazard lights, wipers, horn and SOS for five stars.",
+   "src": "Euro NCAP 2026 protocol, via TechSpot",
+   "url": "https://www.techspot.com/news/102134-car-makers-must-bring-back-physical-controls-if.html"
+  },
+  {
+   "k": "jdp",
+   "t": "Unused tech annoys",
+   "s": "Owners see front passenger screens as unnecessary: only 10 percent of vehicles carry a front passenger daily. Gesture controls: 43.4 problems per 100 vehicles.",
+   "src": "J.D. Power 2024 U.S. Tech Experience Index",
+   "url": "https://www.repairerdrivennews.com/2024/08/27/j-d-power-owners-find-some-vehicle-technology-not-necessary-and-hard-to-function/"
+  },
+  {
+   "k": "conti",
+   "t": "Markets differ",
+   "s": "69 percent of Chinese drivers welcome many functions on the display, 80 percent in Japan prefer simple interfaces.",
+   "src": "Continental Mobility Study 2024",
+   "url": "https://www.continental.com/en/press/studies-publications/continental-mobility-studies/mobility-study-2024/displays-in-the-car/"
+  },
+  {
+   "k": "wtp",
+   "t": "Range has a price",
+   "s": "Buyers in six European markets value extra EV range at about 27 to 29 EUR per km.",
+   "src": "Preferences and willingness to pay for BEVs and PHEVs, six European markets",
+   "url": "https://www.trafikdage.dk/abstracts_2026/Preferences%20and%20Willingness-to-Pay%20for%20BEVs%20and%20PHEVs%20Across%20Six%20European%20Markets.pdf"
+  },
+  {
+   "k": "derived",
+   "t": "Stated vs derived importance",
+   "s": "What people say matters and what statistically drives their choice often differ. Derived importance predicts the outcome better.",
+   "src": "Decision Analyst",
+   "url": "https://decisionanalyst.com/blog/stated-vs-derived-importance/"
+  }
+ ]
+}

@@ -1,0 +1,394 @@
+{
+ "source": "agent output (gpt-4.1 + RAG, demo/visu/generate_texts.py, 2026-10-10)",
+ "requirements": {
+  "R-01": {
+   "id": "R-01",
+   "title": "Fast charging for hassle-free long trips",
+   "short": "Fast charging",
+   "cat": "Charging and range",
+   "motive": "Customers want to travel long distances without worrying about charging delays or network limitations.",
+   "attr": "DC charging speed and charger network availability",
+   "target": "The vehicle must enable a full recharge from 10% to 80% in under 30 minutes at any major public DC fast charger, with seamless access to a broad charging network.",
+   "accept": "Product manager verifies by testing a 10% to 80% charge at multiple public DC fast chargers and confirming network access in key markets.",
+   "assume": [
+    "Public DC fast chargers are widely available in target markets",
+    "Charging hardware and software are compatible with major networks"
+   ],
+   "cs": "BMW customer comments (G60-0256, G60-1910) show frustration with long-distance charging difficulty and lack of a dedicated fast charging network; 3 purchase reasons and 114 'difficult to use' comments support this.",
+   "conflict": "Evidence is thin for China (no owner comments, only modeled from study) and limited for EU (only 8 comments). Most feedback is from US G60 BEV owners. No direct evidence for G70. No customer study data.",
+   "feature_on": "DC fast charging port with network integration",
+   "feature_off": "AC-Laden Professional (22 kW), DC charging not available"
+  },
+  "R-02": {
+   "id": "R-02",
+   "title": "Confident highway range for long trips",
+   "short": "Real world range",
+   "cat": "Charging and range",
+   "motive": "Customers want to travel long distances without worrying about running out of charge, especially at highway speeds or in cold weather.",
+   "attr": "Usable electric range at highway speed and in cold weather",
+   "target": "The vehicle must deliver at least {rangeKm} km of real-world range at 120 km/h in 0°C ambient temperature, as verified by independent testing.",
+   "accept": "Product manager verifies the target by reviewing independent range tests at 120 km/h and 0°C, confirming the vehicle meets or exceeds the specified range.",
+   "assume": [
+    "Independent test protocols reflect customer usage",
+    "Range at 120 km/h and 0°C is a key pain point",
+    "No major battery chemistry changes before launch"
+   ],
+   "cs": "Customer comments show 113 'difficult to use' and 43 'defect' mentions (G60, G70, F-011), with range and charging making up 80% of pain points for G60 BEV owners (F-011).",
+   "conflict": "Direct owner comments on real-world range are thin, especially for China (no owner comments, only study data). Most pain points are about charging and range in general, not always specifically highway or cold weather range.",
+   "feature_on": "{rangeKm} km real-world range display at 120 km/h",
+   "feature_off": "No specific real-world range display"
+  },
+  "R-03": {
+   "id": "R-03",
+   "title": "Spacious and Comfortable Rear Seat Experience",
+   "short": "Rear seat lounge",
+   "cat": "Comfort and space",
+   "motive": "Customers want their passengers to enjoy a luxurious and roomy rear seat with premium comfort and amenities.",
+   "attr": "Rear seat legroom, comfort, and amenities",
+   "target": "Rear seat comfort and roominess must score at least 8.5/10 in EU and CN, and 6.2/7 in US customer studies, with at least 80% of rear seat user comments positive for comfort and amenities.",
+   "accept": "Verify customer study scores and analyze rear seat-related customer comments for positive sentiment and specific mentions of comfort and amenities.",
+   "assume": [
+    "Customer studies reflect real-world rear seat experience",
+    "Comment volume is sufficient to represent user sentiment",
+    "Amenities are comparable to current Executive Lounge Paket"
+   ],
+   "cs": "US G70 owners praise rear seat legroom and amenities (G70-2573); G60 and F70 comments also mention comfort and roomy cabin (G60-2215, F70-0652), but no direct purchase reasons cited.",
+   "conflict": "No owner comments from China; evidence for EU is limited to study scores, not qualitative feedback. No direct purchase reason comments for rear seat lounge (0 purchase reasons, 54 total comments).",
+   "feature_on": "Executive Lounge rear seats with visible amenities",
+   "feature_off": "Standard rear bench, fewer amenities"
+  },
+  "R-04": {
+   "id": "R-04",
+   "title": "Effortless, Intuitive Control of Car Functions",
+   "short": "Simple digital UX",
+   "cat": "Digital experience",
+   "motive": "Customers want to easily access and adjust car features without distraction or frustration.",
+   "attr": "Menu intuitiveness and ease of use",
+   "target": "Customers can adjust core functions (climate, seat heating, navigation) in under 2 steps, with 90% rating the system as easy or very easy to use in post-purchase surveys.",
+   "accept": "Product manager reviews owner surveys and usability test results showing 90% positive ratings and verifies that key functions are accessible within 2 steps.",
+   "assume": [
+    "Survey items reflect real-world use",
+    "Key functions are climate, seat, navigation",
+    "Step count is measured from main screen"
+   ],
+   "cs": "BMW customer comments show 613 complaints about difficult-to-use controls (e.g. G60-3645, F70-1689), with only 6 citing simple digital UX as a purchase reason.",
+   "conflict": "Evidence is strong for complaints about complexity, but positive comments on intuitiveness are rare (only 6 purchase reasons out of 1156 comments). China has no owner comments and is modelled from the study. Some praise navigation usability (F70-1092), but many cite frustration with gesture control and menu structure (G60-3645, F70-1689).",
+   "feature_on": "Redesigned menu: all key functions in two taps",
+   "feature_off": "Innovationspaket with Head-Up Display and Curved Display"
+  },
+  "R-05": {
+   "id": "R-05",
+   "title": "Intuitive physical controls for distraction-free driving",
+   "short": "Physical controls",
+   "cat": "Digital experience",
+   "motive": "Customers want controls that are easy to find and use without distraction, making driving safer and more enjoyable.",
+   "attr": "Ease of reading and using physical controls",
+   "target": "All primary driving and comfort functions can be operated by touch or glance, with no more than 2 seconds of attention required for any adjustment.",
+   "accept": "Product manager verifies by user testing: 90% of test drivers can adjust key functions (climate, audio, drive mode) without looking away from the road for more than 2 seconds.",
+   "assume": [
+    "Physical controls are present for key functions",
+    "User testing reflects real driving conditions"
+   ],
+   "cs": "Customer comments show 75 complaints about difficult-to-use controls and 46 requests for easier usability (e.g. G60-3645, F70-1070).",
+   "conflict": "Evidence is strong in the US and EU, but China has no owner comments and is modelled from the study. Some praise exists for overall technology (F70-1069), but negative feedback on digital/gesture controls is frequent (G60-3645).",
+   "feature_on": "Physical buttons and rotary controller for key functions",
+   "feature_off": "Shy-Tech touch controls, fewer physical buttons"
+  },
+  "R-06": {
+   "id": "R-06",
+   "title": "Seamless and Reliable Digital Experience",
+   "short": "Software reliability",
+   "cat": "Digital experience",
+   "motive": "Customers want their digital features to work smoothly every time, without glitches or malfunctions.",
+   "attr": "Stability and reliability of digital services",
+   "target": "All core digital functions, including navigation and connected services, operate without errors or malfunctions for at least 12 months after delivery.",
+   "accept": "Product manager verifies by tracking warranty claims and customer complaints for digital malfunctions, aiming for a defect rate below 1% in the first year.",
+   "assume": [
+    "Digital features are core to the user experience",
+    "Warranty and complaint data accurately reflect real-world reliability"
+   ],
+   "cs": "Customer comments show 281 defect reports and 214 usability complaints related to digital features (e.g. G60-1677, F70-1826, G60-1819).",
+   "conflict": "Evidence is strong in EU and US, but China has no owner comments and is modelled from the study. Some complaints are about usability rather than outright failure (G70-1435, F70-1689).",
+   "feature_on": "Concept cockpit with zero digital error notifications",
+   "feature_off": "Standard digital cockpit, current defect and complaint rates"
+  },
+  "R-07": {
+   "id": "R-07",
+   "title": "Hands-off Highway Driving for Less Stress",
+   "short": "Highway assistant",
+   "cat": "Safety and assistance",
+   "motive": "Customers want to reduce fatigue and stress on long highway journeys by letting the car reliably handle lane and speed control.",
+   "attr": "Reliable hands-off driving on highways",
+   "target": "The system must allow hands-off driving on highways for at least 15 minutes without driver intervention under normal conditions.",
+   "accept": "Product manager verifies by test-driving on a highway and confirming hands-off operation for 15 minutes without disengagement or driver prompts.",
+   "assume": [
+    "Highway assistant is available and legal in target markets",
+    "System recognizes and operates on major highways",
+    "Customer trust is not undermined by false disengagements"
+   ],
+   "cs": "One US G70 customer explicitly asked if the highway assistant could take her all the way to the navigation destination (G70-3664), showing unmet demand; no direct praise or defect reports for this feature, but 3 purchase reasons and 89 wants are logged across all models.",
+   "conflict": "Evidence is thin: only one explicit customer request for highway assistant function (G70-3664), no owner comments from China, and no direct praise or defect for hands-off highway driving. Study data shows high safety importance, but few direct comments on this feature.",
+   "feature_on": "Hands-off driving indicator and lane visualization in cluster",
+   "feature_off": "Driving Assistant Professional, hands-on required"
+  },
+  "R-08": {
+   "id": "R-08",
+   "title": "Voice control that just works",
+   "short": "Personal assistant",
+   "cat": "Digital experience",
+   "motive": "Customers want a personal assistant that is easy to use and understands them reliably, so they can interact with their car naturally and without frustration.",
+   "attr": "Ease of use and voice recognition accuracy",
+   "target": "The personal assistant is rated at least 5.5 out of 7 for voice recognition performance by 80% of surveyed owners in the US.",
+   "accept": "Product manager reviews US owner survey results and confirms 80% rate voice recognition at least 5.5/7.",
+   "assume": [
+    "Survey scale and methodology remain consistent",
+    "Voice assistant is available in all tested vehicles"
+   ],
+   "cs": "Owner comments show 61 complaints about difficult-to-use digital features and 25 defect reports, with only 1 positive mention of voice control (G60-0415).",
+   "conflict": "There are no purchase reasons or conquests for personal assistant in owner comments (0/121). Evidence from China is missing, and German data is modelled from the study. Positive feedback for voice control is rare, while complaints about digital usability are frequent.",
+   "feature_on": "Conversational assistant with improved voice recognition",
+   "feature_off": "BMW Digital Premium, time limited subscription"
+  },
+  "R-09": {
+   "id": "R-09",
+   "title": "Premium materials and quiet cabin feel",
+   "short": "Interior quality",
+   "cat": "Quality and materials",
+   "motive": "Customers want a luxurious, comfortable environment that feels high quality and refined.",
+   "attr": "Perceived interior material quality and cabin quietness",
+   "target": "The successor must achieve at least 8.5/10 for 'quality of interior and materials used' and 7.8/10 for 'quietness when driving' in customer studies across EU, US, and CN.",
+   "accept": "Product manager verifies by reviewing customer study scores and confirming they meet or exceed the target values in all major markets.",
+   "assume": [
+    "Customer studies use consistent scales and sampling",
+    "Scores reflect both material quality and cabin noise",
+    "No major negative trends in owner comments"
+   ],
+   "cs": "BMW customer comments include praise for 'very high quality, both in materials and in how they are put together' (G60-2254), but also some complaints about specific interior materials (G70-1577); overall, 640 comments reference interior quality, with 374 likes and 109 wants.",
+   "conflict": "Evidence is strong in EU and US, but China has no owner comments and is modelled from study data. Some US comments mention dissatisfaction with specific materials (G70-1577), but most feedback is positive or requests further customization (G60-0229).",
+   "feature_on": "Alcantara headliner and trim, enhanced acoustic insulation",
+   "feature_off": "Standard interior materials, basic noise insulation"
+  },
+  "R-10": {
+   "id": "R-10",
+   "title": "Exterior design that turns heads",
+   "short": "Design identity",
+   "cat": "Design",
+   "motive": "Customers want a car that stands out and reflects their personal style.",
+   "attr": "Exterior styling appeal",
+   "target": "At least 90% of surveyed owners rate exterior styling 9/10 or higher.",
+   "accept": "Verify with post-launch owner surveys in key markets that 90% or more rate exterior styling 9/10 or above.",
+   "assume": [
+    "Exterior styling is a primary visual differentiator",
+    "Survey methodology matches previous studies",
+    "No major negative feedback on new design elements"
+   ],
+   "cs": "BMW customer comments show 3 explicit purchase reasons, 82 wants, and 473 likes for design identity (e.g. G60-1232, G60-0490).",
+   "conflict": "China has no owner comments and is modelled only from the study. US and EU have strong positive feedback, but explicit purchase reasons are rare (3/666).",
+   "feature_on": "Striking illuminated grille and signature light design",
+   "feature_off": "Standard exterior, no Iconic Glow package"
+  },
+  "R-11": {
+   "id": "R-11",
+   "title": "Enjoyable, Confident Handling and Ride",
+   "short": "Driving dynamics",
+   "cat": "Driving experience",
+   "motive": "Customers want a car that is fun to drive and feels secure on the road.",
+   "attr": "Driving dynamics: agility, steering feel, ride comfort, power delivery",
+   "target": "Successor models must achieve at least 8.2/10 in customer study ratings for 'Roadholding', 'Sportiness', 'Acceleration', and 'Quality of ride' in EU and CN, and 6.0/7 for 'Handling/Maneuverability' and 'Riding comfort' in the US.",
+   "accept": "Product manager verifies by reviewing customer study scores and confirming positive owner feedback on handling and ride.",
+   "assume": [
+    "Customer studies remain comparable year to year",
+    "No major market shift in expectations for driving dynamics"
+   ],
+   "cs": "BMW customer comments show 17 likes for handling, ride, and performance (F70-0650, F70-0651, F70-0652, F70-1335, F70-1340, G60-0228, G60-0670, G60-0671, G70-2573 and others).",
+   "conflict": "Some complaints mention drivetrain not feeling rear-biased and torque steer (F70-0216), and brake noise issues (G70-2572), but positive ratings and praise for driving dynamics are much more frequent. China has no owner comments and is modelled from the study.",
+   "feature_on": "Adaptive Chassis Control Professional with integral steering",
+   "feature_off": "Standard suspension and steering"
+  },
+  "R-12": {
+   "id": "R-12",
+   "title": "Clear and Controllable Data Privacy Settings",
+   "short": "Data privacy",
+   "cat": "Trust",
+   "motive": "Customers want confidence and ease in managing their personal data and privacy.",
+   "attr": "User control over data sharing and privacy",
+   "target": "All data privacy settings are easily accessible and understandable in one menu, with clear explanations and on/off toggles for each data-sharing feature.",
+   "accept": "A product manager verifies by user testing: customers can find and adjust all privacy settings without assistance, and report understanding what each setting does.",
+   "assume": [
+    "Customers value transparency and control over their data",
+    "Settings are presented in the local language",
+    "No hidden or default-on data sharing without user consent"
+   ],
+   "cs": "No customer comments mention data privacy or privacy settings (0/39, all models, all markets).",
+   "conflict": "Evidence is thin: there are no owner comments or explicit feedback about data privacy, user control, or privacy settings in any market or model (0/39). No customer study or research findings are available. China is modelled from the study, but no direct input exists.",
+   "feature_on": "Privacy controls, no visible change",
+   "feature_off": "Standard privacy settings, not highlighted"
+  },
+  "R-13": {
+   "id": "R-13",
+   "title": "Effortless, Reliable Hands-Free Tailgate Access",
+   "short": "Hands free access",
+   "cat": "Comfort and convenience",
+   "motive": "Customers want to load and unload luggage easily, especially when their hands are full.",
+   "attr": "Hands-free tailgate and comfort access reliability",
+   "target": "Successor must enable hands-free tailgate opening and closing with a 95% success rate on first attempt, regardless of weather or footwear.",
+   "accept": "Product manager verifies by testing hands-free tailgate operation in varied real-world scenarios and reviewing customer feedback for ease and reliability.",
+   "assume": [
+    "Hands-free sensors are robust to weather and footwear",
+    "System works with both key fob and gesture",
+    "No additional steps are required by the user"
+   ],
+   "cs": "Customer comments show 287 reports of 'difficult to use' and 162 defects for access features (R-13), with only 1 citing it as a purchase reason.",
+   "conflict": "Evidence is strong on reliability and usability issues, but very thin on explicit purchase motivation (only 1 comment, R-13). No owner comments from China; Chinese results are modelled from the study.",
+   "feature_on": "Visible, illuminated kick sensor under rear bumper",
+   "feature_off": "Komfortzugang and automatic tailgate"
+  },
+  "R-14": {
+   "id": "R-14",
+   "title": "Seats that stay comfortable on long drives",
+   "short": "Seat comfort",
+   "cat": "Comfort and space",
+   "motive": "Customers want to remain comfortable and relaxed even on long journeys.",
+   "attr": "Long-distance seat comfort and adjustability",
+   "target": "The successor must achieve at least 9.3/10 for overall seating comfort in EU customer studies and 6.0/7 in the US, with no increase in complaints about discomfort or adjustability.",
+   "accept": "Verify through customer study scores and monitor owner comments for comfort-related complaints after launch.",
+   "assume": [
+    "Customer study methodology remains consistent",
+    "No major changes in seat design philosophy"
+   ],
+   "cs": "BMW customer comments show 649 mentions of seat comfort, with 396 likes and 131 wants (e.g. G70-2459, G70-2573, F70-0766).",
+   "conflict": "China has no owner comments and is modelled from the study. Some complaints about entry comfort (F70-0764, G70-2574) and seat ventilation strength (G60-3993) indicate areas for improvement.",
+   "feature_on": "Enhanced seat adjustability and comfort controls",
+   "feature_off": "Standard seat heating, ventilation optional"
+  },
+  "R-15": {
+   "id": "R-15",
+   "title": "Effortless smartphone pairing and daily use",
+   "short": "Phone integration",
+   "cat": "Digital experience",
+   "motive": "Customers want their phones to connect easily and work reliably every day.",
+   "attr": "Ease and reliability of phone pairing and features",
+   "target": "The system pairs any major smartphone in under 30 seconds and maintains a stable connection for the entire drive, with all core features (calls, music, mirroring, charging) working seamlessly.",
+   "accept": "Product manager verifies by testing with multiple phone brands and user journeys, confirming pairing speed and uninterrupted feature use in real-world scenarios.",
+   "assume": [
+    "Customers use a variety of phone brands and operating systems",
+    "Core features include calls, music, mirroring, and charging"
+   ],
+   "cs": "Customer comments show 74 wants, 265 difficult to use, and 114 defect reports (e.g. G60-1020) about phone integration, with only 2 citing it as a purchase reason.",
+   "conflict": "While study scores for 'Smartphone integration/connectivity' are high (EU: 8.46/10 G60, US: 5.59/7 G60), owner comments reveal frequent usability and reliability issues. China has no owner comments and is modelled from the study.",
+   "feature_on": "Instant phone pairing and stable wireless mirroring",
+   "feature_off": "Standard wireless charging and smartphone integration"
+  },
+  "R-16": {
+   "id": "R-16",
+   "title": "Roomy cabin and practical storage",
+   "short": "Space and storage",
+   "cat": "Comfort and space",
+   "motive": "Customers want enough space for passengers and daily essentials, making every journey comfortable and convenient.",
+   "attr": "Interior and luggage storage capacity",
+   "target": "The successor must offer noticeably more usable interior storage and luggage space than the current model, as rated by at least 80% of target customers in post-launch surveys.",
+   "accept": "Product manager reviews customer satisfaction scores and feedback on storage and space in the first six months after launch.",
+   "assume": [
+    "Customer priorities for space and storage remain stable",
+    "Survey methods match those used in current studies"
+   ],
+   "cs": "Customer comments show 2 purchase reasons, 162 difficult to use, and 52 defect complaints about space and storage (R-16, F70-0266).",
+   "conflict": "Evidence is strong in EU and US, but China has no owner comments and is modelled from the study. Some praise the roominess (F70-1245), but others complain the 'boot does not seem as big as before' (F70-0266).",
+   "feature_on": "Larger boot and more cabin storage compartments",
+   "feature_off": "Standard interior and luggage space"
+  },
+  "R-17": {
+   "id": "R-17",
+   "title": "Manual Control Over Start-Stop System",
+   "short": "Smart start-stop",
+   "cat": "Driving experience",
+   "motive": "Customers want to decide when the engine turns off for comfort and control.",
+   "attr": "Manual override for automatic start-stop",
+   "target": "The driver can easily activate or deactivate the start-stop system at any time using a dedicated control.",
+   "accept": "Product manager verifies by testing that the override is always accessible and functional while driving.",
+   "assume": [
+    "Customers value direct control over engine behavior",
+    "Override is clearly labeled and intuitive"
+   ],
+   "cs": "US G60 owners (1 want, G60-1676) miss the override button for the auto engine stop-start function and workaround by using sport mode.",
+   "conflict": "Only one direct customer comment (G60-1676) requests this feature, and there are no owner comments from China or the EU; evidence is thin.",
+   "feature_on": "Dedicated start-stop override button on center console",
+   "feature_off": "No manual override, system is automatic"
+  },
+  "R-18": {
+   "id": "R-18",
+   "title": "Immersive sound for every journey",
+   "short": "Premium audio",
+   "cat": "Comfort and space",
+   "motive": "Customers want a premium audio experience that enhances every drive and impresses passengers.",
+   "attr": "Overall sound system performance",
+   "target": "Successor delivers a sound system rated above 5.5/7 by at least 60% of US customers in post-purchase surveys.",
+   "accept": "Product manager verifies target by analyzing post-purchase survey scores for sound system satisfaction.",
+   "assume": [
+    "Survey methodology remains consistent with current studies",
+    "No major changes in customer expectations for premium audio",
+    "Sound system is a visible and selectable option"
+   ],
+   "cs": "Customer comments show only 2 purchase reasons for premium audio (R-18), with 80 wants and 111 likes, but no direct praise or complaints about sound quality in the sampled feedback.",
+   "conflict": "Evidence is thin on direct customer comments about premium audio performance, with no owner comments from China and only US survey data available (R-18).",
+   "feature_on": "Bowers & Wilkins Diamond Surround Sound with illuminated speakers",
+   "feature_off": "harman/kardon HiFi only inside packages"
+  },
+  "R-19": {
+   "id": "R-19",
+   "title": "Stress-free parking with camera support",
+   "short": "Parking and cameras",
+   "cat": "Safety and assistance",
+   "motive": "Customers want to park easily and confidently, especially in tight spaces.",
+   "attr": "Assisted parking with clear camera guidance",
+   "target": "The system must enable drivers to park in standard parking spaces with minimal manual steering and provide clear, real-time camera visuals for all maneuvers.",
+   "accept": "Product manager verifies by user testing in real parking scenarios and collects feedback on ease of use and camera clarity.",
+   "assume": [
+    "Camera system provides unobstructed, real-time visuals",
+    "Assisted parking works reliably in typical parking environments"
+   ],
+   "cs": "There are 112 'difficult to use' and 48 'defect' comments, but no purchase reasons or positive feedback for parking and cameras (R-19).",
+   "conflict": "Evidence is thin: no customer comments mention parking or camera systems as a purchase driver, and no positive feedback is recorded for this topic (R-19). China has no owner comments and is modelled from the study.",
+   "feature_on": "360-degree camera view with parking guidance overlay",
+   "feature_off": "Standard rear camera, no surround view"
+  },
+  "R-20": {
+   "id": "R-20",
+   "title": "Intuitive, Effective Multi-Zone Climate Control",
+   "short": "Climate comfort",
+   "cat": "Comfort and space",
+   "motive": "Customers want climate comfort that is easy to use and works reliably for all passengers.",
+   "attr": "User-friendly, effective multi-zone climate control",
+   "target": "All occupants can easily adjust their climate zone and report satisfaction above 8/10 in post-delivery surveys.",
+   "accept": "Verify through customer surveys and feedback that at least 80% rate climate control usability and comfort above 8/10.",
+   "assume": [
+    "Multi-zone controls are accessible to all occupants",
+    "System responds quickly and maintains set temperatures",
+    "Interface is intuitive for first-time users"
+   ],
+   "cs": "Customer comments show 224 complaints about difficult-to-use climate controls, 88 defect reports, and only 1 explicit purchase reason (R-20).",
+   "conflict": "Evidence is strong for usability pain (224 difficult-to-use, 88 defects, R-20), but very few customers cite climate comfort as a direct purchase driver (1 purchase reason). No owner comments from China; Chinese data is modelled from study scores.",
+   "feature_on": "Dedicated, easy-access climate controls for each seat",
+   "feature_off": "2 zone or 4 zone climate, some only in Comfort Paket"
+  },
+  "R-21": {
+   "id": "R-21",
+   "title": "Standard features that match expectations",
+   "short": "Value for money",
+   "cat": "Price and value",
+   "motive": "Customers want their BMW to feel well-equipped and premium compared to rivals.",
+   "attr": "Level of standard equipment versus rivals",
+   "target": "The successor must achieve a 'value for money' score at or above the segment reference in all major markets.",
+   "accept": "Verify that customer study scores for 'value for money' meet or exceed the reference values in EU, US, and CN.",
+   "assume": [
+    "Customer studies remain comparable year-on-year",
+    "Segment reference values reflect key competitors",
+    "Standard equipment is clearly communicated to customers"
+   ],
+   "cs": "BMW customer comments (22 rival comparisons, 3 purchase reasons, e.g. F70-1178, F70-0272) show appreciation for the premium feel and price-performance ratio, but some feel the car is 'a bit basic for what it costs.'",
+   "conflict": "Evidence is strong in EU and US, but China has no owner comments and is modelled from the study. Some EU customers feel the standard offering is not as rich as expected (F70-0272).",
+   "feature_on": "Enhanced standard equipment visible in cockpit and digital displays",
+   "feature_off": "Standard equipment as today"
+  }
+ }
+}
