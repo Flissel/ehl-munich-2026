@@ -25,7 +25,7 @@ the result appears as a new, linked note in the graph.
 |---|---|---|---|
 | Sales-Claw (`Flissel/sales-claw`) | Mini PC `vibemind-offload-1`, Tailscale `100.67.177.45` | OpenClaw gateway `:18894` (loopback, operated via WhatsApp); sales-mcp `:8765` (streamable-http, path not `/mcp` – to be found); UI `:8791` | running |
 | Marketing (`Flissel/vibemind-os`, `spaces/marketing`) | this PC | API `127.0.0.1:5510` (`/api/health` ok); MCP sidecar `:8130` (27 tools); brand chat `POST /api/pult/marke/chat`; editor chat `POST /api/pult/inhalte/{id}/chat` (both async via the chat worker, operated from a page in the Sales UI) | running |
-| Rowboat Desktop (upstream `rowboatlabs/rowboat`, `apps/x`, checked at `72e9d8c`, 2026-10-09) | demo PC (this PC) | official installer | to be installed |
+| Rowboat Desktop (fork `Flissel/rowboat`, branch `ehl` = upstream `72e9d8c`, 2026-10-09; `apps/x`) | every team PC + demo PC | dev mode from source (`npm run dev`, see `SETUP.md`) | fork created |
 
 Facts about Rowboat Desktop that shape this design (verified in upstream code at `72e9d8c`):
 
@@ -45,7 +45,7 @@ Facts about Rowboat Desktop that shape this design (verified in upstream code at
 
 | # | Decision | Rationale |
 |---|---|---|
-| D1 | Rowboat Desktop **as it is** (no fork, no code changes); our work is data, MCP tools and an agent skill | Least risk by tomorrow; official installer |
+| D1 | Rowboat Desktop **from source in dev mode**: fork `Flissel/rowboat`, base branch `ehl` pinned to upstream `72e9d8c`; we adapt it where the demo needs it (changes on `ehl/<wp>-<topic>`, PR into `ehl`, reviewed by the orchestrator). Data, MCP tools and the agent skill stay outside Rowboat | We can adjust Rowboat to our needs; pinning keeps it reproducible (decided 2026-10-10, replaces "Rowboat as it is") |
 | D2 | **Live data and agents on the demo PC only**: the bridge writes real notes straight into its `~/.rowboat/knowledge/`. No Harbor, GoTrue or Funnel | The graph only exists for vault notes; drops the riskiest part of the old design |
 | D3 | Notes follow Rowboat's own template plus YAML frontmatter for origin (`source`, ids, `managed_by`) | Graph and entity index work out of the box; frontmatter serves as search filter |
 | D4 | Extra **semantic search** via local Qdrant + MCP, as a separable add-on | "RAG" from the sketch; the demo still works without it |
@@ -220,7 +220,7 @@ skill → dress rehearsal.
 - Harbor / Spaces / Funnel; real company data or agent access on team PCs (D11; later possible via folder sync).
 - Sending or approving from Rowboat.
 - Customer individuals as notes.
-- Changes to Rowboat's code; the Rowboat fork in `vibemind-os/spaces/rowboat`.
+- The old Rowboat fork in `vibemind-os/spaces/rowboat` (we use `Flissel/rowboat` instead).
 
 ## 12. Work split and shared contracts
 
@@ -245,7 +245,7 @@ branches merge without conflicts:
 | Qdrant | `127.0.0.1:6333`, collection `ehl_notes` |
 | MCP servers | `ehl-search` (WP3), `ehl-agents` (WP4); stdio; `mcp.json` entries collected by WP1 |
 | Python | 3.12, own `pyproject.toml` per folder, pytest, `logging` (no `print`), secrets in `.env` + `.env.example` |
-| PC roles (D11) | **Team PC:** `demo/install.ps1` → repo notes + `ehl-search`; `bridge --fake` writes fake companies from `bridge/fixtures/`. **Demo PC:** `demo/install.ps1 -Demo` additionally registers `ehl-agents` and runs the bridge against the real sources |
+| PC roles (D11) | **Team PC:** Rowboat dev mode (`SETUP.md`); WP1 installer (cross-platform, Windows + macOS) → repo notes + `ehl-search`; `bridge --fake` writes fake companies from `bridge/fixtures/`. **Demo PC:** installer with `--demo` additionally registers `ehl-agents` and runs the bridge against the real sources |
 | Fake companies | `bridge/fixtures/` (WP2): 8–10 invented companies with stages, owners and product interest in F70/G60/G68/G70; same note format as real ones (`managed_by: ehl-bridge`, `source: fixture`) |
 
 **Dependencies:** WP1 publishes the link-target names first (needed by WP2). WP2–WP4 develop
