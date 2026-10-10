@@ -26,6 +26,9 @@ type Props = {
   onError: (message: string) => void;
   resetSignal: number;
   view: CameraView;
+  /** Frames this component (e.g. a purchase driver picked in Torque); re-applied when focusSignal changes. */
+  focusId?: string | null;
+  focusSignal?: number;
 };
 
 export function CarViewer(props: Props) {
@@ -94,7 +97,7 @@ function paramsFor(spec: ColorSpec, transparent: boolean) {
     transparent, opacity: transparent ? 0.5 : 1, depthWrite: !transparent, ...(transparent ? { side: DoubleSide } : {}) };
 }
 
-function Car({ model, scores, mode, design, selectedId, onSelect, onLoaded, resetSignal, view }: Props) {
+function Car({ model, scores, mode, design, selectedId, onSelect, onLoaded, resetSignal, view, focusId, focusSignal }: Props) {
   const gltf = useGLTF(model.url);
 
   // Normalize scale/position once, segment into per-component meshes and record the base pose.
@@ -248,7 +251,9 @@ function Car({ model, scores, mode, design, selectedId, onSelect, onLoaded, rese
         }}
         onPointerOut={() => { document.body.style.cursor = ""; }} />
       {selectedMeshes.map((m, i) => <Highlight key={`${selectedId}-${i}`} source={m} />)}
-      <CameraRig sphere={prep.sphere} resetSignal={resetSignal} view={view} interior={interiorCam} />
+      <CameraRig sphere={prep.sphere} resetSignal={resetSignal} view={view} interior={interiorCam}
+        focus={focusId && prep.pivots.get(focusId) ? { ...prep.pivots.get(focusId)!, signal: focusSignal ?? 0,
+          inside: compById.get(focusId)?.category === "Interior" } : null} />
     </>
   );
 }
@@ -265,11 +270,42 @@ function Highlight({ source }: { source: Mesh }) {
 }
 
 /** Frames the whole car from a 3/4 front view; re-applied on reset. */
-function CameraRig({ sphere, resetSignal, view, interior }: {
+type Focus = { center: Vector3; size: Vector3; signal: number; inside: boolean };
+
+function CameraRig({ sphere, resetSignal, view, interior, focus }: {
   sphere: Sphere; resetSignal: number; view: CameraView; interior: { eye: Vector3; target: Vector3 } | null;
+  focus: Focus | null;
 }) {
   const camera = useThree((s) => s.camera) as PerspectiveCamera;
   const controls = useRef<OrbitControlsImpl>(null);
+  const goal = useRef<{ pos: Vector3; target: Vector3 } | null>(null);
+  // Glide towards a focused component: from outside along its direction from the car's centre,
+  // interior parts from above (the cutaway hides the roof).
+  useEffect(() => {
+    if (!focus || view === "interior") return;
+    const out = focus.center.clone().sub(sphere.center).setY(0);
+    const dir = focus.inside || out.lengthSq() < 1e-4 ? new Vector3(0.3, 1.2, 0.4) : out.normalize().setY(0.45);
+    const reach = Math.max(focus.size.length() * 2.6, sphere.radius * 1.25);
+    goal.current = { target: focus.center.clone(), pos: focus.center.clone().addScaledVector(dir.normalize(), reach) };
+    if (controls.current) controls.current.minDistance = 0.3;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus?.signal]);
+  useFrame(() => {
+    const g = goal.current, c = controls.current;
+    if (!g || !c) return;
+    camera.position.lerp(g.pos, 0.08);
+    c.target.lerp(g.target, 0.08);
+    c.update();
+    if (camera.position.distanceTo(g.pos) < 0.01) goal.current = null;
+  });
+  useEffect(() => {
+    // Any drag ends the glide.
+    const c = controls.current;
+    if (!c) return;
+    const stop = () => { goal.current = null; };
+    c.addEventListener("start", stop);
+    return () => c.removeEventListener("start", stop);
+  }, []);
   useEffect(() => {
     if (view === "interior" && interior) {
       // Driver eye: orbit around a point just ahead, so dragging looks around the cabin.
@@ -305,6 +341,7 @@ function CameraRig({ sphere, resetSignal, view, interior }: {
       controls.current.maxDistance = dist * 2.5;
       controls.current.update();
     }
+    goal.current = null;
   }, [camera, sphere, resetSignal, view, interior]);
   return <OrbitControls ref={controls} makeDefault enableDamping dampingFactor={0.08} maxPolarAngle={Math.PI / 2 - 0.04} />;
 }

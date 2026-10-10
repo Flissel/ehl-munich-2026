@@ -22,6 +22,16 @@ log = logging.getLogger("bmw.feedback")
 
 SERIES = {"F70": "BMW 1 Series (F70)", "G60": "BMW 5 Series (G60)", "G70": "BMW 7 Series (G70)"}
 
+# Markets as in Torque (demo/torque): EU, CN, US, RoW. Country codes of the Dataset rows.
+MARKETS = {"EU": "Europe", "CN": "China", "US": "USA", "RoW": "Rest of world"}
+EUROPE = {"AT", "BE", "BG", "CH", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB", "GR", "HR", "HU", "IE",
+          "IS", "IT", "LT", "LU", "LV", "MT", "NL", "NO", "PL", "PT", "RO", "SE", "SI", "SK"}
+
+
+def market_of(country: str) -> str:
+    c = country.strip().upper()
+    return "US" if c == "US" else "CN" if c == "CN" else "EU" if c in EUROPE else "RoW"
+
 BODY = ["hood", "roof", "trunk-lid", "fender-front-left", "fender-front-right", "quarter-rear-left",
         "quarter-rear-right", "pillars-sills", "door-left", "door-right"]
 WHEELS = ["wheel-front-left", "wheel-front-right", "wheel-rear-left", "wheel-rear-right"]
@@ -162,8 +172,9 @@ class FeedbackDataset:
             self.error = f"No feedback rows found in {self.dir}"
         log.info("Loaded %d classified feedback rows from %s", len(self.rows), self.dir)
 
-    def scores(self, series: str | None) -> dict:
-        rows = [r for r in self.rows if not series or r.series == series]
+    def scores(self, series: str | None, market: str | None = None) -> dict:
+        rows = [r for r in self.rows if (not series or r.series == series)
+                and (not market or market_of(r.country) == market)]
         general, general_int, specific = Bucket(), Bucket(), defaultdict(Bucket)
         no_geometry = defaultdict(Bucket)
         for r in rows:
@@ -210,6 +221,8 @@ class FeedbackDataset:
         return {
             "series": series or "ALL",
             "series_label": SERIES.get(series, "All series (F70, G60, G70)"),
+            "market": market or "ALL",
+            "market_label": MARKETS.get(market, "All markets"),
             "rows_used": len(rows),
             "no_geometry": [{"feature": k, "reason": NO_GEOMETRY[k], "n": b.n,
                              "positive_share": round(100 * b.positive_share(), 1)} for k, b in no_geometry.items()],

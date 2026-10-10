@@ -590,9 +590,17 @@ pre.spec{white-space:pre-wrap;word-break:break-word;font:12px/1.55 var(--mono);b
 .fc-a{display:flex;gap:6px}
 .fc-a .primary{margin-left:auto}
 .show-head{display:none}
-.stage.visu{height:860px;cursor:auto;touch-action:auto;background:var(--card,#fff)}
-.stage.visu iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
-.stage.visu.showroom iframe{top:96px;height:calc(100% - 96px)}
+.visu-frame{position:fixed;border:0;display:block;visibility:hidden;pointer-events:none;background:#0d0f13}
+.stage.visu{background:#0d0f13;cursor:auto;touch-action:auto}
+.g:has(.stage.visu){animation:none;transform:none}
+.stage.visu .focus-card{z-index:6;max-height:calc(100% - 120px);overflow-y:auto}
+.stage.visu.showroom .show-head{z-index:97}
+.fc-why{font-size:12px}
+.fc-part{display:flex;flex-direction:column;gap:3px;margin:0 0 10px;padding:8px 10px;border-radius:10px;background:var(--surface-2,rgba(127,127,127,.08));font-size:12.5px}
+.fc-part b{display:inline;margin:0;font-size:13px}
+.fc-part .heat{font:600 12px var(--disp);margin-left:4px}
+.fc-part small{font-size:11.5px;color:var(--ink-2)}
+.fc-part q{font-size:12px;font-style:italic;color:var(--ink-2)}
 .stage.showroom{position:fixed;inset:0;z-index:95;height:auto;border-radius:0;border:0}
 .stage.showroom .pins,.stage.showroom .st-top,.stage.showroom .focus-card,.stage.showroom .dims,.stage.showroom .st-bl{display:none}
 .stage.showroom .show-head{display:flex;position:absolute;left:28px;right:28px;top:24px;justify-content:space-between;align-items:flex-start;gap:16px}
@@ -3006,15 +3014,15 @@ function vConcept(){
   const len = Math.round((cp.fo + cp.wb + cp.ro + (c.lwb ? .13 : 0)) * 1000);
   return `
   <div class="g">
-    <section class="card c12"><div class="card-h"><div><h3>${M().name}: customer feedback on the car</h3><p class="sub">Heat map of the classified customer comments in Dataset/ per part · ${M().code} · click a part for quotes · design prompt runs on the Rowboat model</p></div>
+    <section class="card c8"><div class="card-h"><div><h3>${M().name} successor, live concept</h3><p class="sub">Customer feedback on today's ${M().code} in ${mkLabel()}, part by part, linked to the top ${TOP} purchase drivers and your decisions · click a row or a part to focus</p></div>
       <button type="button" class="btn dark" id="showroomBtn">${SVGI.expand}Showroom</button></div>
-      <div class="stage visu" id="stage">
-        <iframe id="visuFrame" src="visu/index.html?embed=1&series=${encodeURIComponent(M().code)}" title="3D customer feedback heat map of the ${M().name}"></iframe>
-        <div class="show-head"><div><b>${M().name} · customer feedback</b><span>${M().code} · ${mkLabel()}</span></div><button type="button" class="btn" id="showExit">Close</button></div>
+      <div class="stage visu" id="stage" aria-label="3D customer feedback heat map of the ${M().name} successor. Drag to rotate, scroll to zoom, click a part.">
+        <div class="focus-card" id="focusCard" hidden></div>
+        <div class="show-head"><div><b>${M().name} successor</b><span>${esc(FEAT["R-10"](c))} · ${c.kwh} kWh · ${c.lwb ? "long wheelbase" : "standard wheelbase"} · ${mkLabel()} · ${cnt.locked} of the top ${TOP} locked</span></div><button type="button" class="btn" id="showExit">Close</button></div>
       </div>
-      <div class="stage-foot"><span class="muted" style="font-size:11.5px">3D model: "2021 BMW M4 Competition" by Ricy (sketchfab.com/ngon_3d), CC-BY-NC-4.0, stand-in for the ${M().name} · scores = relative rank of positive feedback per part (0 most criticised, 100 best rated)</span></div></section>
-    <section class="card c12"><div class="card-h"><div><h3>Top ${TOP} purchase drivers</h3><p class="sub">${mkLabel()} · ${cnt.locked} locked · ${cnt.pending} pending · ${cnt.removed} removed</p></div></div>
-      <div class="oncar" id="oncar">${rk.map((x,i) => `<div role="button" tabindex="0" class="oc ${statusOf(x.r.id)}" data-open="${x.r.id}"><span class="n">${i+1}</span><span class="t"><b><span class="rid">${x.r.id}</span> ${esc(x.r.short)}</b><small>${esc(FEAT[x.r.id](c))}</small></span>${stChip(x.r.id, true)}</div>`).join("")}</div></section>
+      <div class="stage-foot"><div class="legend">${["approved","modified","rejected","open"].map(k => `<span class="st ${k}">${STATUS[k].i}<span>${STATUS[k].l}</span></span>`).join("")}</div><span class="muted" style="font-size:11.5px">Heat map: customer comments on today's ${M().code} in ${mkLabel()} per part (0 most criticised, 100 best rated) · click a driver or a part · 3D stand-in: "2021 BMW M4 Competition" by Ricy, CC-BY-NC-4.0</span></div></section>
+    <section class="card c4"><div class="card-h"><div><h3>Top ${TOP} on the car</h3><p class="sub">${mkLabel()} · ${cnt.locked} locked · ${cnt.pending} pending · ${cnt.removed} removed</p></div></div>
+      <div class="oncar" id="oncar">${rk.map((x,i) => `<div role="button" tabindex="0" class="oc ${statusOf(x.r.id)}" data-focus="${x.r.id}"><span class="n">${i+1}</span><span class="t"><b><span class="rid">${x.r.id}</span> ${esc(x.r.short)}</b><small>${esc(FEAT[x.r.id](c))}</small></span>${stChip(x.r.id, true)}</div>`).join("")}</div></section>
   </div>
   <section class="card"><div class="card-h"><div><h3>Concept sheet</h3><p class="sub">${lockedTop} of the top ${TOP} in ${mkLabel()} locked · length ${fmt(len)} mm · values follow the targets you approved</p></div><button type="button" class="link" data-go="log">Export spec</button></div>
     <div class="tiles">${conceptTiles(c).map(t => `<div class="tile ${statusOf(t.id)}"><div class="sk">${t.k}<button type="button" class="rid" data-open="${t.id}">${t.id}</button></div><div class="sv">${esc(t.v)}</div>${stChip(t.id)}</div>`).join("")}</div></section>`;
@@ -3306,21 +3314,117 @@ function gridTexture(T){
   for(let j = 0; j <= 4; j++){ x.beginPath(); x.moveTo(0, j * 32); x.lineTo(256, j * 32); x.stroke(); }
   const t = new T.CanvasTexture(cv); t.encoding = T.sRGBEncoding; return t;
 }
+/* Concept 3D: the customer feedback heat map from demo/visu (dist/visu/). The frame is created once and laid
+   over #stage, so re-renders (model, market, decisions) only send it a new context instead of reloading the car. */
+// Parts of the car each purchase driver is about (first = the one the camera flies to).
+const PART = {"R-01":["quarter-rear-left"], "R-02":["underbody"], "R-03":["rear-seats"], "R-04":["central-display"],
+  "R-05":["center-console", "steering-wheel"], "R-06":["instrument-cluster", "central-display"], "R-07":["windshield", "interior-mirror"],
+  "R-08":["dashboard", "overhead-console"], "R-09":["door-trim-left", "door-trim-right", "dashboard", "interior-side-panels"],
+  "R-10":["kidney-grille", "headlight-left", "headlight-right", "taillight-left", "taillight-right"],
+  "R-11":["wheel-front-left", "wheel-front-right", "wheel-rear-left", "wheel-rear-right"], "R-12":["central-display"],
+  "R-13":["door-left", "door-right"], "R-14":["seat-driver", "seat-passenger"], "R-15":["center-console"], "R-16":["trunk-lid"],
+  "R-17":["instrument-cluster"], "R-18":["door-trim-left", "door-trim-right"], "R-19":["rear-bumper", "front-bumper"],
+  "R-20":["climate-controls"]};
+const onPart = (id, part) => (PART[id] || []).includes(part);
+const VISU = {frame:null, ready:false, sel:null, signal:0, onSel:null};
+function visuFrame(){
+  if(VISU.frame) return VISU.frame;
+  const f = document.createElement("iframe");
+  f.className = "visu-frame"; f.title = "3D customer feedback heat map"; f.src = "visu/index.html?embed=1";
+  document.body.appendChild(f); VISU.frame = f;
+  window.addEventListener("message", e => {
+    if(e.origin !== location.origin || e.source !== f.contentWindow) return;
+    const d = e.data || {};
+    if(d.type === "visu:ready"){ VISU.ready = true; visuSend(); }
+    else if(d.type === "visu:select"){ VISU.sel = d.id ? d : null; if(VISU.onSel) VISU.onSel(VISU.sel); }
+  });
+  return f;
+}
+function visuSend(extra = {}){
+  if(!VISU.ready) return;
+  VISU.frame.contentWindow.postMessage({type:"visu:context", series:M().code, market:sold(state.market) ? state.market : "",
+    title:`${M().name} successor · ${mkLabel()}`, ...extra}, location.origin);
+}
+function partHtml(d){
+  if(!d) return "";
+  const x = d.detail, FT = {"Likes":"likes", "Defect":"defects", "Difficult to Use":"difficult to use", "Wants":"wants"};
+  const counts = x ? Object.entries(x.counts).map(([k, v]) => `${fmt(v)} ${FT[k] || k}`).join(" · ") : "";
+  const q = x && x.quotes && x.quotes[0];
+  return `<div class="fc-part"><div><span class="muted">On the car</span> <b>${esc(d.name)}</b> <span class="heat">${d.score}/100</span></div>
+    ${x ? `<small>${fmt(x.n)} mentions${x.basis === "specific" ? "" : " (" + esc(x.basis) + " feedback)"} · ${counts} · ${x.positive_share}% positive</small>` : ""}
+    ${q ? `<q>${esc(q.text.slice(0, 180))}${q.text.length > 180 ? "…" : ""}</q><small class="muted">${esc(q.type)} · ${esc(q.series)} · ${esc(q.country)}</small>` : ""}
+    <small class="muted">${esc(d.data)}${d.fallback ? " · " + esc(d.fallback) : ""}</small></div>`;
+}
 function bConcept(){
-  // The 3D view is the visu app (demo/visu, built into dist/visu/) in an iframe; the procedural car is gone.
-  const stage = $("#stage"), frame = $("#visuFrame"), holder = document.createElement("div");
-  focusPin = null;
+  const stage = $("#stage"), card = $("#focusCard"), f = visuFrame(), holder = document.createElement("div");
+  const rk = topRank(), order = rk.map(x => x.r.id), rankOf = Object.fromEntries(rk.map((x,i) => [x.r.id, [i+1, x.s.total]]));
+  let focusId = null, last = "";
   g3 = {raf:0, mats:{}, scene:{traverse(){}}, renderer:{dispose(){}}};
+  const rows = id => {
+    $$("#oncar .oc").forEach(el => el.classList.toggle("sel", el.dataset.focus === id));
+    const row = id && $(`#oncar .oc[data-focus="${id}"]`); if(row) row.scrollIntoView({block:"nearest", behavior:"smooth"});
+  };
+  const showCard = id => {
+    const i = order.indexOf(id), r = RBY[id], part = VISU.sel && onPart(id, VISU.sel.id) ? VISU.sel : null;
+    card.innerHTML = `<div class="fc-h"><span class="rid">${id}</span>${stChip(id)}<span class="muted mono" style="font-size:11.5px">#${i+1} · ${rankOf[id][1].toFixed(1)}</span><button type="button" class="x" data-fc="close" aria-label="Close">${SVGI.x}</button></div>
+      <b>${esc(r.title)}</b><p>${esc(FEAT[id](carConfig()))}</p>
+      ${r.cs ? `<p class="fc-why"><span class="muted">Evidence:</span> ${esc(r.cs)}</p>` : ""}
+      ${PART[id] ? partHtml(part) : `<p class="muted fc-why">Concerns the whole car, no single part.</p>`}
+      <div class="fc-a"><button type="button" class="btn" data-fc="prev" aria-label="Previous by rank">&lsaquo;</button><button type="button" class="btn" data-fc="next" aria-label="Next by rank">&rsaquo;</button><button type="button" class="btn primary" data-fc="open">Open details</button></div>`;
+    card.hidden = false;
+  };
+  const showPart = d => {
+    const other = Object.keys(PART).filter(id => onPart(id, d.id) && !rankOf[id]);
+    card.innerHTML = `<div class="fc-h"><span class="muted" style="font-size:11.5px">Part</span><button type="button" class="x" data-fc="close" aria-label="Close">${SVGI.x}</button></div>
+      ${partHtml(d)}<p class="muted fc-why">${other.length ? `Linked to ${other.map(id => `${id} ${esc(RBY[id].short)}`).join(", ")}, not in the top ${TOP} for ${mkLabel()}.` : `Not linked to a purchase driver.`}</p>`;
+    card.hidden = false;
+  };
+  const setFocus = id => {
+    if(!rankOf[id]) return;
+    focusId = id; focusPin = null; rows(id); showCard(id);
+    VISU.signal++; visuSend({focus:PART[id] ? PART[id][0] : null, focusSignal:VISU.signal});
+  };
+  const clearFocus = () => {
+    focusId = null; card.hidden = true; rows(null);
+    if(VISU.sel){ VISU.signal++; visuSend({focus:null, focusSignal:VISU.signal}); }
+  };
+  // A part clicked on the car focuses its best ranked top 10 driver, otherwise shows the part alone.
+  VISU.onSel = d => {
+    if(!d){ if(!focusId) card.hidden = true; return; }
+    if(focusId && onPart(focusId, d.id)){ showCard(focusId); return; }
+    const linked = order.filter(id => onPart(id, d.id));
+    if(linked.length){ focusId = linked[0]; rows(focusId); showCard(focusId); }
+    else { focusId = null; rows(null); showPart(d); }
+  };
+  const step = d => setFocus(order[((focusId ? order.indexOf(focusId) : -1) + d + order.length) % order.length]);
+  card.onclick = e => { const b = e.target.closest("[data-fc]"); if(!b) return; const a = b.dataset.fc;
+    if(a === "close") clearFocus(); else if(a === "prev") step(-1); else if(a === "next") step(1); else if(a === "open" && focusId) openDrawer(focusId); };
+  const oncar = $("#oncar");
+  oncar.onclick = e => { const r = e.target.closest("[data-focus]"); if(r) setFocus(r.dataset.focus); };
+  oncar.onkeydown = e => { if(e.key === "Enter" || e.key === " "){ const r = e.target.closest("[data-focus]"); if(r){ e.preventDefault(); setFocus(r.dataset.focus); } } };
+
   const showroom = on => {
     if(on && !stage.classList.contains("showroom")){ stage.parentNode.insertBefore(holder, stage); document.body.appendChild(stage); }
     if(!on && holder.parentNode){ holder.parentNode.insertBefore(stage, holder); holder.remove(); }
     stage.classList.toggle("showroom", on); document.body.classList.toggle("noscroll", on); $("#fab").hidden = on || state.view === "copilot";
   };
-  g3.cleanup = () => { if(holder.parentNode){ stage.remove(); holder.remove(); } document.body.classList.remove("noscroll"); };
-  g3.escape = () => { if(stage.classList.contains("showroom")){ showroom(false); return true; } return false; };
+  g3.cleanup = () => { if(holder.parentNode){ stage.remove(); holder.remove(); } document.body.classList.remove("noscroll");
+    VISU.onSel = null; f.style.visibility = "hidden"; f.style.pointerEvents = "none"; last = ""; };
   $("#showroomBtn").onclick = () => showroom(true);
   $("#showExit").onclick = () => showroom(false);
-  frame.addEventListener("load", () => frame.contentWindow.postMessage({type:"visu:series", series:M().code}, location.origin));
+  g3.escape = () => { if(stage.classList.contains("showroom")){ showroom(false); return true; } if(focusId || !card.hidden){ clearFocus(); return true; } return false; };
+
+  // Keep the frame on top of the stage (scrolling, resizing, showroom).
+  const place = () => {
+    if(!g3) return;
+    g3.raf = requestAnimationFrame(place);
+    const r = stage.getBoundingClientRect(), show = stage.classList.contains("showroom"), top = show ? 96 : 0;
+    const css = `left:${r.left}px;top:${r.top + top}px;width:${r.width}px;height:${r.height - top}px;z-index:${show ? 96 : 3};visibility:visible;pointer-events:auto`;
+    if(css !== last){ f.style.cssText = css; last = css; }
+  };
+  place();
+  visuSend({focus:null, focusSignal:++VISU.signal});
+  if(focusPin && rankOf[focusPin]){ const id = focusPin; setTimeout(() => setFocus(id), 60); }
 }
 
 

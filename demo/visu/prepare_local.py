@@ -2,7 +2,8 @@
 
     python demo/visu/prepare_local.py --model <2021_bmw_m4_competitionglTF.zip or its extracted folder>
 
-1. data/feedback-{ALL,F70,G60,G70}.json: heat map scores from Dataset/*_feedback_hackathon.xlsx
+1. data/feedback-<series>[-<market>].json: heat map scores per series (ALL, F70, G60, G70) and
+   Torque market (EU, CN, US, RoW) from Dataset/*_feedback_hackathon.xlsx
    (they contain customer comment quotes, so like Torque's quotes.json they stay local).
 2. models/bmw-m4-competition-2021/: the glTF car (CC-BY-NC-4.0, not redistributed via git).
    Without --model only the data is refreshed.
@@ -30,9 +31,11 @@ def write_data(out: Path) -> None:
         raise SystemExit(f"feedback data: {ds.error}")
     (out / "data").mkdir(parents=True, exist_ok=True)
     for series in [None, *feedback.SERIES]:
-        path = out / "data" / f"feedback-{series or 'ALL'}.json"
-        path.write_text(json.dumps(ds.scores(series), ensure_ascii=False), encoding="utf-8")
-        log.info("wrote %s", path)
+        for market in [None, *feedback.MARKETS]:
+            name = f"feedback-{series or 'ALL'}{'-' + market if market else ''}.json"
+            scores = ds.scores(series, market)
+            (out / "data" / name).write_text(json.dumps(scores, ensure_ascii=False), encoding="utf-8")
+            log.info("wrote %s (%d comments)", name, scores["rows_used"])
 
 
 def install_model(src: Path, out: Path) -> None:

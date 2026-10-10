@@ -9,7 +9,8 @@ import { applyWebActions, EMPTY_DESIGN, isEmptyDesign, type WebAction, type WebD
 import { ComponentPanel, SelectionCard } from "./ui/ComponentPanel";
 import { PromptPanel } from "./ui/PromptPanel";
 import { AdjustPanel } from "./ui/AdjustPanel";
-import { api, type FeedbackScores } from "./api";
+import { UnrealButton } from "./ui/UnrealButton";
+import { api, type FeedbackScores, type UnrealDesign } from "./api";
 
 type LoadState = { kind: "loading" } | { kind: "ready"; report: SegmentationReport } | { kind: "error"; message: string };
 type Source = "ALL" | "F70" | "G60" | "G70" | "synthetic";
@@ -18,23 +19,28 @@ const SOURCES: [Source, string][] = [
   ["G60", "Customer feedback · 5 Series G60"], ["G70", "Customer feedback · 7 Series G70"],
   ["synthetic", "Synthetic demo scores"],
 ];
+const MARKETS: [string, string][] = [["", "All markets"], ["EU", "Europe"], ["CN", "China"], ["US", "USA"], ["RoW", "Rest of world"]];
+/** Below this many comments a market's heat map is not meaningful; the series' all-market data is shown instead. */
+const MIN_ROWS = 20;
 
-// Torque embeds this app and passes the model it shows: ?series=F70|G60|G70 (G68 and others -> ALL),
-// later changes arrive as postMessage {type: "visu:series", series}.
-const toSource = (s: string | null): Source => (["F70", "G60", "G70", "synthetic"].includes(s ?? "") ? s as Source : "ALL");
-const EMBED = new URLSearchParams(location.search).has("embed");
+const toSource = (s: string | null | undefined): Source =>
+  (["F70", "G60", "G70", "synthetic"].includes(s ?? "") ? s as Source : "ALL");
+
+// Embedded in Torque's Concept 3D (?embed=1): Torque owns model, market, the purchase driver list and the
+// info card. Torque -> app: {type: "visu:context", series, market, title, focus, focusSignal}.
+// App -> Torque: {type: "visu:ready"} and {type: "visu:select", ...} whenever a part is selected.
+const PARAMS = new URLSearchParams(location.search);
+const EMBED = PARAMS.has("embed");
+type Context = { series: string | null; market: string; title: string; focus: string | null; focusSignal: number };
+const post = (msg: unknown) => { if (EMBED) window.parent.postMessage(msg, location.origin); };
 
 export default function App() {
   const model = MODELS[DEFAULT_MODEL_ID];
-  const [source, setSource] = useState<Source>(() => toSource(new URLSearchParams(location.search).get("series")));
-  useEffect(() => {
-    const onMsg = (e: MessageEvent) => {
-      if (e.origin === location.origin && e.data?.type === "visu:series") setSource(toSource(e.data.series));
-    };
-    window.addEventListener("message", onMsg);
-    return () => window.removeEventListener("message", onMsg);
-  }, []);
+  const [ctx, setCtx] = useState<Context>({ series: PARAMS.get("series"), market: PARAMS.get("market") ?? "",
+    title: "", focus: null, focusSignal: 0 });
+  const [source, setSource] = useState<Source>(() => toSource(PARAMS.get("series")));
   const [feedback, setFeedback] = useState<FeedbackScores | null>(null);
+  const [fallback, setFallback] = useState<string | null>(null);
   const [synthetic, setSynthetic] = useState<Record<string, number>>({});
   const [scoreError, setScoreError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -43,22 +49,51 @@ export default function App() {
   const [load, setLoad] = useState<LoadState>({ kind: "loading" });
   const [resetSignal, setResetSignal] = useState(0);
   const [view, setView] = useState<CameraView>("exterior");
+  const [panel, setPanel] = useState(false);
+
+  useEffect(() => {
+    const onMsg = (e: MessageEvent) => {
+      if (e.origin !== location.origin || e.data?.type !== "visu:context") return;
+      const d = e.data as Partial<Context> & { type: string };
+      setCtx((c) => ({ ...c, ...d }));
+      if (d.series !== undefined) setSource(toSource(d.series));
+    };
+    window.addEventListener("message", onMsg);
+    post({ type: "visu:ready" });
+    return () => window.removeEventListener("message", onMsg);
+  }, []);
+
+  // A purchase driver picked in Torque: select its part and fly to it (interior parts in the cutaway).
+  useEffect(() => {
+    if (!ctx.focusSignal) return;
+    setSelectedId(ctx.focus);
+    const comp = model.components.find((c) => c.id === ctx.focus);
+    if (comp?.category === "Interior" && view === "exterior") setView("cutaway");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctx.focusSignal]);
 
   useEffect(() => { getScores(model.id).then(setSynthetic); }, [model.id]);
   useEffect(() => {
-    if (source === "synthetic") { setScoreError(null); return; }
+    if (source === "synthetic") { setScoreError(null); setFallback(null); return; }
     let cancelled = false, timer: number | undefined;
-    setFeedback(null);
-    const load = () => api.feedbackScores(source === "ALL" ? null : source)
-      .then((f) => { if (!cancelled) { setFeedback(f); setScoreError(null); } })
-      .catch((e) => {
+    const series = source === "ALL" ? null : source, market = ctx.market || null;
+    const load = async () => {
+      try {
+        let f = await api.feedbackScores(series, market), note: string | null = null;
+        if (market && f.rows_used < MIN_ROWS) {
+          note = `${f.rows_used} owner comments for ${f.market_label} in the Dataset: showing all markets of this series`;
+          f = await api.feedbackScores(series, null);
+        }
+        if (!cancelled) { setFeedback(f); setFallback(note); setScoreError(null); }
+      } catch (e) {
         if (cancelled) return;
         setScoreError(`${e instanceof Error ? e.message : e} — showing synthetic demo scores (retrying).`);
         timer = window.setTimeout(load, 4000);
-      });
+      }
+    };
     load();
     return () => { cancelled = true; window.clearTimeout(timer); };
-  }, [source]);
+  }, [source, ctx.market]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setSelectedId(null); };
     window.addEventListener("keydown", onKey);
@@ -70,7 +105,10 @@ export default function App() {
     if (!usingFeedback) return synthetic;
     return Object.fromEntries(Object.entries(feedback!.components).map(([k, v]) => [k, v.score]));
   }, [usingFeedback, feedback, synthetic]);
-  const sourceLabel = usingFeedback ? `customer feedback (${feedback!.series_label})` : "synthetic demo score";
+  const dataLabel = usingFeedback
+    ? `${feedback!.series_label} · ${fallback ? "all markets" : feedback!.market_label ?? "all markets"} · ${feedback!.rows_used.toLocaleString()} classified mentions`
+    : "synthetic demo scores";
+  const sourceLabel = usingFeedback ? `customer feedback (${dataLabel})` : "synthetic demo score";
 
   // Only components that were actually found in the model are listed/scored.
   const components: ScoredComponent[] = useMemo(() => {
@@ -80,6 +118,14 @@ export default function App() {
       .map((c) => ({ ...c, score: clampScore(scores[c.id] ?? 50) }));
   }, [model, scores, load]);
   const selected = components.find((c) => c.id === selectedId) ?? null;
+
+  // Tell Torque what is selected, with the part's feedback, so its info card shows the same data.
+  useEffect(() => {
+    if (load.kind !== "ready") return;
+    post({ type: "visu:select", id: selected?.id ?? null, name: selected?.name ?? null,
+      category: selected?.category ?? null, score: selected?.score ?? null, data: dataLabel, fallback,
+      detail: usingFeedback && selected ? feedback!.components[selected.id] ?? null : null });
+  }, [selected?.id, selected?.score, dataLabel, fallback, load.kind]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onLoaded = useCallback((report: SegmentationReport) => setLoad({ kind: "ready", report }), []);
   const onError = useCallback((message: string) => setLoad({ kind: "error", message }), []);
@@ -91,9 +137,72 @@ export default function App() {
     return results;
   };
 
+  // The Unreal viewer only knows paint / wheel presets: send them when the web design matches one.
+  const unrealDesign: UnrealDesign = {
+    paint: model.design.paints.find((p) => p.hex.toLowerCase() === design.bodyColor?.hex.toLowerCase())?.id ?? null,
+    wheel_style: model.design.wheels.find((w) => w.hex.toLowerCase() === design.wheelColor?.hex.toLowerCase())?.id ?? null,
+  };
+
   const report = load.kind === "ready" ? load.report : null;
+  const viewer = (
+    <div className="viewer">
+      <CarViewer model={model} scores={scores} mode={mode} design={design} selectedId={selectedId}
+        onSelect={setSelectedId} onLoaded={onLoaded} onError={onError} resetSignal={resetSignal} view={view}
+        focusId={ctx.focus} focusSignal={ctx.focusSignal} />
+      {load.kind === "loading" && <LoadingOverlay />}
+      {load.kind === "error" && <div className="viewer-error">{load.message}</div>}
+      {EMBED && (
+        <div className="embed-head">
+          <b>{ctx.title || model.displayName}</b>
+          <span>{dataLabel}</span>
+          {fallback && <span className="warn">{fallback}</span>}
+          <span className="muted">3D stand-in: {model.displayName}</span>
+        </div>
+      )}
+      <div className="viewer-toolbar">
+        <div className="segmented">
+          <button className={mode === "heatmap" ? "on" : ""} onClick={() => setMode("heatmap")}>Heat map</button>
+          <button className={mode === "design" ? "on" : ""} onClick={() => { setMode("design"); if (EMBED) setPanel(true); }}>Design</button>
+        </div>
+        <div className="segmented">
+          {([["exterior", "Exterior"], ["interior", "Interior"], ["cutaway", "Cutaway"]] as [CameraView, string][]).map(([v, l]) => (
+            <button key={v} className={view === v ? "on" : ""} onClick={() => { setView(v); setResetSignal((n) => n + 1); }}>{l}</button>
+          ))}
+        </div>
+        <button className="ghost" onClick={() => setResetSignal((n) => n + 1)}>Reset camera</button>
+        {EMBED && <button className={panel ? "ghost on" : "ghost"} onClick={() => setPanel((p) => !p)}>Design prompt</button>}
+      </div>
+      {mode === "heatmap" && (
+        <div className="legend">
+          <div className="legend-title">{usingFeedback ? "Customer sentiment (relative)" : "Demo scores (synthetic)"}</div>
+          <div className="legend-bar" style={{ background: LEGEND_GRADIENT }} />
+          <div className="legend-labels">
+            <span>{usingFeedback ? "0 — Most criticised" : "0 — Low"}</span><span>50</span>
+            <span>{usingFeedback ? "100 — Best rated" : "100 — High"}</span>
+          </div>
+        </div>
+      )}
+      {mode === "design" && (
+        <div className="legend design-legend">
+          Design view{isEmptyDesign(design) ? " · original car" : " · modified (Level 1/2 changes applied)"}
+        </div>
+      )}
+      {EMBED && <div className="embed-unreal"><UnrealButton modelId={model.id} design={unrealDesign} /></div>}
+      {EMBED && panel && (
+        <div className="embed-panel">
+          <button className="ghost close" onClick={() => setPanel(false)} aria-label="Close">✕</button>
+          <PromptPanel model={model} selected={selected} components={components.map((c) => ({ id: c.id, name: c.name }))}
+            onApply={applyActions} onReset={() => setDesign(EMPTY_DESIGN)} />
+          <AdjustPanel design={design} selected={selected} onChange={setDesign} />
+        </div>
+      )}
+    </div>
+  );
+
+  if (EMBED) return <div className="app embed">{viewer}</div>;
+
   return (
-    <div className={EMBED ? "app embed" : "app"}>
+    <div className="app">
       <header className="topbar">
         <div className="brand"><span className="logo">◐</span> BMW Design Studio</div>
         <div className="model-label">{model.displayName}</div>
@@ -101,43 +210,12 @@ export default function App() {
           <span className="dot" />
           {load.kind === "loading" ? "Loading model…" : load.kind === "ready" ? "Model loaded" : "Model failed to load"}
         </div>
+        <UnrealButton modelId={model.id} design={unrealDesign} />
       </header>
 
       <main className="layout">
         <section className="viewer-wrap">
-          <div className="viewer">
-            <CarViewer model={model} scores={scores} mode={mode} design={design} selectedId={selectedId}
-              onSelect={setSelectedId} onLoaded={onLoaded} onError={onError} resetSignal={resetSignal} view={view} />
-            {load.kind === "loading" && <LoadingOverlay />}
-            {load.kind === "error" && <div className="viewer-error">{load.message}</div>}
-            <div className="viewer-toolbar">
-              <div className="segmented">
-                <button className={mode === "heatmap" ? "on" : ""} onClick={() => setMode("heatmap")}>Heat map</button>
-                <button className={mode === "design" ? "on" : ""} onClick={() => setMode("design")}>Design</button>
-              </div>
-              <div className="segmented">
-                {([["exterior", "Exterior"], ["interior", "Interior"], ["cutaway", "Cutaway"]] as [CameraView, string][]).map(([v, l]) => (
-                  <button key={v} className={view === v ? "on" : ""} onClick={() => { setView(v); setResetSignal((n) => n + 1); }}>{l}</button>
-                ))}
-              </div>
-              <button className="ghost" onClick={() => setResetSignal((n) => n + 1)}>Reset camera</button>
-            </div>
-            {mode === "heatmap" && (
-              <div className="legend">
-                <div className="legend-title">{usingFeedback ? "Customer sentiment (relative)" : "Demo scores (synthetic)"}</div>
-                <div className="legend-bar" style={{ background: LEGEND_GRADIENT }} />
-                <div className="legend-labels">
-                  <span>{usingFeedback ? "0 — Most criticised" : "0 — Low"}</span><span>50</span>
-                  <span>{usingFeedback ? "100 — Best rated" : "100 — High"}</span>
-                </div>
-              </div>
-            )}
-            {mode === "design" && (
-              <div className="legend design-legend">
-                Design view{isEmptyDesign(design) ? " · original car" : " · modified (Level 1/2 changes applied)"}
-              </div>
-            )}
-          </div>
+          {viewer}
           <SelectionCard component={selected} sourceLabel={sourceLabel} onClear={() => setSelectedId(null)}
             detail={usingFeedback && selected ? feedback!.components[selected.id] : undefined} />
           <PromptPanel model={model} selected={selected} components={components.map((c) => ({ id: c.id, name: c.name }))}
@@ -151,7 +229,11 @@ export default function App() {
             <select id="source" value={source} onChange={(e) => setSource(e.target.value as Source)}>
               {SOURCES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
+            <select aria-label="Market" value={ctx.market} onChange={(e) => setCtx((c) => ({ ...c, market: e.target.value }))}>
+              {MARKETS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+            </select>
             {scoreError && <p className="err small">{scoreError}</p>}
+            {fallback && <p className="small warn">{fallback}</p>}
             {usingFeedback && (
               <p className="muted small">
                 {feedback!.rows_used.toLocaleString()} classified comments from the EHL dataset. The 1/5/7 Series

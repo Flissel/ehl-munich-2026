@@ -21,3 +21,22 @@
 .slider input[type=range] { width: 100%; accent-color: var(--accent-2); }
 .check { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
 .link:disabled { opacity: 0.4; cursor: default; }
+
+/* Embedded in Torque's Concept 3D: the viewer fills the frame, Torque shows the list and info card. */
+.app.embed { min-height: 0; height: 100vh; }
+.app.embed .viewer { height: 100vh; min-height: 0; border-radius: 0; }
+.embed-head { position: absolute; top: 12px; left: 14px; display: flex; flex-direction: column; gap: 2px;
+  max-width: 44%; pointer-events: none; font-size: 12px; color: var(--muted); }
+.embed-head b { font-size: 15px; color: var(--text); }
+.embed-head { text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+.embed-head .warn { color: var(--warn); }
+.app.embed .viewer-toolbar { flex-wrap: wrap; justify-content: flex-end; max-width: 56%; gap: 6px; }
+.app.embed .viewer-toolbar button { padding: 5px 9px; font-size: 12px; }
+.embed-unreal { position: absolute; right: 12px; bottom: 12px; }
+.embed-unreal .unreal-msg { top: auto; bottom: 100%; margin: 0 0 6px; }
+.embed-panel { position: absolute; top: 60px; right: 12px; bottom: 64px; width: min(380px, 70%); overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px; padding: 34px 8px 8px; border-radius: 12px;
+  background: rgba(13, 15, 19, 0.92); border: 1px solid rgba(255, 255, 255, 0.08); }
+.embed-panel .close { position: absolute; top: 6px; right: 8px; padding: 2px 8px; }
+.ghost.on { border-color: var(--accent); color: var(--text); }
+.warn { color: var(--warn); }
