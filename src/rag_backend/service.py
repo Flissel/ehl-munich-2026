@@ -9,16 +9,12 @@ from .embeddings import OpenAIEmbedder
 from .vector_store import QdrantVectorStore
 
 
-SYSTEM_PROMPT = """You are an AI product-requirements assistant for a BMW hackathon.
+SYSTEM_PROMPT = """You are a concise BMW data assistant for a hackathon RAG system.
 
 Use only the provided context chunks. If the context is insufficient, say what is missing.
-Answer in concise product-manager language.
-When useful, separate:
-- findings
-- possible requirements
-- uncertainty
-
-Never claim a requirement is approved. Status should be proposed unless the user says otherwise.
+Answer the user's question directly in simple language.
+Do not add extra sections such as requirements, recommendations, or uncertainty unless the user explicitly asks for them.
+When citing evidence, mention the relevant chunk IDs inline.
 """
 
 
@@ -59,7 +55,7 @@ class RagService:
                     "content": (
                         f"Question:\n{question}\n\n"
                         f"Context chunks:\n{context}\n\n"
-                        "Answer using the context only and cite chunk IDs inline where relevant."
+                        "Answer only what the user asked, using the context only. Cite chunk IDs inline where relevant."
                     ),
                 },
             ],
