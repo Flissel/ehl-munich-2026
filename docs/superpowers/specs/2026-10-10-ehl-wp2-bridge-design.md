@@ -22,7 +22,8 @@ under `Content/`; no file without `managed_by: ehl-bridge` is ever touched.
 | `linking.py` | Company → product links from WP1's keyword list; company → owner from Sales; content → channel/product |
 | `render.py` | Pure: model → Markdown (parent spec §5.1 template + frontmatter) |
 | `vault.py` | Write only own files (`managed_by: ehl-bridge`), only on content-hash change; safe filenames; atomic write (temp file + rename) |
-| `run.py` | Loop every `INTERVAL_S` (default 60); `--once` for tests |
+| `run.py` | Loop every `INTERVAL_S` (default 60); `--once` for tests; `--fake` writes the fixture companies instead of reading Sales/Marketing (for team PCs, spec D11) |
+| `fixtures/` | 8–10 invented companies (stages, owners from `People/`, interest in F70/G60/G68/G70) and 2–3 fake campaigns; same format as real notes with `source: fixture`. **Deliver early** – every team PC uses them |
 
 ## 3. First task: sales-mcp access (time-boxed 45 min)
 
@@ -46,6 +47,7 @@ skipped and logged. 401/403 → clear error, process exits non-zero.
 - vault: never overwrites a file without `managed_by`; unchanged content → no write; atomic write.
 - sales source: private leads skipped; leads grouped by company (fake MCP responses).
 - run `--once` with fake sources into a temp vault → expected file set.
+- `--fake` produces notes whose links all resolve against WP1 example data; no real data in `fixtures/`.
 
 ## 7. Dependencies
 
