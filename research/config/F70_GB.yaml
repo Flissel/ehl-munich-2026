@@ -1,0 +1,51 @@
+# Second configuration - proves the pipeline is not a one-off.
+run_id: F70_GB
+derivative:
+  code: F70
+  name: BMW 1 Series (5-door hatchback)
+  segment: Premium compact (C-segment) hatchback
+  powertrains: [ICE]
+market:
+  code: GB
+  name: United Kingdom
+  language: en
+
+filter:
+  derivatives: [F70]
+  countries: [GB]
+  engine_types: []
+  scopes: [in, borderline, review]
+  signal_types: [unmet_need, usability_pain, performance_gap, defect]
+
+studies:
+  primary: {study: CN_EU_2025, market: EU}  # only mean scores available for F70
+  secondary: null
+  compare_with: [G60, G70]
+
+sales:
+  derivative_group: F70
+  market_code: EU
+  year_for_weight: 2030
+
+option_list: data/processed/options_F70.csv
+
+competitors:
+  - Mercedes-Benz A-Class
+  - Audi A3 Sportback
+  - Volkswagen Golf (incl. GTI / R)
+  - Mercedes-Benz CLA
+  - Volvo EX30 / Cupra Born (electric alternatives)
+
+clustering:
+  distance_threshold: 0.85
+  min_cluster_size: 3
+
+prioritization:
+  weights:
+    customer_impact: 0.30
+    severity: 0.20
+    competitive_gap: 0.20
+    market_relevance: 0.15
+    strategic_fit: 0.15
+  effort_penalty: {S: 0.0, M: 0.1, L: 0.2}
+  top_n_for_pm: 10

@@ -1,0 +1,52 @@
+# Run configuration - copy this file to adapt the agent to another derivative / market.
+run_id: G60_US
+derivative:
+  code: G60
+  name: BMW 5 Series Sedan (incl. i5)
+  segment: Premium upper-mid-size (E-segment) sedan
+  powertrains: [ICE, PHEV, BEVE]          # BEVE = battery-electric (i5)
+market:
+  code: US
+  name: USA
+  language: en
+
+filter:                                   # used by cluster_signals.py
+  derivatives: [G60]
+  countries: [US]
+  engine_types: []                        # empty = all
+  scopes: [in, borderline, review]
+  signal_types: [unmet_need, usability_pain, performance_gap, defect]
+
+studies:
+  primary: {study: US_2025, market: US}   # rating distributions -> pct_negative_bottom3 as severity
+  secondary: {study: CN_EU_2025, market: EU}
+  compare_with: [G70]                     # other vehicles in the same study for relative position
+
+sales:
+  derivative_group: G60_G68
+  market_code: US
+  year_for_weight: 2030
+
+option_list: data/processed/options_G60.csv   # German DE price list - baseline of what is offered
+
+competitors:                              # starting set - agent must verify current models via web
+  - Mercedes-Benz E-Class (W214) / EQE Sedan
+  - Audi A6 / A6 e-tron (C9)
+  - Tesla Model S / Model 3 (as BEV benchmark)
+  - Lexus ES
+  - Genesis G80 / Electrified G80
+  - Volvo S90
+
+clustering:
+  distance_threshold: 0.85
+  min_cluster_size: 3
+
+prioritization:                           # weights must sum to 1.0; PM may change them (log the change)
+  weights:
+    customer_impact: 0.30                 # weighted frequency across sources
+    severity: 0.20                        # study dissatisfaction + survey severity + share of pain/defect
+    competitive_gap: 0.20                 # competitors offer / do better (web evidence)
+    market_relevance: 0.15                # sales volume, powertrain share, trend momentum
+    strategic_fit: 0.15                   # fits brand / segment / target customer
+  effort_penalty: {S: 0.0, M: 0.1, L: 0.2}  # rough effort only - no business case
+  top_n_for_pm: 10

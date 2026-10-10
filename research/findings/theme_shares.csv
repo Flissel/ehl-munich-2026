@@ -1,0 +1,381 @@
+dimension,group,base,n_comments,n_pain,pain_pct,theme_id,theme_name,n_theme,share_pct,confidence
+country,CA,"all derivatives, all sources",26,10,38.5,COMFORT,"Comfort, seats & climate",1,10.0,low
+country,CA,"all derivatives, all sources",26,10,38.5,SPACE,"Space, storage & practicality",0,0.0,low
+country,CA,"all derivatives, all sources",26,10,38.5,HMI,Infotainment & operation,2,20.0,low
+country,CA,"all derivatives, all sources",26,10,38.5,DIGITAL,Connectivity & digital services,1,10.0,low
+country,CA,"all derivatives, all sources",26,10,38.5,CHARGING,Range & charging (as experienced),3,30.0,low
+country,CA,"all derivatives, all sources",26,10,38.5,DRIVING,Driving experience & performance,6,60.0,low
+country,CA,"all derivatives, all sources",26,10,38.5,EXT,Exterior design & lighting,1,10.0,low
+country,CA,"all derivatives, all sources",26,10,38.5,INT,Interior design & quality perception,1,10.0,low
+country,CA,"all derivatives, all sources",26,10,38.5,ACCESS,"Access, doors & convenience",5,50.0,low
+country,CA,"all derivatives, all sources",26,10,38.5,ADAS,Driver assistance & parking (experience),1,10.0,low
+country,DK,"all derivatives, all sources",30,11,36.7,COMFORT,"Comfort, seats & climate",3,27.3,low
+country,DK,"all derivatives, all sources",30,11,36.7,SPACE,"Space, storage & practicality",0,0.0,low
+country,DK,"all derivatives, all sources",30,11,36.7,HMI,Infotainment & operation,3,27.3,low
+country,DK,"all derivatives, all sources",30,11,36.7,DIGITAL,Connectivity & digital services,3,27.3,low
+country,DK,"all derivatives, all sources",30,11,36.7,CHARGING,Range & charging (as experienced),4,36.4,low
+country,DK,"all derivatives, all sources",30,11,36.7,DRIVING,Driving experience & performance,3,27.3,low
+country,DK,"all derivatives, all sources",30,11,36.7,EXT,Exterior design & lighting,1,9.1,low
+country,DK,"all derivatives, all sources",30,11,36.7,INT,Interior design & quality perception,4,36.4,low
+country,DK,"all derivatives, all sources",30,11,36.7,ACCESS,"Access, doors & convenience",4,36.4,low
+country,DK,"all derivatives, all sources",30,11,36.7,ADAS,Driver assistance & parking (experience),1,9.1,low
+country,FR,"all derivatives, all sources",64,25,39.1,COMFORT,"Comfort, seats & climate",1,4.0,low
+country,FR,"all derivatives, all sources",64,25,39.1,SPACE,"Space, storage & practicality",2,8.0,low
+country,FR,"all derivatives, all sources",64,25,39.1,HMI,Infotainment & operation,10,40.0,low
+country,FR,"all derivatives, all sources",64,25,39.1,DIGITAL,Connectivity & digital services,1,4.0,low
+country,FR,"all derivatives, all sources",64,25,39.1,CHARGING,Range & charging (as experienced),1,4.0,low
+country,FR,"all derivatives, all sources",64,25,39.1,DRIVING,Driving experience & performance,10,40.0,low
+country,FR,"all derivatives, all sources",64,25,39.1,EXT,Exterior design & lighting,2,8.0,low
+country,FR,"all derivatives, all sources",64,25,39.1,INT,Interior design & quality perception,2,8.0,low
+country,FR,"all derivatives, all sources",64,25,39.1,ACCESS,"Access, doors & convenience",2,8.0,low
+country,FR,"all derivatives, all sources",64,25,39.1,ADAS,Driver assistance & parking (experience),1,4.0,low
+country,GB,"all derivatives, all sources",1337,616,46.1,COMFORT,"Comfort, seats & climate",95,15.4,high
+country,GB,"all derivatives, all sources",1337,616,46.1,SPACE,"Space, storage & practicality",44,7.1,high
+country,GB,"all derivatives, all sources",1337,616,46.1,HMI,Infotainment & operation,268,43.5,high
+country,GB,"all derivatives, all sources",1337,616,46.1,DIGITAL,Connectivity & digital services,51,8.3,high
+country,GB,"all derivatives, all sources",1337,616,46.1,CHARGING,Range & charging (as experienced),24,3.9,high
+country,GB,"all derivatives, all sources",1337,616,46.1,DRIVING,Driving experience & performance,319,51.8,high
+country,GB,"all derivatives, all sources",1337,616,46.1,EXT,Exterior design & lighting,61,9.9,high
+country,GB,"all derivatives, all sources",1337,616,46.1,INT,Interior design & quality perception,89,14.4,high
+country,GB,"all derivatives, all sources",1337,616,46.1,ACCESS,"Access, doors & convenience",77,12.5,high
+country,GB,"all derivatives, all sources",1337,616,46.1,ADAS,Driver assistance & parking (experience),63,10.2,high
+country,JP,"all derivatives, all sources",765,189,24.7,COMFORT,"Comfort, seats & climate",15,7.9,medium
+country,JP,"all derivatives, all sources",765,189,24.7,SPACE,"Space, storage & practicality",6,3.2,medium
+country,JP,"all derivatives, all sources",765,189,24.7,HMI,Infotainment & operation,52,27.5,medium
+country,JP,"all derivatives, all sources",765,189,24.7,DIGITAL,Connectivity & digital services,10,5.3,medium
+country,JP,"all derivatives, all sources",765,189,24.7,CHARGING,Range & charging (as experienced),7,3.7,medium
+country,JP,"all derivatives, all sources",765,189,24.7,DRIVING,Driving experience & performance,124,65.6,medium
+country,JP,"all derivatives, all sources",765,189,24.7,EXT,Exterior design & lighting,14,7.4,medium
+country,JP,"all derivatives, all sources",765,189,24.7,INT,Interior design & quality perception,26,13.8,medium
+country,JP,"all derivatives, all sources",765,189,24.7,ACCESS,"Access, doors & convenience",15,7.9,medium
+country,JP,"all derivatives, all sources",765,189,24.7,ADAS,Driver assistance & parking (experience),6,3.2,medium
+country,KR,"all derivatives, all sources",346,66,19.1,COMFORT,"Comfort, seats & climate",6,9.1,medium
+country,KR,"all derivatives, all sources",346,66,19.1,SPACE,"Space, storage & practicality",10,15.2,medium
+country,KR,"all derivatives, all sources",346,66,19.1,HMI,Infotainment & operation,10,15.2,medium
+country,KR,"all derivatives, all sources",346,66,19.1,DIGITAL,Connectivity & digital services,9,13.6,medium
+country,KR,"all derivatives, all sources",346,66,19.1,CHARGING,Range & charging (as experienced),2,3.0,medium
+country,KR,"all derivatives, all sources",346,66,19.1,DRIVING,Driving experience & performance,30,45.5,medium
+country,KR,"all derivatives, all sources",346,66,19.1,EXT,Exterior design & lighting,8,12.1,medium
+country,KR,"all derivatives, all sources",346,66,19.1,INT,Interior design & quality perception,13,19.7,medium
+country,KR,"all derivatives, all sources",346,66,19.1,ACCESS,"Access, doors & convenience",1,1.5,medium
+country,KR,"all derivatives, all sources",346,66,19.1,ADAS,Driver assistance & parking (experience),7,10.6,medium
+country,SE,"all derivatives, all sources",101,32,31.7,COMFORT,"Comfort, seats & climate",8,25.0,low
+country,SE,"all derivatives, all sources",101,32,31.7,SPACE,"Space, storage & practicality",2,6.2,low
+country,SE,"all derivatives, all sources",101,32,31.7,HMI,Infotainment & operation,12,37.5,low
+country,SE,"all derivatives, all sources",101,32,31.7,DIGITAL,Connectivity & digital services,2,6.2,low
+country,SE,"all derivatives, all sources",101,32,31.7,CHARGING,Range & charging (as experienced),8,25.0,low
+country,SE,"all derivatives, all sources",101,32,31.7,DRIVING,Driving experience & performance,12,37.5,low
+country,SE,"all derivatives, all sources",101,32,31.7,EXT,Exterior design & lighting,1,3.1,low
+country,SE,"all derivatives, all sources",101,32,31.7,INT,Interior design & quality perception,6,18.8,low
+country,SE,"all derivatives, all sources",101,32,31.7,ACCESS,"Access, doors & convenience",3,9.4,low
+country,SE,"all derivatives, all sources",101,32,31.7,ADAS,Driver assistance & parking (experience),5,15.6,low
+country,US,"all derivatives, all sources",7402,3614,48.8,COMFORT,"Comfort, seats & climate",403,11.2,high
+country,US,"all derivatives, all sources",7402,3614,48.8,SPACE,"Space, storage & practicality",215,5.9,high
+country,US,"all derivatives, all sources",7402,3614,48.8,HMI,Infotainment & operation,675,18.7,high
+country,US,"all derivatives, all sources",7402,3614,48.8,DIGITAL,Connectivity & digital services,418,11.6,high
+country,US,"all derivatives, all sources",7402,3614,48.8,CHARGING,Range & charging (as experienced),273,7.6,high
+country,US,"all derivatives, all sources",7402,3614,48.8,DRIVING,Driving experience & performance,567,15.7,high
+country,US,"all derivatives, all sources",7402,3614,48.8,EXT,Exterior design & lighting,246,6.8,high
+country,US,"all derivatives, all sources",7402,3614,48.8,INT,Interior design & quality perception,395,10.9,high
+country,US,"all derivatives, all sources",7402,3614,48.8,ACCESS,"Access, doors & convenience",477,13.2,high
+country,US,"all derivatives, all sources",7402,3614,48.8,ADAS,Driver assistance & parking (experience),352,9.7,high
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,COMFORT,"Comfort, seats & climate",1,5.3,low
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,SPACE,"Space, storage & practicality",1,5.3,low
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,HMI,Infotainment & operation,9,47.4,low
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,DIGITAL,Connectivity & digital services,1,5.3,low
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,CHARGING,Range & charging (as experienced),0,0.0,low
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,DRIVING,Driving experience & performance,7,36.8,low
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,EXT,Exterior design & lighting,1,5.3,low
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,INT,Interior design & quality perception,2,10.5,low
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,ACCESS,"Access, doors & convenience",2,10.5,low
+derivative_country,F70|FR,"per model and country, all sources",53,19,35.8,ADAS,Driver assistance & parking (experience),1,5.3,low
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,COMFORT,"Comfort, seats & climate",92,15.5,high
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,SPACE,"Space, storage & practicality",41,6.9,high
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,HMI,Infotainment & operation,260,43.7,high
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,DIGITAL,Connectivity & digital services,49,8.2,high
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,CHARGING,Range & charging (as experienced),21,3.5,high
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,DRIVING,Driving experience & performance,308,51.8,high
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,EXT,Exterior design & lighting,58,9.7,high
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,INT,Interior design & quality perception,82,13.8,high
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,ACCESS,"Access, doors & convenience",75,12.6,high
+derivative_country,F70|GB,"per model and country, all sources",1293,595,46.0,ADAS,Driver assistance & parking (experience),59,9.9,high
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,COMFORT,"Comfort, seats & climate",12,6.9,medium
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,SPACE,"Space, storage & practicality",4,2.3,medium
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,HMI,Infotainment & operation,50,28.9,medium
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,DIGITAL,Connectivity & digital services,9,5.2,medium
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,CHARGING,Range & charging (as experienced),5,2.9,medium
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,DRIVING,Driving experience & performance,114,65.9,medium
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,EXT,Exterior design & lighting,10,5.8,medium
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,INT,Interior design & quality perception,21,12.1,medium
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,ACCESS,"Access, doors & convenience",14,8.1,medium
+derivative_country,F70|JP,"per model and country, all sources",672,173,25.7,ADAS,Driver assistance & parking (experience),6,3.5,medium
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,COMFORT,"Comfort, seats & climate",6,27.3,low
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,SPACE,"Space, storage & practicality",1,4.5,low
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,HMI,Infotainment & operation,8,36.4,low
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,DIGITAL,Connectivity & digital services,2,9.1,low
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,CHARGING,Range & charging (as experienced),0,0.0,low
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,DRIVING,Driving experience & performance,11,50.0,low
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,EXT,Exterior design & lighting,1,4.5,low
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,INT,Interior design & quality perception,4,18.2,low
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,ACCESS,"Access, doors & convenience",3,13.6,low
+derivative_country,F70|SE,"per model and country, all sources",71,22,31.0,ADAS,Driver assistance & parking (experience),3,13.6,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,COMFORT,"Comfort, seats & climate",2,12.5,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,SPACE,"Space, storage & practicality",3,18.8,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,HMI,Infotainment & operation,6,37.5,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,DIGITAL,Connectivity & digital services,1,6.2,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,CHARGING,Range & charging (as experienced),3,18.8,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,DRIVING,Driving experience & performance,9,56.2,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,EXT,Exterior design & lighting,3,18.8,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,INT,Interior design & quality perception,4,25.0,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,ACCESS,"Access, doors & convenience",1,6.2,low
+derivative_country,G60|GB,"per model and country, all sources",36,16,44.4,ADAS,Driver assistance & parking (experience),3,18.8,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,COMFORT,"Comfort, seats & climate",2,16.7,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,SPACE,"Space, storage & practicality",1,8.3,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,HMI,Infotainment & operation,2,16.7,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,DIGITAL,Connectivity & digital services,1,8.3,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,CHARGING,Range & charging (as experienced),1,8.3,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,DRIVING,Driving experience & performance,8,66.7,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,EXT,Exterior design & lighting,3,25.0,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,INT,Interior design & quality perception,4,33.3,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,ACCESS,"Access, doors & convenience",1,8.3,low
+derivative_country,G60|JP,"per model and country, all sources",53,12,22.6,ADAS,Driver assistance & parking (experience),0,0.0,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,COMFORT,"Comfort, seats & climate",5,11.4,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,SPACE,"Space, storage & practicality",9,20.5,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,HMI,Infotainment & operation,6,13.6,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,DIGITAL,Connectivity & digital services,7,15.9,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,CHARGING,Range & charging (as experienced),2,4.5,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,DRIVING,Driving experience & performance,19,43.2,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,EXT,Exterior design & lighting,6,13.6,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,INT,Interior design & quality perception,12,27.3,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,ACCESS,"Access, doors & convenience",1,2.3,low
+derivative_country,G60|KR,"per model and country, all sources",205,44,21.5,ADAS,Driver assistance & parking (experience),4,9.1,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,COMFORT,"Comfort, seats & climate",2,20.0,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,SPACE,"Space, storage & practicality",1,10.0,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,HMI,Infotainment & operation,4,40.0,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,DIGITAL,Connectivity & digital services,0,0.0,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,CHARGING,Range & charging (as experienced),8,80.0,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,DRIVING,Driving experience & performance,1,10.0,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,EXT,Exterior design & lighting,0,0.0,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,INT,Interior design & quality perception,2,20.0,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,ACCESS,"Access, doors & convenience",0,0.0,low
+derivative_country,G60|SE,"per model and country, all sources",28,10,35.7,ADAS,Driver assistance & parking (experience),2,20.0,low
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,COMFORT,"Comfort, seats & climate",174,9.7,high
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,SPACE,"Space, storage & practicality",126,7.0,high
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,HMI,Infotainment & operation,342,19.0,high
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,DIGITAL,Connectivity & digital services,205,11.4,high
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,CHARGING,Range & charging (as experienced),159,8.8,high
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,DRIVING,Driving experience & performance,302,16.8,high
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,EXT,Exterior design & lighting,117,6.5,high
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,INT,Interior design & quality perception,195,10.8,high
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,ACCESS,"Access, doors & convenience",256,14.2,high
+derivative_country,G60|US,"per model and country, all sources",3610,1800,49.9,ADAS,Driver assistance & parking (experience),178,9.9,high
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,COMFORT,"Comfort, seats & climate",1,4.5,low
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,SPACE,"Space, storage & practicality",1,4.5,low
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,HMI,Infotainment & operation,4,18.2,low
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,DIGITAL,Connectivity & digital services,2,9.1,low
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,CHARGING,Range & charging (as experienced),0,0.0,low
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,DRIVING,Driving experience & performance,11,50.0,low
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,EXT,Exterior design & lighting,2,9.1,low
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,INT,Interior design & quality perception,1,4.5,low
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,ACCESS,"Access, doors & convenience",0,0.0,low
+derivative_country,G70|KR,"per model and country, all sources",137,22,16.1,ADAS,Driver assistance & parking (experience),3,13.6,low
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,COMFORT,"Comfort, seats & climate",229,12.6,high
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,SPACE,"Space, storage & practicality",89,4.9,high
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,HMI,Infotainment & operation,333,18.4,high
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,DIGITAL,Connectivity & digital services,213,11.7,high
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,CHARGING,Range & charging (as experienced),114,6.3,high
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,DRIVING,Driving experience & performance,265,14.6,high
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,EXT,Exterior design & lighting,129,7.1,high
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,INT,Interior design & quality perception,200,11.0,high
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,ACCESS,"Access, doors & convenience",221,12.2,high
+derivative_country,G70|US,"per model and country, all sources",3792,1814,47.8,ADAS,Driver assistance & parking (experience),174,9.6,high
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,COMFORT,"Comfort, seats & climate",2,12.5,low
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,SPACE,"Space, storage & practicality",3,18.8,low
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,HMI,Infotainment & operation,6,37.5,low
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,DIGITAL,Connectivity & digital services,1,6.2,low
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,CHARGING,Range & charging (as experienced),3,18.8,low
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,DRIVING,Driving experience & performance,9,56.2,low
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,EXT,Exterior design & lighting,3,18.8,low
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,INT,Interior design & quality perception,4,25.0,low
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,ACCESS,"Access, doors & convenience",1,6.2,low
+country_G60_sourceA,GB,"G60 only, Source A only (same car, same source)",36,16,44.4,ADAS,Driver assistance & parking (experience),3,18.8,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,COMFORT,"Comfort, seats & climate",2,16.7,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,SPACE,"Space, storage & practicality",1,8.3,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,HMI,Infotainment & operation,2,16.7,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,DIGITAL,Connectivity & digital services,1,8.3,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,CHARGING,Range & charging (as experienced),1,8.3,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,DRIVING,Driving experience & performance,8,66.7,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,EXT,Exterior design & lighting,3,25.0,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,INT,Interior design & quality perception,4,33.3,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,ACCESS,"Access, doors & convenience",1,8.3,low
+country_G60_sourceA,JP,"G60 only, Source A only (same car, same source)",53,12,22.6,ADAS,Driver assistance & parking (experience),0,0.0,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,COMFORT,"Comfort, seats & climate",5,11.4,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,SPACE,"Space, storage & practicality",9,20.5,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,HMI,Infotainment & operation,6,13.6,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,DIGITAL,Connectivity & digital services,7,15.9,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,CHARGING,Range & charging (as experienced),2,4.5,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,DRIVING,Driving experience & performance,19,43.2,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,EXT,Exterior design & lighting,6,13.6,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,INT,Interior design & quality perception,12,27.3,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,ACCESS,"Access, doors & convenience",1,2.3,low
+country_G60_sourceA,KR,"G60 only, Source A only (same car, same source)",205,44,21.5,ADAS,Driver assistance & parking (experience),4,9.1,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,COMFORT,"Comfort, seats & climate",2,20.0,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,SPACE,"Space, storage & practicality",1,10.0,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,HMI,Infotainment & operation,4,40.0,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,DIGITAL,Connectivity & digital services,0,0.0,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,CHARGING,Range & charging (as experienced),8,80.0,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,DRIVING,Driving experience & performance,1,10.0,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,EXT,Exterior design & lighting,0,0.0,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,INT,Interior design & quality perception,2,20.0,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,ACCESS,"Access, doors & convenience",0,0.0,low
+country_G60_sourceA,SE,"G60 only, Source A only (same car, same source)",28,10,35.7,ADAS,Driver assistance & parking (experience),2,20.0,low
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,COMFORT,"Comfort, seats & climate",51,28.0,medium
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,SPACE,"Space, storage & practicality",22,12.1,medium
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,HMI,Infotainment & operation,74,40.7,medium
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,DIGITAL,Connectivity & digital services,35,19.2,medium
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,CHARGING,Range & charging (as experienced),41,22.5,medium
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,DRIVING,Driving experience & performance,101,55.5,medium
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,EXT,Exterior design & lighting,30,16.5,medium
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,INT,Interior design & quality perception,41,22.5,medium
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,ACCESS,"Access, doors & convenience",48,26.4,medium
+country_G60_sourceA,US,"G60 only, Source A only (same car, same source)",464,182,39.2,ADAS,Driver assistance & parking (experience),27,14.8,medium
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,COMFORT,"Comfort, seats & climate",114,9.6,high
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,SPACE,"Space, storage & practicality",72,6.1,high
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,HMI,Infotainment & operation,223,18.8,high
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,DIGITAL,Connectivity & digital services,159,13.4,high
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,CHARGING,Range & charging (as experienced),226,19.1,high
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,DRIVING,Driving experience & performance,160,13.5,high
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,EXT,Exterior design & lighting,64,5.4,high
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,INT,Interior design & quality perception,109,9.2,high
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,ACCESS,"Access, doors & convenience",137,11.6,high
+engine_US,BEVE,"US, G60+G70 (same country, same models)",2346,1184,50.5,ADAS,Driver assistance & parking (experience),118,10.0,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,COMFORT,"Comfort, seats & climate",261,12.3,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,SPACE,"Space, storage & practicality",131,6.2,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,HMI,Infotainment & operation,403,18.9,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,DIGITAL,Connectivity & digital services,227,10.7,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,CHARGING,Range & charging (as experienced),10,0.5,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,DRIVING,Driving experience & performance,357,16.8,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,EXT,Exterior design & lighting,165,7.8,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,INT,Interior design & quality perception,252,11.8,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,ACCESS,"Access, doors & convenience",293,13.8,high
+engine_US,ICE,"US, G60+G70 (same country, same models)",4452,2127,47.8,ADAS,Driver assistance & parking (experience),206,9.7,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,COMFORT,"Comfort, seats & climate",28,9.2,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,SPACE,"Space, storage & practicality",12,4.0,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,HMI,Infotainment & operation,49,16.2,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,DIGITAL,Connectivity & digital services,32,10.6,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,CHARGING,Range & charging (as experienced),37,12.2,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,DRIVING,Driving experience & performance,50,16.5,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,EXT,Exterior design & lighting,17,5.6,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,INT,Interior design & quality perception,34,11.2,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,ACCESS,"Access, doors & convenience",47,15.5,high
+engine_US,PHEV,"US, G60+G70 (same country, same models)",604,303,50.2,ADAS,Driver assistance & parking (experience),28,9.2,high
+derivative_US,G60,US only,3610,1800,49.9,COMFORT,"Comfort, seats & climate",174,9.7,high
+derivative_US,G60,US only,3610,1800,49.9,SPACE,"Space, storage & practicality",126,7.0,high
+derivative_US,G60,US only,3610,1800,49.9,HMI,Infotainment & operation,342,19.0,high
+derivative_US,G60,US only,3610,1800,49.9,DIGITAL,Connectivity & digital services,205,11.4,high
+derivative_US,G60,US only,3610,1800,49.9,CHARGING,Range & charging (as experienced),159,8.8,high
+derivative_US,G60,US only,3610,1800,49.9,DRIVING,Driving experience & performance,302,16.8,high
+derivative_US,G60,US only,3610,1800,49.9,EXT,Exterior design & lighting,117,6.5,high
+derivative_US,G60,US only,3610,1800,49.9,INT,Interior design & quality perception,195,10.8,high
+derivative_US,G60,US only,3610,1800,49.9,ACCESS,"Access, doors & convenience",256,14.2,high
+derivative_US,G60,US only,3610,1800,49.9,ADAS,Driver assistance & parking (experience),178,9.9,high
+derivative_US,G70,US only,3792,1814,47.8,COMFORT,"Comfort, seats & climate",229,12.6,high
+derivative_US,G70,US only,3792,1814,47.8,SPACE,"Space, storage & practicality",89,4.9,high
+derivative_US,G70,US only,3792,1814,47.8,HMI,Infotainment & operation,333,18.4,high
+derivative_US,G70,US only,3792,1814,47.8,DIGITAL,Connectivity & digital services,213,11.7,high
+derivative_US,G70,US only,3792,1814,47.8,CHARGING,Range & charging (as experienced),114,6.3,high
+derivative_US,G70,US only,3792,1814,47.8,DRIVING,Driving experience & performance,265,14.6,high
+derivative_US,G70,US only,3792,1814,47.8,EXT,Exterior design & lighting,129,7.1,high
+derivative_US,G70,US only,3792,1814,47.8,INT,Interior design & quality perception,200,11.0,high
+derivative_US,G70,US only,3792,1814,47.8,ACCESS,"Access, doors & convenience",221,12.2,high
+derivative_US,G70,US only,3792,1814,47.8,ADAS,Driver assistance & parking (experience),174,9.6,high
+source_US,Source A,"US, G60+G70",951,357,37.5,COMFORT,"Comfort, seats & climate",106,29.7,high
+source_US,Source A,"US, G60+G70",951,357,37.5,SPACE,"Space, storage & practicality",34,9.5,high
+source_US,Source A,"US, G60+G70",951,357,37.5,HMI,Infotainment & operation,137,38.4,high
+source_US,Source A,"US, G60+G70",951,357,37.5,DIGITAL,Connectivity & digital services,52,14.6,high
+source_US,Source A,"US, G60+G70",951,357,37.5,CHARGING,Range & charging (as experienced),60,16.8,high
+source_US,Source A,"US, G60+G70",951,357,37.5,DRIVING,Driving experience & performance,182,51.0,high
+source_US,Source A,"US, G60+G70",951,357,37.5,EXT,Exterior design & lighting,56,15.7,high
+source_US,Source A,"US, G60+G70",951,357,37.5,INT,Interior design & quality perception,83,23.2,high
+source_US,Source A,"US, G60+G70",951,357,37.5,ACCESS,"Access, doors & convenience",93,26.1,high
+source_US,Source A,"US, G60+G70",951,357,37.5,ADAS,Driver assistance & parking (experience),50,14.0,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,COMFORT,"Comfort, seats & climate",239,8.9,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,SPACE,"Space, storage & practicality",134,5.0,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,HMI,Infotainment & operation,435,16.2,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,DIGITAL,Connectivity & digital services,287,10.7,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,CHARGING,Range & charging (as experienced),190,7.1,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,DRIVING,Driving experience & performance,317,11.8,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,EXT,Exterior design & lighting,163,6.1,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,INT,Interior design & quality perception,275,10.2,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,ACCESS,"Access, doors & convenience",304,11.3,high
+source_US,Source B,"US, G60+G70",5479,2685,49.0,ADAS,Driver assistance & parking (experience),262,9.8,high
+source_US,Source C,"US, G60+G70",698,572,81.9,COMFORT,"Comfort, seats & climate",58,10.1,high
+source_US,Source C,"US, G60+G70",698,572,81.9,SPACE,"Space, storage & practicality",47,8.2,high
+source_US,Source C,"US, G60+G70",698,572,81.9,HMI,Infotainment & operation,103,18.0,high
+source_US,Source C,"US, G60+G70",698,572,81.9,DIGITAL,Connectivity & digital services,79,13.8,high
+source_US,Source C,"US, G60+G70",698,572,81.9,CHARGING,Range & charging (as experienced),23,4.0,high
+source_US,Source C,"US, G60+G70",698,572,81.9,DRIVING,Driving experience & performance,68,11.9,high
+source_US,Source C,"US, G60+G70",698,572,81.9,EXT,Exterior design & lighting,27,4.7,high
+source_US,Source C,"US, G60+G70",698,572,81.9,INT,Interior design & quality perception,37,6.5,high
+source_US,Source C,"US, G60+G70",698,572,81.9,ACCESS,"Access, doors & convenience",80,14.0,high
+source_US,Source C,"US, G60+G70",698,572,81.9,ADAS,Driver assistance & parking (experience),40,7.0,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,COMFORT,"Comfort, seats & climate",59,9.1,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,SPACE,"Space, storage & practicality",43,6.6,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,HMI,Infotainment & operation,116,17.8,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,DIGITAL,Connectivity & digital services,82,12.6,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,CHARGING,Range & charging (as experienced),135,20.8,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,DRIVING,Driving experience & performance,99,15.2,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,EXT,Exterior design & lighting,34,5.2,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,INT,Interior design & quality perception,61,9.4,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,ACCESS,"Access, doors & convenience",84,12.9,high
+derivative_engine_US,G60|BEVE,"US, per model and powertrain",1271,650,51.1,ADAS,Driver assistance & parking (experience),63,9.7,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,COMFORT,"Comfort, seats & climate",102,10.4,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,SPACE,"Space, storage & practicality",74,7.5,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,HMI,Infotainment & operation,199,20.2,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,DIGITAL,Connectivity & digital services,100,10.2,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,CHARGING,Range & charging (as experienced),6,0.6,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,DRIVING,Driving experience & performance,175,17.8,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,EXT,Exterior design & lighting,77,7.8,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,INT,Interior design & quality perception,119,12.1,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,ACCESS,"Access, doors & convenience",147,14.9,high
+derivative_engine_US,G60|ICE,"US, per model and powertrain",2017,984,48.8,ADAS,Driver assistance & parking (experience),96,9.8,high
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,COMFORT,"Comfort, seats & climate",13,7.8,medium
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,SPACE,"Space, storage & practicality",9,5.4,medium
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,HMI,Infotainment & operation,27,16.3,medium
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,DIGITAL,Connectivity & digital services,23,13.9,medium
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,CHARGING,Range & charging (as experienced),18,10.8,medium
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,DRIVING,Driving experience & performance,28,16.9,medium
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,EXT,Exterior design & lighting,6,3.6,medium
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,INT,Interior design & quality perception,15,9.0,medium
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,ACCESS,"Access, doors & convenience",25,15.1,medium
+derivative_engine_US,G60|PHEV,"US, per model and powertrain",322,166,51.6,ADAS,Driver assistance & parking (experience),19,11.4,medium
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,COMFORT,"Comfort, seats & climate",55,10.3,high
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,SPACE,"Space, storage & practicality",29,5.4,high
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,HMI,Infotainment & operation,107,20.0,high
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,DIGITAL,Connectivity & digital services,77,14.4,high
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,CHARGING,Range & charging (as experienced),91,17.0,high
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,DRIVING,Driving experience & performance,61,11.4,high
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,EXT,Exterior design & lighting,30,5.6,high
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,INT,Interior design & quality perception,48,9.0,high
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,ACCESS,"Access, doors & convenience",53,9.9,high
+derivative_engine_US,G70|BEVE,"US, per model and powertrain",1075,534,49.7,ADAS,Driver assistance & parking (experience),55,10.3,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,COMFORT,"Comfort, seats & climate",159,13.9,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,SPACE,"Space, storage & practicality",57,5.0,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,HMI,Infotainment & operation,204,17.8,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,DIGITAL,Connectivity & digital services,127,11.1,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,CHARGING,Range & charging (as experienced),4,0.3,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,DRIVING,Driving experience & performance,182,15.9,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,EXT,Exterior design & lighting,88,7.7,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,INT,Interior design & quality perception,133,11.6,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,ACCESS,"Access, doors & convenience",146,12.8,high
+derivative_engine_US,G70|ICE,"US, per model and powertrain",2435,1143,46.9,ADAS,Driver assistance & parking (experience),110,9.6,high
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,COMFORT,"Comfort, seats & climate",15,10.9,medium
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,SPACE,"Space, storage & practicality",3,2.2,medium
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,HMI,Infotainment & operation,22,16.1,medium
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,DIGITAL,Connectivity & digital services,9,6.6,medium
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,CHARGING,Range & charging (as experienced),19,13.9,medium
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,DRIVING,Driving experience & performance,22,16.1,medium
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,EXT,Exterior design & lighting,11,8.0,medium
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,INT,Interior design & quality perception,19,13.9,medium
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,ACCESS,"Access, doors & convenience",22,16.1,medium
+derivative_engine_US,G70|PHEV,"US, per model and powertrain",282,137,48.6,ADAS,Driver assistance & parking (experience),9,6.6,medium
