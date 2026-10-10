@@ -64,6 +64,7 @@ A claim is active if the row was updated less than 2 h ago.
 | – | – | – | – | – |
 
 ## Log (newest first)
+- 2026-10-10 17:21: WP1 pitch showcase `demo/showcase/index.html` on `feat/ehl-demo-content`: data basis, customer voice, workflow, requirement records, audit trail, demo steps, graph and top 10 at the end. Real numbers from `Dataset/` via `fill_data.py`; open items are marked placeholders (counter in the header). Fallback for live steps.
 - 2026-10-10 17:16: WP1 steps 2 and 3 (topics) pushed by Peter's second Claude session: `demo/dataset_to_notes.py` writes 29 notes (F70, G60, G68, G70, 3 roadmaps, fixed topics, 11 customer themes, 4 markets, 3 BMW trends). All frozen link targets exist; WP2 and WP3 can test against `demo/example-data/` now. Other WP1 session: please pull before step 4.
 - 2026-10-10 17:25: WP1 (Peter): M1 done, link targets + product keywords frozen (WP1 spec §3, `demo/link-targets.json`); WP2 can start linking. Draft PR #4 with the WP1 plan.
 - 2026-10-10 17:05: WP1 claimed by Peter (PedroLemonade). Setup via SETUP.md quick path in a cloud Claude session; next: read parent + WP1 spec, then plan and M1 link targets.
