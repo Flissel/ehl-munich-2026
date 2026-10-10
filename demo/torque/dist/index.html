@@ -999,6 +999,80 @@ details.rest>summary em{font-style:normal;text-transform:none;letter-spacing:0;c
 .rbh small{color:var(--ink-3)}
 .rbnote ul{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--ink-2)}
 
+
+@media (max-width:640px){.nd p .why{display:none}}
+/* Compact layout: more of the decision on one screen (Rowboat frame is about 1240 x 700); desktop only, phones keep their own layout */
+@media (min-width:901px){
+.app{grid-template-columns:208px minmax(0,1fr)}
+.side{padding:14px 10px 12px;gap:12px}
+.brand{padding:2px 6px}
+.nav button{padding:7px 10px;font-size:13px}
+.nav .grp{padding:10px 10px 3px}
+.side-foot{gap:8px}
+.side-foot .chip{white-space:normal;justify-content:flex-start;text-align:left;background:transparent;border-color:var(--side-line);color:var(--side-ink-2);font-size:11px;line-height:1.35;padding:5px 8px;border-radius:9px;cursor:pointer}
+.side-foot .chip:hover{color:var(--side-ink)}
+.mini-pipe{padding:8px 10px}
+.top{padding:9px 22px;gap:8px 14px;flex-wrap:nowrap}
+.crumb{min-width:0}
+.crumb h1{font-size:19px}
+.crumb p{font-size:12px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctrls{gap:6px;flex-wrap:nowrap;flex:none}
+.ctrl{gap:0}
+.seg{padding:2px}
+.seg button{padding:4px 9px;font-size:12px}
+.searchbtn{padding:6px 8px}
+.view{padding:16px 22px 72px}
+.view>*+*{margin-top:12px}
+.g{gap:12px}
+.card{padding:14px 16px}
+.card-h{margin-bottom:10px}
+.kpi{gap:3px}
+.kpi .num{font-size:26px}
+.kpi .num small{font-size:15px}
+.nextstep{padding:9px 14px;gap:12px}
+.nextstep .nb{width:34px;height:34px;padding:2px}
+.nextstep b{font-size:13.5px}
+.nd{grid-template-columns:24px minmax(0,1fr) auto 58px;gap:10px;padding:6px 6px}
+.nd-m{display:flex;align-items:center;gap:10px;min-width:0}
+.nd-t{flex:0 1 auto;max-width:52%}
+.nd-t b{font-size:13px}
+.nd p{margin:0;flex:1 1 0;min-width:0;white-space:nowrap;overflow:hidden}
+.nd p .why{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.nd .n{font-size:14px}
+.nd.done{opacity:.72}
+.nd.done:hover{opacity:1}
+.nd .st span{font-size:11.5px}
+.rrow{padding:7px 10px;gap:12px}
+.rk b{font-size:16px}
+.rmain{display:flex;align-items:center;gap:10px;min-width:0}
+.rtop{flex:0 1 auto;max-width:56%;min-width:0}
+.rtitle{font-size:13px}
+.rmeta{margin-top:0;flex:1 1 0;min-width:0;flex-wrap:nowrap;overflow:hidden}
+.rwhy{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;font-size:12px}
+.rmeta>*{flex:none}
+.rmeta>.rwhy{flex:1 1 0}
+.rhead{margin-bottom:6px}
+.movers:empty{display:none}
+.wb .bars i{height:4px}
+.fab{padding:6px;gap:0}
+.fab .fl{display:none}
+.fab .nordi-mini{width:34px;height:34px}
+.dh{padding:12px 20px 10px}
+.dh h2{font-size:20px;margin:8px 0 2px}
+.db-body{padding:2px 20px 20px}
+.sum{padding:10px 0 4px}
+.mkranks{margin:6px 0 8px}
+.rk{flex-direction:row;align-items:baseline;gap:5px}
+.rhdr span{white-space:nowrap}
+.rbrow{margin:10px 0 0}
+.nd-t .rid{flex:none}
+.nd-t b{min-width:0}
+body.analyst .rmain{display:block}
+body.analyst .rtop{max-width:none}
+body.analyst .rmeta{margin-top:3px;flex-wrap:nowrap}
+body.analyst .rrow,body.analyst .rhdr{grid-template-columns:36px minmax(0,1fr) 96px 84px minmax(96px,150px) 44px 96px}
+@media (max-width:1180px){.ctrls{flex-wrap:wrap;justify-content:flex-end}.top{flex-wrap:wrap}}
+}
 </style>
 
 <style>
@@ -1046,6 +1120,7 @@ svg.world path.sel{stroke:var(--ink-3);stroke-width:.8}
     </div>
     <nav class="nav" id="nav" aria-label="Views"></nav>
     <div class="side-foot">
+      <button type="button" class="chip real" id="dataChip" data-go="data" title="Comments, studies, sales and option prices are real BMW hackathon data. China, simulator part-worths and the competitor benchmark are modelled."></button>
       <div class="mini-pipe" id="miniPipe"></div>
       <div class="side-btns">
         <button class="side-btn" id="tourBtn" type="button"><span class="nordi-mini" id="tourIcon"></span>Tour</button>
@@ -1057,11 +1132,10 @@ svg.world path.sel{stroke:var(--ink-3);stroke-width:.8}
     <header class="top">
       <div class="crumb"><h1 id="vTitle"></h1><p id="vSub"></p></div>
       <div class="ctrls">
-        <div class="ctrl"><span>Successor of</span><div class="seg" id="modelSeg"></div></div>
-        <div class="ctrl"><span>Market</span><div class="seg" id="mktSeg"></div></div>
-        <div class="ctrl"><span>Detail</span><div class="seg" id="lvlSeg"></div></div>
-        <button type="button" class="searchbtn" id="palBtn" aria-label="Search and commands"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>Search<kbd>Ctrl K</kbd></button>
-        <button type="button" class="chip real" id="dataChip" data-go="data" title="Comments, studies, sales and option prices are real BMW hackathon data. China, simulator part-worths and the competitor benchmark are modelled."></button>
+        <div class="ctrl" title="Successor of"><div class="seg" id="modelSeg" role="group" aria-label="Successor of"></div></div>
+        <div class="ctrl" title="Market"><div class="seg" id="mktSeg" role="group" aria-label="Market"></div></div>
+        <div class="ctrl" title="Detail: Essentials for deciding, Analyst for every number"><div class="seg" id="lvlSeg" role="group" aria-label="Detail"></div></div>
+        <button type="button" class="searchbtn" id="palBtn" aria-label="Search and commands" title="Search and commands (Ctrl K)"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg></button>
       </div>
     </header>
     <div class="view" id="view"></div>
@@ -1890,11 +1964,12 @@ RENDER.overview = () => {
   const flagged = rk.map(x => x.r).filter(r => confOf(r) < 60 || g[r.id].wish - g[r.id].buy >= 12 || revOf(r) >= 12 || r.ev0.level !== "High").slice(0, 6);
   const alerts = flagged.map(r => { const low = confOf(r) < 60 || r.ev0.level !== "High"; return `<div role="button" tabindex="0" class="alert ${low ? "low" : "conf"}" data-open="${r.id}">${low ? SVGI.low : SVGI.warn}<div><b>${r.id} ${esc(r.short)}</b><p>${esc(r.cs)}</p></div><span class="tag">${low ? `Evidence ${r.ev0.level.toLowerCase()}` : "Conflict"}</span></div>`; }).join("");
   const todoLine = [c.open ? `${c.open} proposed` : "", c.challenged ? `${c.challenged} waiting for evidence` : "", c.recheck ? `${c.recheck} to re-check` : ""].filter(Boolean).join(", ");
-  const banner = firstOpen ? `<div class="nextstep" id="t-next"><span class="nb">${nordi("wave")}</span><div><b>${queue.length} of the top ${TOP} purchase drivers in ${mkLabel()} need you: ${todoLine}</b><span>Start with ${firstOpen.r.id} ${esc(firstOpen.r.short)}, ranked #${rk.indexOf(firstOpen) + 1}. The review takes you through them in order, one decision each.</span></div><button type="button" class="btn" data-act="review">${SVGI.play}Start review</button></div>`
+  const banner = firstOpen ? `<div class="nextstep" id="t-next"><span class="nb">${nordi("wave")}</span><div><b>${queue.length} of the top ${TOP} in ${mkLabel()} need you: ${todoLine}</b><span>Next: ${firstOpen.r.id} ${esc(firstOpen.r.short)}, ranked #${rk.indexOf(firstOpen) + 1}. The review goes through them in order.</span></div><button type="button" class="btn" data-act="review">${SVGI.play}Start review</button></div>`
     : `<div class="nextstep"><span class="nb">${nordi("cheer")}</span><div><b>The top ${TOP} in ${mkLabel()} are decided for review round ${roundNow()}</b><span>The spec is ready for the steering board. Switch the market for its top ${TOP}; new data or a new round brings decisions back for a second look.</span></div><button type="button" class="btn" data-go="log">Open review log</button></div>`;
   if(!isAnalyst()){
-    const next = queue.slice(0, 6).map(id => { const x = rk.find(y => y.r.id === id), rc = recoOf(x.r, rk.indexOf(x) + 1, net);
-      return `<div role="button" tabindex="0" class="nd" data-open="${id}"><span class="n">${rk.indexOf(x) + 1}</span><div class="nd-m"><div class="nd-t"><span class="rid">${id}</span><b>${esc(x.r.title)}</b></div><p>${recoChip(rc)}${esc(rc.why)}</p></div><span class="nd-q ${statusOf(id)}">${statusOf(id) === "open" && !recheckOf(id) ? "" : queueTag(id)}</span><span class="netv ${net[id].net < 0 ? "neg" : "pos"}" ${tipAttr("Buyers won minus buyers lost per year")}>${fmtK(net[id].net)}</span></div>`; }).join("");
+    const todo = new Set(queue);
+    const next = rk.map((x, i) => { const id = x.r.id, rc = recoOf(x.r, i + 1, net);
+      return `<div role="button" tabindex="0" class="nd${todo.has(id) ? "" : " done"}" data-open="${id}"><span class="n">${i + 1}</span><div class="nd-m"><div class="nd-t"><span class="rid">${id}</span><b>${esc(x.r.title)}</b></div><p>${recoChip(rc)}<span class="why" title="${esc(rc.why)}">${esc(rc.why)}</span></p></div>${stChip(id, true)}<span class="netv ${net[id].net < 0 ? "neg" : "pos"}" ${tipAttr("Buyers won minus buyers lost per year")}>${fmtK(net[id].net)}</span></div>`; }).join("");
     const recent = state.log.filter(l => l.model === state.model && l.id).slice(0, 6).map(l => `<li><button type="button" class="rid" data-open="${l.id}">${l.id}</button><span>${l.kind === "revert" ? `Reverted to ${STATUS[l.status].l.toLowerCase()}` : l.kind === "confirm" ? `Kept ${STATUS[l.status].l.toLowerCase()}` : STATUS[l.status].l} <span class="muted">${esc(RBY[l.id]?.short || "")}</span></span><small>${when(l.at)} · ${esc(l.by)}</small></li>`).join("");
     return `${banner}
     <div class="g kp3">
@@ -1903,7 +1978,7 @@ RENDER.overview = () => {
       ${kpi("Projected buyers per year", fmtK(sim.units), `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> with the proposed spec vs today's car in ${mkLabel()}`, "c4")}
     </div>
     <div class="g">
-      <section class="card c8" id="t-reco"><div class="card-h"><div><h3>Your next decisions</h3><p class="sub">In review order, with the recommendation from the data. You decide.</p></div><button type="button" class="link" data-go="req">All purchase drivers</button></div>
+      <section class="card c8" id="t-reco"><div class="card-h"><div><h3>Top ${TOP} purchase drivers in ${mkLabel()}</h3><p class="sub">Recommendation, your decision, buyers won per year</p></div><button type="button" class="link" data-go="req">All candidates</button></div>
         <div class="ndl">${next || `<p class="muted" style="margin:0">Nothing to decide right now.</p>`}</div></section>
       <section class="card c4"><div class="card-h"><div><h3>Recently decided</h3><p class="sub">${mName()}</p></div><button type="button" class="link" data-go="log">Review log</button></div>
         <ul class="recent">${recent || `<li class="muted">No decisions yet.</li>`}</ul></section>
@@ -1938,7 +2013,7 @@ let restOpen = false;
 RENDER.req = () => {
   const c = decCounts();
   return `
-  <section class="card" id="t-list"><div class="rhead"><div><h3>Top ${TOP} purchase drivers</h3><p class="sub">Successor of the ${mName()} · ${mkLabel()} · ${REQS.length} candidates ranked, the top ${TOP} go to review · click a row for evidence and decision</p></div>
+  <section class="card" id="t-list"><div class="rhead"><div><h3>Top ${TOP} purchase drivers</h3><p class="sub">${mName()} · ${mkLabel()} · ${REQS.length} candidates ranked · click a row for evidence and decision</p></div>
     <div class="acts"><div class="seg" id="fSeg">${[["all","All"],["open","To review"],["done","Decided"]].map(([k, l]) => `<button type="button" data-filter="${k}" aria-pressed="${state.filter === k}">${l}</button>`).join("")}</div>
     <button type="button" class="btn adv" id="expJson" title="Top ${TOP} requirement records with all fields as JSON">${SVGI.copy}Export list</button>
     ${c.todo ? `<button type="button" class="btn primary" data-act="review">${SVGI.play}Start review (${reviewQueue().length})</button>` : ""}</div></div>
@@ -2018,7 +2093,7 @@ function rowHTML(x, i, net){
   const segs = x.s.parts.map(p => `<span class="f-${p.k}" style="flex:${Math.max(p.pts, .01)} 1 0" ${tipAttr(`<b>${p.n}</b><br>${Math.round(p.v)} of 100 × ${Math.round(p.w * 100)} percent = ${p.pts.toFixed(1)} points`)}></span>`).join("");
   return `<div class="rk"><b>${i + 1}</b>${d ? `<span class="delta ${d > 0 ? "up" : "down"}">${Math.abs(d)}</span>` : `<span class="delta">&nbsp;</span>`}</div>
     <div class="rmain"><div class="rtop"><span class="rid">${r.id}</span><span class="rtitle">${esc(r.title)}</span></div>
-      <div class="rmeta">${recoChip(rc)}<span class="ess muted rwhy">${esc(rc.why)}</span><span class="adv">${robustChip(r.id)}</span><span class="kano adv" ${tipAttr(`<b>${KANO[kanoNow(r)]}</b><br>${KANO_D[kanoNow(r)]}`)}>${KANO[kanoNow(r)]}</span><span class="adv">${evChip(r)}</span><span class="adv">${confMeter(confOf(r))}</span>${fl ? `<span class="flag adv" ${tipAttr(esc(r.cs))}>${SVGI.warn}${fl}</span>` : ""}</div></div>
+      <div class="rmeta">${recoChip(rc)}<span class="adv">${robustChip(r.id)}</span>${fl ? `<span class="flag adv" ${tipAttr(esc(r.cs))}>${SVGI.warn}${fl}</span>` : ""}<span class="muted rwhy">${esc(rc.why)}</span></div></div>
     <div class="wb adv" ${tipAttr(`<b>Asked for ${wi} · Purchase signal ${bu}</b><br>${bu - wi >= 8 ? "Hidden driver: praised and bought for more than it is asked for" : wi - bu >= 12 ? "Say-do gap: asked for, rarely the reason to buy" : "Wish and purchase signal are in line"}`)}><div class="bars"><i class="w" style="width:${wi}%"></i><i class="b" style="width:${bu}%"></i></div><small>${wi} → ${bu}</small></div>
     <div class="rnet"><span class="netv ${n.net < 0 ? "neg" : "pos"}" ${tipAttr(`<b>${sgn(n.net)} buyers a year</b><br>Won ${fmt(n.gain)}, lost ${fmt(-n.loss)}`)}>${fmtK(n.net)}</span></div>
     <div class="stack-tr adv"><div class="stack" style="width:${x.s.total}%">${segs}</div></div>
@@ -2247,7 +2322,6 @@ function renderDrawer(){
       <div class="reco-line">${recoChip(rc)}<span>${esc(rc.why)}</span></div>
       <p class="cut">${robustChip(r.id)}<span>${esc(cutoffLine(r.id))}</span></p>
       <p class="mkranks"><span>Rank by market</span>${MKS.filter(k => sold(k)).map(k => { const n = rankMap(k)[r.id]; return `<button type="button" class="mkr${n <= TOP ? " in" : ""}${k === state.market ? " cur" : ""}" data-market="${k}" title="${n <= TOP ? `In the top ${TOP}` : `Below the top ${TOP}`} in ${MK[k]}">${MK[k]} #${n}</button>`; }).join("")}</p>
-      ${rbDriverHTML(r)}
       ${rck ? `<div class="risk">${SVGI.warn}<span><b>Re-check:</b> ${esc(rck)}.</span></div>` : ""}
       <p class="motive"><b>Why customers buy it:</b> ${esc(r.motive)}</p>
       <blockquote>“${esc(SRCQ(r.says))}”<footer>${esc(qMeta(r.says))} · real BMW comment</footer></blockquote>
@@ -2259,6 +2333,7 @@ function renderDrawer(){
       <div class="kanos adv"><span>Kano</span>${mks.map(k => kanoChip(r, k)).join("")}${revOf(r) ? `<span class="kano" ${tipAttr("Share of comments about switching it off, overload or annoyance")}>Puts off <b>${revOf(r)}%</b></span>` : ""}</div>
       <div class="tgt"><div><small>Target</small>${esc(effTarget(r))}${d && d.target ? `<span class="chg">Was: ${esc(r.target)}</span>` : ""}</div><div><small>Acceptance</small>${esc(effAccept(r))}${d && d.accept ? `<span class="chg">Was: ${esc(r.accept)}</span>` : ""}</div></div>
       ${r.cs ? `<div class="risk">${SVGI.warn}<span>${esc(r.cs)}</span></div>` : ""}
+      ${rbDriverHTML(r)}
     </div>
     ${adv ? "" : essentialsEvidence}
     <div class="adv">
