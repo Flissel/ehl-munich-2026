@@ -1,17 +1,20 @@
 # WORKBOARD – EHL Munich 2026 Rowboat Live Demo
 
-Single source of truth for all sessions. Lives on `main`; update it as described in `CLAUDE.md`.
+Single source of truth for all sessions. Lives on the **`board` branch** (the only unprotected
+shared branch); update it as described in `CLAUDE.md` on `main`. Fresh PC: `SETUP.md` on `main`.
 **Demo:** 2026-10-11, 6-min pitch (3–4 min live demo). **Parent spec:**
 `docs/superpowers/specs/2026-10-10-rowboat-ehl-space-design.md` (on every `feat/ehl-*` branch).
+**Orchestrator:** Flissel – reviews and merges all PRs into `main` (this repo) and `ehl` (fork `Flissel/rowboat`).
+**Team (GitHub):** syed-rayyanadil · yunes-mahan · Paolabeiia · PedroLemonade – assign yourself a WP by claiming its row.
 
 ## Work packages
 
-| WP | Branch | Owner (person / session) | Status | Plan | Now doing | Blockers |
-|---|---|---|---|---|---|---|
-| WP1 Demo content & setup | `feat/ehl-demo-content` | – | open | – | – | – |
-| WP2 Bridge | `feat/ehl-bridge` | – | open | – | – | waits for WP1 link targets (can start with sales-mcp access check) |
-| WP3 Semantic search | `feat/ehl-search` | – | open | – | – | – |
-| WP4 Agent chat | `feat/ehl-agent-chat` | – | open | – | – | – |
+| WP | Branch | Owner (person / session) | Status | Plan | PR | Now doing | Blockers |
+|---|---|---|---|---|---|---|---|
+| WP1 Demo content & setup | `feat/ehl-demo-content` | – | open | – | – | – | – |
+| WP2 Bridge | `feat/ehl-bridge` | – | open | – | – | – | waits for WP1 link targets (can start with sales-mcp access check) |
+| WP3 Semantic search | `feat/ehl-search` | – | open | – | – | – | – |
+| WP4 Agent chat | `feat/ehl-agent-chat` | – | open | – | – | – | – |
 
 Status values: `open` · `claimed` · `planning` · `in progress` · `blocked` · `review` · `done`.
 A claim is active if the row was updated less than 2 h ago.
@@ -34,7 +37,8 @@ A claim is active if the row was updated less than 2 h ago.
 | Qdrant | `127.0.0.1:6333`, collection `ehl_notes` | frozen |
 | MCP servers | `ehl-search` (WP3), `ehl-agents` (WP4), stdio | frozen |
 | Products in the graph | The machines from `Dataset/`: F70, G60, G68, G70 (test data; replaces invented P1–P3, spec D9) | frozen |
-| PC roles (spec D11) | Every team member runs Rowboat Desktop locally: `demo/install.ps1` (repo notes + `ehl-search`) and `bridge --fake` (fake companies). Demo PC only: `install.ps1 -Demo` (+ `ehl-agents`, bridge on real sources). Real company notes never in git | frozen |
+| PC roles (spec D11) | Every team member runs Rowboat (dev mode, fork `ehl`) locally: WP1 installer (repo notes + `ehl-search`) and `bridge --fake` (fake companies). Demo PC only: installer `--demo` (+ `ehl-agents`, bridge on real sources). Real company notes never in git | frozen |
+| Rowboat source (replaces D1) | Fork `Flissel/rowboat`, branch `ehl` (pinned `72e9d8c`), run with `npm run dev`; changes on `ehl/<wp>-<topic>` via PR | frozen |
 | Link targets (exact note names for products, roadmaps, topics, team) | – | **pending WP1 (M1)** |
 
 ## Handoffs
@@ -61,6 +65,7 @@ A claim is active if the row was updated less than 2 h ago.
 
 ## Log (newest first)
 
+- 2026-10-10 – Orchestration set up: `main` PR-only (review by Flissel, CODEOWNERS); board moved to `board` branch; `SETUP.md` for team PCs. Rowboat now runs **from source in dev mode** (fork `Flissel/rowboat`, branch `ehl` pinned to `72e9d8c`; changes via `ehl/<wp>-<topic>` + PR) – replaces spec D1. Installer scripts must run on Windows and macOS (WP1: `install.ps1` → cross-platform).
 - 2026-10-10 – Decided (spec D11): everyone runs Rowboat on their own PC with repo notes + fake companies + local search; Sales/Marketing agents and real data only on the demo PC. WP1/WP2 specs updated.
 - 2026-10-10 – Q1 decided: `Dataset/` is the test data; products = F70, G60, G68, G70 (spec D9 updated on `feat/rowboat-ehl-space` and in the WP1 spec).
 - 2026-10-10 – board created; WP specs on their branches; all WPs open.
