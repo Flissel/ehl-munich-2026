@@ -63,18 +63,20 @@ Facts about Rowboat Desktop that shape this design (verified in upstream code at
   OpenClaw gateway · sales-mcp      API :5510 · chat worker
         │ read / chat                   │ read / chat
         ▼                               ▼
- ┌──────────── bridge (every 60 s) ─────────────┐      ┌──── agents-mcp ─────────────┐
- │ companies, campaigns, content → Markdown     │      │ sales_ask · brand_ask       │
- └───────────────┬──────────────────────────────┘      │ content_design · semantic_search
-                 ▼ writes (managed_by: ehl-bridge)     └──────▲───────────┬──────────┘
-   ~/.rowboat/knowledge/  (demo PC)                           │ MCP       │ query
-   Organizations/  People/ (team)  Projects/ (P, R)           │           ▼
-   Topics/ (channels, trends)  Content/                        │      Qdrant (local)
-                 │ watched                                     │           ▲
-                 ▼                                             │           │ upserts
-            indexer ─────────────────────────────────────────────────────┘
-                 ▲
-   Rowboat Desktop + agent (+ EHL skill) ─── reads vault, graph from [[links]]
+ ┌──────────── bridge (every 60 s) ─────────────┐   ehl-agents (MCP): sales_ask ·
+ │ companies, campaigns, content → Markdown     │     brand_ask · content_design
+ └───────────────┬──────────────────────────────┘          ▲ MCP
+                 ▼ writes (managed_by: ehl-bridge)          │
+   ~/.rowboat/knowledge/  (demo PC)                         │
+   Organizations/  People/ (team)  Projects/ (P, R)         │
+   Topics/ (channels, trends)  Content/                     │
+                 │ watched                                  │
+                 ▼                                          │
+   indexer ──upserts──► Qdrant ◄──query── ehl-search (MCP): semantic_search
+                                                 ▲ MCP      │
+                                                 │          │
+   Rowboat Desktop + agent (+ EHL skill) ────────┴──────────┘
+       reads vault, graph from [[links]]
 ```
 
 Everything runs on the demo PC except Sales-Claw, which is reached over Tailscale. All local
@@ -143,16 +145,18 @@ Watches `~/.rowboat/knowledge/` (full pass on start, then changed files only). O
 title, Info fields and body as text; frontmatter, folder and outgoing links as payload for filters.
 Deleted notes are removed from the collection. Local Qdrant in Docker on `127.0.0.1`.
 
-### 5.4 `agents-mcp/` – tools for the Rowboat agent
+The indexer ships with its own MCP server `ehl-search` exposing
+`semantic_search(query, folder?, limit?)` → note paths + snippets.
 
-One MCP server, registered in `~/.rowboat/config/mcp.json`:
+### 5.4 `agents-mcp/` – chat tools for the Rowboat agent
+
+MCP server `ehl-agents`, registered in `~/.rowboat/config/mcp.json`:
 
 | Tool | Calls | Notes |
 |---|---|---|
 | `sales_ask(text)` | Sales agent (the one behind WhatsApp) via the OpenClaw gateway's OpenAI-compatible chat endpoint over Tailscale | Endpoint must be enabled in `openclaw.json`; see §8 |
 | `brand_ask(text)` | Brand agent: `POST /api/pult/marke/chat`, then poll for the answer | async, with timeout |
 | `content_design(content_id, text)` | Editor agent for a draft: `POST /api/pult/inhalte/{id}/chat`, then poll | async, with timeout |
-| `semantic_search(query, folder?, limit?)` | Qdrant | returns note paths + snippets |
 
 ### 5.5 `example-data/` and agent skill
 
@@ -217,7 +221,34 @@ skill → dress rehearsal.
 - Customer individuals as notes.
 - Changes to Rowboat's code; the Rowboat fork in `vibemind-os/spaces/rowboat`.
 
-## 12. Prior work and licences
+## 12. Work split and shared contracts
+
+Four work packages, each on its own branch with its own spec, each owning one top-level folder so
+branches merge without conflicts:
+
+| # | Branch | Spec | Folder | Owns |
+|---|---|---|---|---|
+| WP1 | `feat/ehl-demo-content` | `2026-10-10-ehl-wp1-demo-content-design.md` | `demo/` | Example data, EHL skill, Rowboat setup (`mcp.json`), demo script, dress rehearsal |
+| WP2 | `feat/ehl-bridge` | `2026-10-10-ehl-wp2-bridge-design.md` | `bridge/` | Sales/Marketing → `Organizations/`, `Content/` notes |
+| WP3 | `feat/ehl-search` | `2026-10-10-ehl-wp3-search-design.md` | `search/` | Qdrant, indexer, MCP server `ehl-search` |
+| WP4 | `feat/ehl-agent-chat` | `2026-10-10-ehl-wp4-agent-chat-design.md` | `agents-mcp/` | OpenClaw check, MCP server `ehl-agents` (chat tools) |
+
+**Shared contracts** (changes only by agreement of all owners, recorded here):
+
+| Contract | Value |
+|---|---|
+| Vault path | env `EHL_VAULT`, default `~/.rowboat/knowledge` |
+| Note format | §5.1 (template, full-path links, `managed_by: ehl-bridge` ownership, http images only) |
+| Folder ownership in the vault | `Organizations/` and bridge-written `Content/` notes: WP2 · `Projects/`, `Topics/`, `People/`: WP1 · agent-written `Content/` notes: the Rowboat agent (no `managed_by`) |
+| Fixed link targets | `Topics/Newsletter`, `Topics/Social Media`, `Topics/Email`, `Topics/Market Research`, `Projects/P1 …`–`P3 …` (exact names defined by WP1 first, then frozen) |
+| Qdrant | `127.0.0.1:6333`, collection `ehl_notes` |
+| MCP servers | `ehl-search` (WP3), `ehl-agents` (WP4); stdio; `mcp.json` entries collected by WP1 |
+| Python | 3.12, own `pyproject.toml` per folder, pytest, `logging` (no `print`), secrets in `.env` + `.env.example` |
+
+**Dependencies:** WP1 publishes the link-target names first (needed by WP2). WP2–WP4 develop
+against a test vault and fakes, so none blocks another; integration happens in WP1's dress rehearsal.
+
+## 13. Prior work and licences
 
 | Part | Origin | Licence |
 |---|---|---|
