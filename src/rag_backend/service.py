@@ -13,8 +13,10 @@ SYSTEM_PROMPT = """You are a concise BMW data assistant for a hackathon RAG syst
 
 Use only the provided context chunks. If the context is insufficient, say what is missing.
 Answer the user's question directly in simple language.
+Use plain text with short bullet points when a list is useful.
+Do not use Markdown headings like ## or ###.
 Do not add extra sections such as requirements, recommendations, or uncertainty unless the user explicitly asks for them.
-When citing evidence, mention the relevant chunk IDs inline.
+Do not show chunk IDs or source IDs in the main answer unless the user asks for sources.
 """
 
 
@@ -55,15 +57,17 @@ class RagService:
                     "content": (
                         f"Question:\n{question}\n\n"
                         f"Context chunks:\n{context}\n\n"
-                        "Answer only what the user asked, using the context only. Cite chunk IDs inline where relevant."
+                        "Answer only what the user asked, using the context only. Do not include source IDs in the main answer."
                     ),
                 },
             ],
             temperature=0.2,
         )
+        evidence = [self._source_from_hit(hit) for hit in hits]
         return {
             "answer": response.output_text,
-            "sources": [self._source_from_hit(hit) for hit in hits],
+            "evidence": evidence,
+            "sources": evidence,
         }
 
     def _format_context(self, hits: list[dict[str, Any]]) -> str:
