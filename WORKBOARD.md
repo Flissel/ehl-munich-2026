@@ -33,13 +33,14 @@ A claim is active if the row was updated less than 2 h ago.
 | Vault path | `EHL_VAULT`, default `~/.rowboat/knowledge` | frozen |
 | Qdrant | `127.0.0.1:6333`, collection `ehl_notes` | frozen |
 | MCP servers | `ehl-search` (WP3), `ehl-agents` (WP4), stdio | frozen |
-| Link targets (products, roadmaps, topics, team) | – | **pending WP1 (M1)** |
+| Products in the graph | The machines from `Dataset/`: F70, G60, G68, G70 (test data; replaces invented P1–P3, spec D9) | frozen |
+| Link targets (exact note names for products, roadmaps, topics, team) | – | **pending WP1 (M1)** |
 
 ## Handoffs
 
 | From → To | What | State |
 |---|---|---|
-| WP1 → WP2 | Exact link-target names + product keyword list | open |
+| WP1 → WP2 | Exact link-target names + product keyword list (for F70/G60/G68/G70) | open |
 | WP3 → WP1 | `mcp.json` entry for `ehl-search` | open |
 | WP4 → WP1 | `mcp.json` entry for `ehl-agents` | open |
 
@@ -47,7 +48,7 @@ A claim is active if the row was updated less than 2 h ago.
 
 | # | Question | For | State |
 |---|---|---|---|
-| Q1 | `Dataset/` landed on `main` (F70, G60, G68, G70: option lists, customer studies, feedback, sales volumes). Should the products in the graph be these machines instead of invented P1–P3 (changes spec D9)? | user / WP1 | open |
+| Q1 | `Dataset/` landed on `main` (F70, G60, G68, G70: option lists, customer studies, feedback, sales volumes). Should the products in the graph be these machines instead of invented P1–P3 (changes spec D9)? | user / WP1 | **decided 2026-10-10: yes – `Dataset/` is the test data; products = F70, G60, G68, G70.** WP1 builds product notes (and roadmaps if derivable) from it; customer studies/feedback may feed notes too, privacy rules (spec D8) apply. |
 
 ## Contract change requests
 
@@ -57,4 +58,5 @@ A claim is active if the row was updated less than 2 h ago.
 
 ## Log (newest first)
 
+- 2026-10-10 – Q1 decided: `Dataset/` is the test data; products = F70, G60, G68, G70 (spec D9 updated on `feat/rowboat-ehl-space` and in the WP1 spec).
 - 2026-10-10 – board created; WP specs on their branches; all WPs open.
