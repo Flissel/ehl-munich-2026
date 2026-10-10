@@ -78,6 +78,11 @@ NOTE_TYPES = [
                  "### Options today\n| Model | Option | Code | Price EUR | Availability |",
      "extractionGuide": "Look for: car part, its customer feedback per model and market, options with prices. Keep part_id "
                         "in the front matter and the table columns unchanged (Torque Concept 3D reads them)"},
+    {"type": "Assumptions", "folder": "Assumptions",
+     "template": "# {Assumption group}\n\n## Info\n**Type:** Assumption\n**Status:** {hand-set|researched}\n\n## About\n"
+                 "{What the values mean}\n\n## Values\n```json\n{values, keep the keys}\n```\n\n## Sources\n- {source of a researched value}",
+     "extractionGuide": "Look for: values Torque needs that the Dataset does not contain (competitor prices, costs, segment "
+                        "shares, weights, dimensions); keep the JSON keys and name a source for every changed value"},
     {"type": "Feature Classes", "folder": FOLDERS["class"],
      "template": "# {VFC level 2 name}\n\n## Info\n**Type:** Feature class (VFC level 2)\n\n## Connected to\n"
                  "- [[Components/{Part}]]\n- [[Models/{Model}]]\n\n## Key facts\n{Comments per model, VFC level 3 aspects.}",

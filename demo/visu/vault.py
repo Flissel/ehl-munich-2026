@@ -163,6 +163,8 @@ def read_vault(vault: Path, g: dict) -> dict:
 
 
 def sync_once(vault: Path, out: Path) -> bool:
+    import assumptions  # Assumptions/*.md -> assumptions.json (Torque reads it before its seed copy)
+    write_json(out / "assumptions.json", assumptions.read(vault))
     g = json.loads(GRAPH.read_text(encoding="utf-8"))
     data = {"source": str(vault), "parts": read_vault(vault, g)}
     dst = out / "visu.json"
@@ -191,8 +193,26 @@ def sync_once(vault: Path, out: Path) -> bool:
     return True
 
 
+def write_json(dst: Path, data: dict) -> bool:
+    """Writes only on change; retries while the app server holds the file (Windows)."""
+    text = json.dumps(data, ensure_ascii=False)
+    if dst.exists() and dst.read_text(encoding="utf-8") == text:
+        return False
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    tmp = dst.with_name(dst.name + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    for _ in range(10):
+        try:
+            tmp.replace(dst)
+            log.info("wrote %s", dst.name)
+            return True
+        except PermissionError:
+            time.sleep(0.2)
+    return False
+
+
 def signature(vault: Path) -> tuple:
-    files = list((vault / brand.FOLDERS["part"]).rglob("*.md")) + [GRAPH]
+    files = list((vault / brand.FOLDERS["part"]).rglob("*.md")) + list((vault / "Assumptions").glob("*.md")) + [GRAPH]
     return tuple(sorted((str(f), f.stat().st_mtime_ns, f.stat().st_size) for f in files if f.exists()))
 
 
