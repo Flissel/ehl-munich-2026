@@ -14,3 +14,5 @@ demo/visu/node_modules/
 __pycache__/
 *.tsbuildinfo
 .DS_Store
+# Python/runtime output
+*.py[cod]
