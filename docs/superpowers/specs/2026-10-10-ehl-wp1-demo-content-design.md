@@ -17,7 +17,7 @@ the demo flow (parent spec §10) has run twice end to end.
 
 | Item | Content |
 |---|---|
-| `demo/example-data/Projects/` | P1–P3 (products) and R1–R3 (roadmaps), each with `## Info`, `## Key facts`, `## Connected to` |
+| `demo/example-data/Projects/` | Machines F70, G60, G68, G70 from `Dataset/` (option lists, feedback, sales volumes → `## Info`, `## Key facts`, `## Connected to`) and their roadmaps if derivable; a small converter `demo/dataset_to_notes.py` is fine. Customer studies/feedback only as aggregated facts – no customer individuals (spec D8) |
 | `demo/example-data/Topics/` | `Newsletter`, `Social Media`, `Email`, `Market Research` (+ 2–3 trend notes) |
 | `demo/example-data/People/` | Team members who agreed (name + role only) |
 | `demo/install.ps1` | Copy example data into `EHL_VAULT` (never overwrite existing notes); write `mcp.json` entries for `ehl-search` and `ehl-agents` from `demo/mcp.json.example` (merge, keep existing servers) |
@@ -31,8 +31,8 @@ Publish the exact note names WP2 links to, as a table in this spec, then commit 
 
 | Link target | Example |
 |---|---|
-| Products | `Projects/P1 Route Planner`, `Projects/P2 …`, `Projects/P3 …` |
-| Roadmaps | `Projects/R1 Rollout Route Planner`, … |
+| Products | `Projects/F70`, `Projects/G60`, `Projects/G68`, `Projects/G70` (confirm or adjust) |
+| Roadmaps | e.g. `Projects/F70 Roadmap` – only if `Dataset/` supports it |
 | Channels | `Topics/Newsletter`, `Topics/Social Media`, `Topics/Email` |
 | Research | `Topics/Market Research` |
 | Team | `People/<Name> (Team)` |
