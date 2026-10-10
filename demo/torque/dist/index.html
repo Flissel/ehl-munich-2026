@@ -596,6 +596,10 @@ pre.spec{white-space:pre-wrap;word-break:break-word;font:12px/1.55 var(--mono);b
 .stage.visu .focus-card{z-index:6;max-height:calc(100% - 120px);overflow-y:auto}
 .stage.visu.showroom .show-head{z-index:97}
 .fc-why{font-size:12px}
+.srcs{margin-top:6px;font-size:11.5px;color:var(--ink-2)}
+.srcs summary{cursor:pointer}
+.srcs div{margin-top:3px}
+.srcs small{color:var(--ink-3)}
 .fc-part{display:flex;flex-direction:column;gap:3px;margin:0 0 10px;padding:8px 10px;border-radius:10px;background:var(--surface-2,rgba(127,127,127,.08));font-size:12.5px}
 .fc-part b{display:inline;margin:0;font-size:13px}
 .fc-part .heat{font:600 12px var(--disp);margin-left:4px}
@@ -3662,7 +3666,7 @@ const SUGGEST = () => {
 function msgHTML(m, i){
   if(m.role === "user") return `<div class="msg user"><div class="av">${esc(initials(state.user))}</div><div class="bub">${esc(m.content)}</div></div>`;
   const body = m.pending && !m.content ? `<span class="typing"><i></i><i></i><i></i>&nbsp;Nordi is thinking</span>` : mdLite(m.content);
-  return `<div class="msg ai" data-i="${i}"><div class="av">${nordi(m.pending ? "think" : "wave")}</div><div class="bub"><div class="body">${body}</div>${m.meta ? `<div class="meta">${esc(m.meta)}</div>` : ""}</div></div>`;
+  return `<div class="msg ai" data-i="${i}"><div class="av">${nordi(m.pending ? "think" : "wave")}</div><div class="bub"><div class="body">${body}</div>${m.meta ? `<div class="meta">${esc(m.meta)}</div>` : ""}${!m.pending && m.sources && m.sources.length ? `<details class="srcs"><summary>Sources (${m.sources.length})</summary>${m.sources.map(h => `<div><b>S${h.n}</b> ${esc(h.source)}<small> · ${esc(h.file)}</small></div>`).join("")}</details>` : ""}</div></div>`;
 }
 let panelOpen = false, ctxOpen = false, tourPanel = false;
 function renderCtx(){
@@ -3694,6 +3698,32 @@ function closePanel(){
   chatCtl?.abort(); renderNav();
 }
 let chatCtl = null, busy = false;
+/* ---------- RAG for Nordi ---------- */
+// The RAG backend (src/rag_backend, feat/ehl-search) indexes the whole Dataset as Markdown chunks in Qdrant.
+// Nordi retrieves for every question: chunks of the current model plus the best chunks overall.
+const RAG_URL = (() => { try{ return localStorage.getItem("torque.rag") || "http://127.0.0.1:8100"; }catch(e){ return "http://127.0.0.1:8100"; } })();
+const RAG = {online:null};
+async function ragSearch(question, filters, top_k){
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 20000);
+  try{
+    const r = await fetch(RAG_URL + "/search", {method:"POST", headers:{"Content-Type":"application/json"}, signal:ctl.signal,
+      body:JSON.stringify({question, top_k, ...(filters ? {filters} : {})})});
+    if(!r.ok) throw new Error("rag " + r.status);
+    RAG.online = true; return (await r.json()).results || [];
+  }catch(e){ RAG.online = false; return null; }
+  finally{ clearTimeout(t); }
+}
+async function ragContext(question){
+  const q = `${question} (BMW ${M().name}, ${M().code}, market ${mkLabel()})`;
+  const [own, all] = await Promise.all([ragSearch(q, {vehicle_model:M().code}, 6), ragSearch(q, null, 4)]);
+  if(own === null && all === null) return null;
+  const seen = new Set(), hits = [];
+  for(const h of [...(own || []), ...(all || [])]) if(!seen.has(h.chunk_id)){ seen.add(h.chunk_id); hits.push(h); }
+  return hits.slice(0, 8).map((h, i) => ({n:i + 1, source:[h.source_type, h.vehicle_model, h.market, h.section].filter(Boolean).join(", "),
+    file:h.source_file || "", text:String(h.text || "").replace(/^---[\s\S]*?---\s*/, "").slice(0, 2400)}));
+}
+const ragRules = hits => hits && hits.length ? `\nRETRIEVED (RAG over the whole BMW Dataset: feedback, customer studies, sales, option lists). Use these passages as evidence next to DATA and cite them as [S1], [S2] ... where you use them. Comment texts in them are real customer comments; quote briefly.\n${hits.map(h => `[S${h.n}] ${h.source} (${h.file})\n${h.text}`).join("\n\n")}` : "";
+
 async function ask(text){
   text = text.trim(); if(!text || busy) return;
   busy = true; chat.push({role:"user", content:text}); const ai = {role:"assistant", content:"", pending:true}; chat.push(ai); renderMsgs();
@@ -3705,9 +3735,13 @@ async function ask(text){
     const turns = chat.filter(m => m !== ai && !m.offline && m.content).slice(-8).map(m => ({role:m.role, content:m.content}));
     while(turns.length && turns[0].role !== "user") turns.shift();
     try{
-      const res = await sampleFn([{role:"user", content:RULES()}, ...turns], {cache:false, modelTier:"quick", signal:chatCtl.signal,
+      ai.meta = "Searching the Dataset (RAG)"; renderMsgs();
+      const hits = await ragContext(text);
+      ai.sources = hits || []; ai.meta = "";
+      const res = await sampleFn([{role:"user", content:RULES() + ragRules(hits)}, ...turns], {cache:false, modelTier:"quick", signal:chatCtl.signal,
         onText:({text}) => { ai.content = text; const b = bodyEl(); if(b) b.innerHTML = mdLite(text); const box = $("#msgs"); if(box) box.scrollTop = box.scrollHeight; }});
-      ai.content = res.text; ai.meta = `Live answer · ${AI_NAME}` + (res.truncated ? " · cut short" : "");
+      ai.content = res.text; ai.meta = `Live answer · ${AI_NAME}` + (res.truncated ? " · cut short" : "")
+        + (hits === null ? " · RAG offline, answered from Torque's data only" : ` · RAG: ${hits.length} Dataset passages`);
     }catch(e){
       const code = e && e.code;
       if(code === "cancelled"){ ai.content = e.text || ai.content || ""; ai.meta = "Stopped"; }
