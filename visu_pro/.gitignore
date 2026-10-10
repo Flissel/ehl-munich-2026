@@ -1,0 +1,23 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+unreal/BMWVisualizer/Binaries/
+unreal/BMWVisualizer/Intermediate/
+unreal/BMWVisualizer/Saved/
+unreal/BMWVisualizer/DerivedDataCache/
+assets/extracted/
+frontend/dist/
+frontend/public/models/
+*.tsbuildinfo
+frontend/vite-dev.log
+
+# 3D model (CC-BY-NC, not redistributed)
+*.zip
+*.fbx
+*.glb
+*.gltf
+scene.bin
+unreal/BMWVisualizer/Content/BMWStudio/Vehicles/
