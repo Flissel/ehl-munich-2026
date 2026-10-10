@@ -3319,8 +3319,9 @@ function gridTexture(T){
 }
 /* Concept 3D: the customer feedback heat map from demo/visu (dist/visu/). The frame is created once and laid
    over #stage, so re-renders (model, market, decisions) only send it a new context instead of reloading the car. */
-// Parts of the car each purchase driver is about (first = the one the camera flies to).
-const PART = {"R-01":["quarter-rear-left"], "R-02":["underbody"], "R-03":["rear-seats"], "R-04":["central-display"],
+// Parts of the car each purchase driver is about (first = the one the camera flies to). Loaded from the fixed link map
+// visu/graph.json (demo/visu/vault.py, also the source of the Vehicle Parts notes in Rowboat); this copy is the fallback.
+let PART = {"R-01":["quarter-rear-left"], "R-02":["underbody"], "R-03":["rear-seats"], "R-04":["central-display"],
   "R-05":["center-console", "steering-wheel"], "R-06":["instrument-cluster", "central-display"], "R-07":["windshield", "interior-mirror"],
   "R-08":["dashboard", "overhead-console"], "R-09":["door-trim-left", "door-trim-right", "dashboard", "interior-side-panels"],
   "R-10":["kidney-grille", "headlight-left", "headlight-right", "taillight-left", "taillight-right"],
@@ -3328,6 +3329,17 @@ const PART = {"R-01":["quarter-rear-left"], "R-02":["underbody"], "R-03":["rear-
   "R-13":["door-left", "door-right"], "R-14":["seat-driver", "seat-passenger"], "R-15":["center-console"], "R-16":["trunk-lid"],
   "R-17":["instrument-cluster"], "R-18":["door-trim-left", "door-trim-right"], "R-19":["rear-bumper", "front-bumper"],
   "R-20":["climate-controls"]};
+// Rowboat is the source of the part data: graph.json = fixed links, visu/data/visu.json = the Vehicle Parts notes
+// (heat map and option tables, editable in Rowboat) synced by `python demo/visu/vault.py sync --watch`.
+const GRAPH = {parts:{}};
+fetch("visu/graph.json", {cache:"no-store"}).then(r => r.ok ? r.json() : null).then(g => {
+  if(!g) return;
+  GRAPH.parts = g.parts;
+  PART = Object.fromEntries(Object.entries(g.drivers).filter(([, d]) => d.parts.length).map(([id, d]) => [id, d.parts]));
+}).catch(() => {});
+const VAULT = {data:null};
+const readVault = () => fetch("visu/data/visu.json", {cache:"no-store"}).then(r => r.ok ? r.json() : null).then(j => { if(j) VAULT.data = j; }).catch(() => {});
+readVault(); setInterval(readVault, 4000);
 const onPart = (id, part) => (PART[id] || []).includes(part);
 const VISU = {frame:null, ready:false, sel:null, signal:0, onSel:null};
 function visuFrame(){
@@ -3363,16 +3375,12 @@ function visuSend(extra = {}){
   VISU.frame.contentWindow.postMessage({type:"visu:context", series:M().code, market:sold(state.market) ? state.market : "",
     title:`${M().name} successor · ${mkLabel()}`, override:studyOverride(), ...extra}, location.origin);
 }
-// Option list features per model (prepare_local.py from outputs/markdown/options), loaded once per model.
-const OPTS = {};
-function optionsFor(code){
-  if(!(code in OPTS)){ OPTS[code] = null; fetch(`visu/data/options-${code}.json`, {cache:"no-store"}).then(r => r.ok ? r.json() : null).then(j => { OPTS[code] = j; }).catch(() => {}); }
-  return OPTS[code];
-}
 function optionsHtml(id, partId){
-  const code = M().code, o = BMW.options[id]?.[code], list = optionsFor(code);
-  const parts = id ? PART[id] || [] : [partId];
-  const hits = list ? list.options.filter(x => x.parts.some(p => parts.includes(p)) && !(o && o[1] && x.package === o[1])).slice(0, 3) : [];
+  const code = M().code, o = BMW.options[id]?.[code], seen = new Set(), hits = [];
+  for(const p of (id ? PART[id] || [] : [partId]))
+    for(const x of VAULT.data?.parts?.[p]?.options?.[code] || [])
+      if(!seen.has(x.name) && !(o && o[1] && x.package === o[1])){ seen.add(x.name); hits.push(x); }
+  hits.splice(3);
   if(!o && !hits.length) return "";
   return `<div class="fc-opt"><span class="muted">Options today (${code} price list)</span>
     ${o ? `<small><b>${esc(o[0])}</b>${o[1] && o[1] !== "standard" ? " · " + esc(o[1]) : o[1] === "standard" ? " · standard" : ""}${o[2] ? " · " + eur(o[2]) : ""}</small>` : ""}
@@ -3392,13 +3400,13 @@ function partHtml(d){
   return `<div class="fc-part"><div><span class="muted">On the car</span> <b>${esc(d.name)}</b> <span class="heat">${d.score}/100</span></div>
     ${x ? `<small>${fmt(x.comments ?? x.n)} comments (${fmt(x.n)} classified mentions)${x.basis === "specific" ? "" : " (" + esc(x.basis) + " feedback)"} · ${counts} · ${x.positive_share}% positive</small>` : ""}
     ${q ? `<q>${esc(q.text.slice(0, 180))}${q.text.length > 180 ? "…" : ""}</q><small class="muted">${esc(q.type)} · ${esc(q.series)} · ${esc(q.country)}</small>` : ""}
-    <small class="muted">${esc(d.data)}${d.fallback ? " · " + esc(d.fallback) : ""}</small></div>`;
+    <small class="muted">${esc(d.data)}${d.fallback ? " · " + esc(d.fallback) : ""}</small>
+    ${GRAPH.parts[d.id] ? `<small class="muted">In Rowboat: ${esc(GRAPH.parts[d.id].note)}</small>` : ""}</div>`;
 }
 function bConcept(){
   const stage = $("#stage"), card = $("#focusCard"), f = visuFrame(), holder = document.createElement("div");
   const rk = topRank(), order = rk.map(x => x.r.id), rankOf = Object.fromEntries(rk.map((x,i) => [x.r.id, [i+1, x.s.total]]));
   let focusId = null, last = "";
-  optionsFor(M().code);
   g3 = {raf:0, mats:{}, scene:{traverse(){}}, renderer:{dispose(){}}};
   const rows = id => {
     $$("#oncar .oc").forEach(el => el.classList.toggle("sel", el.dataset.focus === id));
