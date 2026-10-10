@@ -240,6 +240,9 @@ def load_options(raw, out):
                 rows.append(dict(derivative=dcode, section=section, option_name=mm.group("name"),
                                  option_code=mm.group("code"), price_eur_gross=mm.group("price"),
                                  n_variants_standard=rest.count("■"), n_variants_optional=rest.count("□")))
+        if not rows:
+            # e.g. an old poppler (Git for Windows) cannot decrypt the PDFs and writes empty text
+            issues.append(f"{f.name}: no option lines parsed (unreadable or encrypted PDF?) -> skipped"); continue
         df = pd.DataFrame(rows).drop_duplicates(["option_code", "option_name"])
         df["availability"] = df.apply(lambda r: "standard_only" if r.n_variants_optional == 0 else
                                       ("standard_some" if r.n_variants_standard else "optional"), axis=1)

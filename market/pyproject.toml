@@ -3,7 +3,7 @@ name = "ehl-market"
 version = "0.1.0"
 description = "MCP server: credible external market sources + correlation with BMW customer signals"
 requires-python = ">=3.12"
-dependencies = ["mcp>=1.2", "pandas>=2.2", "scipy>=1.13", "openpyxl>=3.1"]
+dependencies = ["mcp>=1.2,<2", "pandas>=2.2", "scipy>=1.13", "openpyxl>=3.1"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
