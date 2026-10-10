@@ -1398,6 +1398,7 @@ function introSeen(){
 function markIntroSeen(){ state.intro = true; try{ localStorage.setItem(SEEN, "1"); }catch(e){} }
 function save(){
   try{ const o = {}; for(const k of PERSIST) o[k] = state[k]; localStorage.setItem(STORE, JSON.stringify(o)); }catch(e){}
+  rbQueueSync();
 }
 
 /* ---------- Helpers ---------- */
@@ -1677,19 +1678,58 @@ function uncertainties(r){
 
 /* ---------- Shell ---------- */
 /* ---------- Rowboat ---------- */
-// Installed as a Rowboat app (docs/prototype/rowboat/deploy.py) Torque runs on http://torque.apps.localhost and reads
-// data/rowboat.json: the notes of the Rowboat knowledge graph for each model and the purchase driver nodes it wrote there.
-// The app build carries no comment text and no brand logo; data/quotes.json and data/logo.png (local only, never in git) add them.
+// Installed as a Rowboat app (docs/prototype/rowboat/deploy.py) Torque runs on http://torque.apps.localhost and syncs with
+// the knowledge graph through two files in data/ (local only, never in git), kept in step by sync.py --watch:
+//   torque.json   written here on every change: rankings of every model and market plus the review decisions;
+//                 sync.py turns it into the purchase driver notes of the vault
+//   rowboat.json  written by sync.py: the product, topic and driver notes, read here every few seconds
+// The app build carries no comment text and no brand logo; data/quotes.json and data/logo.png add them.
 const IN_ROWBOAT = /\.apps\.localhost$/.test(location.hostname);
-let RB = null;
-const getJSON = async f => { try{ const r = await fetch("/_rowboat/data/" + f, {cache:"no-store"}); return r.ok ? await r.json() : null; }catch(e){ return null; } };
+let RB = null, rbSeen = "", rbSent = null, rbTimer = 0;
+const getText = async f => { try{ const r = await fetch("/_rowboat/data/" + f, {cache:"no-store"}); return r.ok ? await r.text() : null; }catch(e){ return null; } };
+const getJSON = async f => { const t = await getText(f); try{ return t ? JSON.parse(t) : null; }catch(e){ return null; } };
 async function loadRowboat(){
-  const [rb, quotes] = await Promise.all([getJSON("rowboat.json"), getJSON("quotes.json")]);
-  RB = rb;
+  const [quotes, sent] = await Promise.all([getJSON("quotes.json"), getJSON("torque.json")]);
   for(const [path, t] of quotes || []){ const o = path.slice(0, -1).reduce((a, k) => a && a[k], BMW); if(o) o[path.at(-1)] = t; }
   const mark = document.querySelector(".brand .mark");   // brand logo from data/logo.png, also kept out of git
   if(mark && mark.tagName !== "IMG"){ const img = new Image(40, 40); img.className = "mark"; img.alt = "Brand logo"; img.onload = () => mark.replaceWith(img); img.src = "/_rowboat/data/logo.png"; }
-  render(false); if(openId) renderDrawer();
+  if(sent){ delete sent.generated; rbSent = JSON.stringify(sent); } else rbSent = "";
+  await refreshRowboat(true);
+  rbQueueSync();
+  setInterval(refreshRowboat, 3000);
+}
+async function refreshRowboat(force){
+  const t = await getText("rowboat.json");
+  if(t === null || (t === rbSeen && !force)) return;
+  rbSeen = t; try{ RB = JSON.parse(t); }catch(e){ return; }
+  // never re-render under the cursor: a reason being typed would be lost; the next render picks the notes up
+  if(force || !typing({target:document.activeElement})){ render(false); if(openId) renderDrawer(); }
+}
+function rbExport(){
+  const keep = [state.model, state.market], models = {}, reqs = {}, decisions = {};
+  for(const r of REQS) reqs[r.id] = {title:r.title, cat:r.cat, motive:r.motive, level:r.ev0.level};
+  for(const m of Object.keys(MODELS)){
+    state.model = m; const mm = {name:MODELS[m].name, code:MODELS[m].code, markets:{}};
+    for(const k of MKS){ if(!sold(k)) continue; state.market = k;
+      const rob = robustness();
+      mm.markets[k] = {basis:BASIS[basisOf(k)], rows:ranked().map((x, i) => ({id:x.r.id, rank:i + 1, score:Math.round(x.s.total * 10) / 10,
+        buy:Math.round(x.s.f.buy), wish:wishOf(x.r), robust:rob[x.r.id]}))};
+    }
+    models[m] = mm;
+    decisions[m] = Object.fromEntries(Object.entries(state.dec[m] || {}).map(([id, d]) => [id, Object.fromEntries(["status","reason","by","at","round","target","accept","ask"].filter(f => d[f] != null).map(f => [f, d[f]]))]));
+  }
+  [state.model, state.market] = keep;
+  return {markets:MK, top:TOP, presets:N_PRESETS, weights:state.wmode, reqs, models, decisions};
+}
+function rbQueueSync(){ if(!IN_ROWBOAT || rbSent === null) return; clearTimeout(rbTimer); rbTimer = setTimeout(rbPush, 1200); }
+async function rbPush(){
+  const o = rbExport(), body = JSON.stringify(o);
+  if(body === rbSent) return;
+  try{
+    const r = await fetch("/_rowboat/data/torque.json", {method:"PUT", headers:{"Content-Type":"application/json", "X-Rowboat-App":"1"},
+      body:JSON.stringify({generated:new Date().toISOString(), ...o})});
+    if(r.ok) rbSent = body;
+  }catch(e){}
 }
 const rbName = p => p.split("/").pop().replace(/\.md$/, "");
 const rbOpen = p => window.open(p === "graph" ? "rowboat://open?type=graph" : "rowboat://open?type=file&path=" + encodeURIComponent(p), "_blank");
@@ -1706,7 +1746,7 @@ function rbDataHTML(){
   const rows = notes.map(p => { const n = RB.notes[p], chk = n.comments ? (n.comments === own ? `<span class="chip top">Matches Torque: ${fmt(own)} comments</span>` : `<span class="chip">Torque counts ${fmt(own)} comments</span>`) : "";
     return `<div class="rbnote"><div class="rbh">${rbBtn(p)}<small>${esc(n.type || n.group)}</small>${chk}</div>${n.facts.length ? `<ul>${n.facts.slice(0, 4).map(f => `<li>${esc(f)}</li>`).join("")}</ul>` : ""}</div>`; }).join("");
   return `<section class="card"><div class="card-h"><div><h3>Rowboat knowledge graph</h3><p class="sub">${fmt(RB.count.notes)} product, topic and purchase driver notes, ${fmt(RB.count.drivers)} of them written by Torque. Below the notes on the ${M().name}; the copilot uses their facts too.</p></div>${rbBtn("graph", "Open the graph")}</div>
-    ${rows || `<p class="muted">No note in the vault links to the ${M().name} yet.</p>`}<p class="note">Snapshot of ${esc(RB.generated)}. Rerun docs/prototype/rowboat/deploy.py after new notes or data.</p></section>`;
+    ${rows || `<p class="muted">No note in the vault links to the ${M().name} yet.</p>`}<p class="note">Last sync with the vault: ${esc(RB.generated)}. Decisions and rankings go to the purchase driver notes, new or edited notes come back here, as long as <span class="mono">sync.py --watch</span> runs next to Rowboat.</p></section>`;
 }
 const VIEWS = {
   overview:{n:"Overview", s:() => `What to decide next for the ${mName()} successor · ${mkLabel()}`},
@@ -3889,8 +3929,8 @@ function init(){
   if(!introSeen()){ markIntroSeen(); setTimeout(() => tourShow(0), 600); }
   if(IN_ROWBOAT){
     loadRowboat();
-    // Rowboat pushes a change event when the app data is rewritten; reload only the vault snapshot, not the page.
-    window.addEventListener("rowboat:data-change", e => { e.preventDefault(); loadRowboat(); });
+    // Rowboat announces every write to data/ (ours too); never reload the page for it, just read the vault snapshot again.
+    window.addEventListener("rowboat:data-change", e => { e.preventDefault(); if(/rowboat\.json$/.test((e.detail && e.detail.path) || "")) refreshRowboat(); });
   }
 }
 init();
