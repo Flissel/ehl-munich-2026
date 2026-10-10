@@ -1,195 +1,221 @@
-# Rowboat Space "EHL": Sales and Marketing Data on the Team's PCs
+# Rowboat EHL Live Demo: Sales and Marketing as a Knowledge Graph
 
 **Date:** 2026-10-10 · **Occasion:** EHL Munich 2026 Grand Finale (demo on Oct 11, 6-min pitch)
 **Status:** Draft awaiting approval
+**Replaces:** the earlier version of this file ("Rowboat Space EHL", Harbor-based, commit `2b871d0`)
 
 ## 1. Goal
 
-Rowboat becomes the team's shared project overview. Data from the existing deployments
-(Sales-Claw, Marketing) flows automatically into a shared Rowboat Space "EHL". Every member
-sees it in the Rowboat desktop app on their own PC.
+Rowboat is the product we show. Sales-Claw and Marketing are **data sources and worker agents**
+behind it. Their data lands in Rowboat as Markdown notes, so Rowboat's own knowledge graph shows
+the cluster (companies ↔ products ↔ channels ↔ content). A Rowboat agent works on an intersection
+of that cluster (e.g. product P1 × newsletter), asks the Sales and Marketing agents via chat, and
+the result appears as a new, linked note in the graph.
 
-**Success criterion:** A member installs *only* the official Rowboat desktop app, opens an
-invite link, signs in with email + password and sees the Space "EHL" with overview, contacts,
-send schedule, campaigns and feed. No other software (no Tailscale, no Docker) on the member's PC.
-
-**Demo criterion:** A contact created in Sales-Claw, or an approval granted there, appears within
-~60 s in the feed and in the Space's files on a second machine outside the home network.
+**Demo criterion:**
+1. A contact created live in Sales-Claw appears as (part of) an organization note in Rowboat within
+   ~60 s, and the graph grows visibly.
+2. Asked "Create a newsletter about P1 for all interested customers", the Rowboat agent finds the
+   matching companies, has Marketing draft text and image, and files the result as
+   `Content/…` note linked to product, channel and companies. Nothing is sent.
 
 ## 2. Current state (explored on 2026-10-10)
 
-| System | Where | Access | State |
+| System | Where | Interface | State |
 |---|---|---|---|
-| Sales-Claw (`Flissel/sales-claw`, branch `feat/stufe-1-fundament`) | Mini PC `vibemind-offload-1`, Tailscale `100.67.177.45` | sales-mcp `:8765` (MCP streamable-http), UI `:8791` | running |
-| Marketing (`Flissel/vibemind-os`, `spaces/marketing`) | this PC | API `127.0.0.1:5510`, MCP sidecar `:8130` | running, `/api/health` ok |
-| Rowboat Desktop (upstream `rowboatlabs/rowboat`, `apps/x`) | members' PCs | official installers | being installed |
-| Harbor (upstream, `apps/harbor`, Spaces server) | – | – | to be set up |
+| Sales-Claw (`Flissel/sales-claw`) | Mini PC `vibemind-offload-1`, Tailscale `100.67.177.45` | OpenClaw gateway `:18894` (loopback, operated via WhatsApp); sales-mcp `:8765` (streamable-http, path not `/mcp` – to be found); UI `:8791` | running |
+| Marketing (`Flissel/vibemind-os`, `spaces/marketing`) | this PC | API `127.0.0.1:5510` (`/api/health` ok); MCP sidecar `:8130` (27 tools); brand chat `POST /api/pult/marke/chat`; editor chat `POST /api/pult/inhalte/{id}/chat` (both async via the chat worker, operated from a page in the Sales UI) | running |
+| Rowboat Desktop (upstream `rowboatlabs/rowboat`, `apps/x`, checked at `72e9d8c`, 2026-10-09) | demo PC (this PC) | official installer | to be installed |
 
-The fork in `vibemind-os/spaces/rowboat/rowboat` (Next.js web app) is **not** needed for this
-project; its Electron app is only a stub there. We use the upstream desktop app and the upstream
-Spaces server Harbor (Apache 2.0).
+Facts about Rowboat Desktop that shape this design (verified in upstream code at `72e9d8c`):
+
+- Knowledge vault is `~/.rowboat/knowledge/` (override: `ROWBOAT_WORKDIR`); only `.md` files count.
+- Graph edges come **only** from `[[Folder/Name]]` wikilinks to existing notes; the top-level
+  folder sets the node's colour group; `Meetings/` is excluded from the graph.
+- Note types and template: `People`, `Organizations`, `Projects`, `Topics`, `Meetings`; each note is
+  `# Title`, `## Info` with `**Key:** value` lines, then `## Connected to`, `## Activity`,
+  `## Key facts`, `## Open items` (`packages/core/src/knowledge/note_system.ts`).
+- Search is keyword-only (grep); there are no embeddings in the desktop app.
+- Harbor Space files are **not** written into the vault, so they would not appear in the graph.
+- User MCP servers are configured in `~/.rowboat/config/mcp.json` (`{"mcpServers": {...}}`,
+  stdio or http) and usable by the agent.
+- Markdown images render reliably from http(s) URLs; relative vault paths probably do not.
 
 ## 3. Decisions
 
 | # | Decision | Rationale |
 |---|---|---|
-| D1 | Shared state via Rowboat **Spaces / Harbor**, self-hosted on this PC | Data stays with the team; Rowboat's built-in tools instead of a custom build |
-| D2 | Harbor pinned to upstream commit **`72e9d8c`** (2026-10-09); our changes kept as patch files | Reproducible; upstream changes daily |
-| D3 | **Dedicated** Postgres and GoTrue containers in the Harbor compose file; the existing Supabase swarm stays untouched | No collision with running VibeMind services |
-| D4 | Sign-in via **Supabase GoTrue `v2.188.1`** as OAuth 2.1 server (email + password) | Only sign-in server tested with Harbor; image already available locally |
-| D5 | Reachability via **Tailscale Funnel** (public HTTPS at `https://<pc>.<tailnet>.ts.net`) | Members only need Rowboat; the desktop app only accepts `https://` |
-| D6 | The **bridge** reads only through existing interfaces (sales-mcp, Marketing API), never directly from other systems' databases | Encapsulation of foreign schemas |
-| D7 | Sales: **only our own Claw** (main store, schema `sales`, sales-mcp on the mini PC). Marketing: **all tenants** | Requirement |
-| D8 | **Read-only towards Rowboat.** No path back from Rowboat into Sales/Marketing; approvals and sending stay in Sales-Claw | YAGNI until the demo; the approval gate is preserved |
-| D9 | No phone numbers or email addresses of contacts in the Space | Data minimisation (GDPR); contact details stay in Sales-Claw |
+| D1 | Rowboat Desktop **as it is** (no fork, no code changes); our work is data, MCP tools and an agent skill | Least risk by tomorrow; official installer |
+| D2 | **Demo PC only**: notes are written straight into its `~/.rowboat/knowledge/`. No Harbor, GoTrue or Funnel | The graph only exists for vault notes; drops the riskiest part of the old design |
+| D3 | Notes follow Rowboat's own template plus YAML frontmatter for origin (`source`, ids, `managed_by`) | Graph and entity index work out of the box; frontmatter serves as search filter |
+| D4 | Extra **semantic search** via local Qdrant + MCP, as a separable add-on | "RAG" from the sketch; the demo still works without it |
+| D5 | Embeddings computed **locally** (fastembed, multilingual model) | Data stays on the PC; content is German |
+| D6 | Rowboat talks to the **Sales and Marketing agents via chat** (MCP wrapper tools) rather than their raw tool sets | Agent-to-agent is the story; each agent keeps its own rules |
+| D7 | No sending and no approving from Rowboat: the raw Marketing MCP (incl. `versand_beauftragen`) is not exposed; the chat path must not trigger sends or approvals | Approval gate stays with the human (WhatsApp / UI) |
+| D8 | Real **companies** from Sales-Claw; **people** only for team members who agreed. No customer individuals, no email addresses or phone numbers; leads marked private are skipped | Projector + embeddings; data minimisation (GDPR) |
+| D9 | Products P1–P3 and roadmaps R1–R3 are **example data**, written by hand | Neither source has them |
+| D10 | The bridge reads Sales/Marketing **read-only** through their interfaces and only ever writes files it owns (`managed_by: ehl-bridge`) | Never clobbers hand-written or agent-written notes |
 
 ## 4. Architecture
 
 ```
- Mini PC (Tailscale)                    this PC                                     Internet
-┌──────────────────┐     ┌───────────────────────────────────────────────┐
-│ sales-mcp :8765  │◄────┤ bridge  (Python, every 60 s)                  │
-└──────────────────┘     │   │ reads                     │ writes        │
-┌──────────────────┐     │   ▼                           ▼ rbk_ key      │
-│ Marketing :5510  │◄────┤                     harbor :4272 ──┐          │
-└──────────────────┘     │                     gotrue :9999 ──┤ postgres │
-                         │                                    │          │
-                         │  tailscale funnel :443  → harbor   │          │      Rowboat Desktop
-                         │  tailscale funnel :8443 → gotrue   │          │◄──── (member 1..n)
-                         └───────────────────────────────────────────────┘
+ Sales-Claw (mini PC)              Marketing (this PC)
+  OpenClaw gateway · sales-mcp      API :5510 · chat worker
+        │ read / chat                   │ read / chat
+        ▼                               ▼
+ ┌──────────── bridge (every 60 s) ─────────────┐      ┌──── agents-mcp ─────────────┐
+ │ companies, campaigns, content → Markdown     │      │ sales_ask · brand_ask       │
+ └───────────────┬──────────────────────────────┘      │ content_design · semantic_search
+                 ▼ writes (managed_by: ehl-bridge)     └──────▲───────────┬──────────┘
+   ~/.rowboat/knowledge/  (demo PC)                           │ MCP       │ query
+   Organizations/  People/ (team)  Projects/ (P, R)           │           ▼
+   Topics/ (channels, trends)  Content/                        │      Qdrant (local)
+                 │ watched                                     │           ▲
+                 ▼                                             │           │ upserts
+            indexer ─────────────────────────────────────────────────────┘
+                 ▲
+   Rowboat Desktop + agent (+ EHL skill) ─── reads vault, graph from [[links]]
 ```
 
-All containers bind to `127.0.0.1` only. Only Harbor and GoTrue are exposed, and only via Funnel.
+Everything runs on the demo PC except Sales-Claw, which is reached over Tailscale. All local
+services bind to `127.0.0.1`.
 
 ## 5. Components
 
-### 5.1 `harbor/` – Spaces server, sign-in, reachability
+### 5.1 Note model
 
-- `docker-compose.yml` with three services:
-  - `postgres` (`postgres:16`, volume, two databases `harbor` and `auth`)
-  - `gotrue` (`public.ecr.aws/supabase/gotrue:v2.188.1`, OAuth 2.1 server mode with
-    dynamic client registration on, open sign-up **off**, email confirmation off)
-  - `harbor` (built from upstream `72e9d8c` + `patches/`, `DATABASE_URL`, `BLOBS_DIR` on a volume,
-    `AUTH_ISSUER` = public GoTrue address, `AUTH_PUBLISHABLE_KEY` for Harbor's
-    sign-in/consent page `/oauth/consent`, `HARBOR_ORG=EHL`, `HARBOR_ADDRESS` = Funnel address)
-- `patches/`:
-  - `0001-org-address-from-env.patch`: org address from `HARBOR_ADDRESS` instead of
-    `localhost:<port>` (affects invite links and deep links).
-  - `0002-no-rowboat-seeds.patch`: no automatic creation of the Rowboat staff members and the
-    Space "Roadboard" in the single-org path.
-- `funnel.ps1`: sets up `tailscale funnel` for `:443 → harbor` and `:8443 → gotrue`.
-- `add-member.ps1 <email> <name>`: creates the account via the GoTrue admin API and prints an
-  initial password.
-- `setup.ps1` (one-off, after the admin's first sign-in):
-  1. Create Space "EHL" (`POST /v1/spaces`).
-  2. Create agent "Bridge" (`POST /v1/agents`, `kind: custom`, `connection: contract`);
-     write the `rbk_…` key to `bridge/.env`.
-  3. Add the agent to the Space (`POST /v1/spaces/:id/members`, `actingMode: direct`).
-  4. Create an invite link (`POST /v1/invites`) and print it.
-- The first admin member is inserted via SQL into `member_identities` (`iss`, `sub`, `member_id`);
-  according to the upstream code this is the intended way in the single-org path.
-
-### 5.2 `bridge/` – Sync Sales/Marketing → Space
-
-Python 3.12, Docker container, runs on this PC. Split into clearly separated units:
-
-| Module | Responsibility | Dependency |
+| Folder | Content | Written by |
 |---|---|---|
-| `sources/sales.py` | Contacts, pipeline stages, open drafts via sales-mcp (MCP client) | `SALES_MCP_URL` |
-| `sources/marketing.py` | Campaigns, send jobs, content of all tenants via the Marketing API | `MARKETING_API_URL`, `MARKETING_API_KEY` |
-| `model.py` | Neutral data types (`Contact`, `Send`, `Campaign`, `Event`) | – |
-| `render.py` | Pure functions: model → Markdown per file | – |
-| `events.py` | Compare old/new state → new events | state file |
-| `harbor.py` | Harbor REST client: create/update file, post feed message | `HARBOR_URL`, `HARBOR_SPACE_ID`, `HARBOR_AGENT_KEY` |
-| `run.py` | Loop every `INTERVAL_S` (default 60): read → render → write on change → post events | all of the above |
+| `Organizations/` | One note per company from Sales-Claw (leads grouped by company): industry, website, pipeline stage, owner (team member), interest in products, recent activity | bridge |
+| `People/` | Team members only | example data |
+| `Projects/` | Products P1–P3, roadmaps R1–R3 | example data |
+| `Topics/` | Channels (Newsletter, Social Media, Email), market research / trends | example data |
+| `Content/` | Marketing campaigns and drafts (bridge); results of demo part 2 (agent) | bridge / agent |
 
-**Files in Space "EHL":**
+Example (`Organizations/Muster GmbH.md`):
 
-| File | Content |
+```markdown
+---
+source: sales-claw
+sales_ids: [L-0412, L-0419]
+relationship: prospect
+managed_by: ehl-bridge
+---
+# Muster GmbH
+
+## Info
+**Industry:** Logistics
+**Website:** https://muster.example
+**Pipeline stage:** Interested
+**Owner:** [[People/Anna (Team)]]
+
+## Connected to
+- [[Projects/P1 Route Planner]] – interest from first call
+- [[Topics/Newsletter]]
+
+## Activity
+- 2026-10-08 – stage: first contact → interested
+```
+
+Rules:
+- Links always use the full path `[[Folder/Name]]`; the bridge only links to notes that exist or that
+  it writes in the same run.
+- Images only as http(s) links (e.g. Marketing API URLs).
+- Files without `managed_by: ehl-bridge` are never written by the bridge.
+- Field labels and section names follow Rowboat's template; values may be German.
+
+### 5.2 `bridge/` – Sales/Marketing → vault
+
+Python 3.12, runs on the demo PC.
+
+| Module | Responsibility |
 |---|---|
-| `Overview.md` | Key figures: contacts total / new today, contacts per pipeline stage, open approvals, next 3 sends; timestamp of the last sync |
-| `Contacts.md` | Table: name, company, stage, source, created on (no phone/email, D9) |
-| `Send-Schedule.md` | Chronological: date, channel, subject/title, origin (Marketing/Sales), status (draft / approved / sent / rejected) |
-| `Campaigns/<tenant>/<campaign>.md` | Title, status, scheduled date, text, image links |
+| `sources/sales.py` | Companies, leads, pipeline stages via sales-mcp (read-only); skips private leads; drops email/phone |
+| `sources/marketing.py` | Campaigns and content of all tenants via the Marketing API |
+| `model.py` | Neutral types (`Organization`, `Content`, `Activity`) |
+| `render.py` | Pure functions: model → Markdown note |
+| `vault.py` | Write a note only if owned by the bridge and content hash changed; never touch other files |
+| `run.py` | Loop every `INTERVAL_S` (default 60): read → render → write changes |
 
-**Feed events:** new contact, contact changes pipeline stage, send approved, send sent,
-send failed. Several events of the same kind within one run are bundled into one message
-("🆕 3 new contacts: …").
+### 5.3 `indexer/` – vault → Qdrant
 
-**Write logic:**
-- Each file is fully regenerated on every run; a SHA-256 of the content is compared with the last
-  one written. Only on a difference is it written.
-- File does not exist yet → `POST /v1/spaces/:id/assets`; otherwise fetch the version and
-  `POST /v1/spaces/:id/changes` with `baseVersion`. On conflict: re-fetch the version, retry
-  once, otherwise defer to the next run.
-- Seen event keys are kept in `state.json` (volume) so nothing is posted twice after a restart.
-  On the very first run no events are posted; only the files are written.
+Watches `~/.rowboat/knowledge/` (full pass on start, then changed files only). One point per note:
+title, Info fields and body as text; frontmatter, folder and outgoing links as payload for filters.
+Deleted notes are removed from the collection. Local Qdrant in Docker on `127.0.0.1`.
+
+### 5.4 `agents-mcp/` – tools for the Rowboat agent
+
+One MCP server, registered in `~/.rowboat/config/mcp.json`:
+
+| Tool | Calls | Notes |
+|---|---|---|
+| `sales_ask(text)` | Sales agent (the one behind WhatsApp) via the OpenClaw gateway's OpenAI-compatible chat endpoint over Tailscale | Endpoint must be enabled in `openclaw.json`; see §8 |
+| `brand_ask(text)` | Brand agent: `POST /api/pult/marke/chat`, then poll for the answer | async, with timeout |
+| `content_design(content_id, text)` | Editor agent for a draft: `POST /api/pult/inhalte/{id}/chat`, then poll | async, with timeout |
+| `semantic_search(query, folder?, limit?)` | Qdrant | returns note paths + snippets |
+
+### 5.5 `example-data/` and agent skill
+
+- Hand-written notes for `Projects/`, `Topics/`, `People/` (team), copied into the vault once.
+- A Rowboat skill/instruction "EHL": use `semantic_search` to find customers, the chat tools to produce
+  content, and file every result as a `Content/` note linked to product, channel and companies.
 
 ## 6. Error handling
 
 | Case | Behaviour |
 |---|---|
-| Source (sales-mcp or Marketing API) unreachable | Affected files keep their last content plus a header line "⚠️ As of HH:MM – source unreachable"; no events from this source; the next run retries |
-| Harbor unreachable | Run is skipped, state is not advanced → nothing is lost |
-| Invalid key (401/403) | Clear log error; container exits with an error code (no silent continuation) |
-| Single malformed record | Skipped and logged; the rest of the file is written |
+| Source unreachable | Its notes stay unchanged; warning logged; retried next run |
+| Single malformed record | Skipped and logged; the rest is written |
+| Qdrant unreachable | `semantic_search` returns a clear error; the agent falls back to grep search |
+| Chat tool gets no answer within its timeout | Returns "no answer within N s" instead of hanging; on stage we trigger the same task in the Sales UI |
+| Invalid credentials (401/403) | Clear error, no silent retry loop |
 
 Logging via Python's `logging` module, one logger per module, no `print`.
 
-## 7. Security
+## 7. Security and privacy
 
-- Containers bind to `127.0.0.1` only; only Harbor and GoTrue are public, via Funnel.
-- Harbor's dev mode (sign-in without `AUTH_ISSUER`) is **never** run behind Funnel. It is only
-  allowed during development while Funnel is off.
-- GoTrue: open sign-up off; only the admin creates accounts.
-- Secrets (`rbk_` key, GoTrue JWT secret, service role key, Marketing API key) only in
-  `.env` files excluded via `.gitignore`; templates as `.env.example`.
-- The Bridge agent is a member of Space "EHL" only.
+- Secrets (Marketing keys, OpenClaw token) only in `.env` files excluded via `.gitignore`;
+  templates as `.env.example`.
+- No email addresses, phone numbers or customer individuals in the vault or in Qdrant (D8).
+- No send/approve capability reachable from Rowboat (D7).
+- Changing `openclaw.json` on the mini PC is a machine-wide change: claim it in the coordination
+  log first.
 
-## 8. Tests
-
-- **Unit (`bridge/tests/`, pytest):**
-  - `render`: sample models → expected Markdown (snapshot), including empty lists and
-    special characters in names.
-  - `events`: new contact, stage change, approval, no duplicate after restart,
-    no messages on the first run.
-  - `run`: source fails → warning, last content kept; unchanged content → no write call
-    (Harbor client mocked).
-- **Integration (local):** Harbor + GoTrue + Postgres via compose; bridge against Harbor with
-  fake sources; verify that files and feed messages are readable via the Harbor API.
-- **End-to-end:** create a test contact in Sales-Claw → within ~60 s in `Contacts.md` and in the feed.
-- **Member access:** Rowboat Desktop on a second machine outside the home network
-  (phone hotspot): invite link → sign-in → Space visible.
-
-## 9. Demo flow (3–4 min within the 6-min pitch)
-
-1. A member has Rowboat Desktop open with Space "EHL" (Overview, Send Schedule).
-2. Live in Sales-Claw: create a contact or approve a send.
-3. A feed message appears; `Overview.md` and `Send-Schedule.md` update.
-4. The member asks their Rowboat agent: "What's going out this week?"
-
-## 10. Risks and fallback
+## 8. Risks and fallback
 
 | Risk | Check | Fallback |
 |---|---|---|
-| GoTrue `v2.188.1` has no, or an incompatible, OAuth 2.1 server mode (DCR, PKCE, RFC 8414 metadata) | First plan step, time-boxed | Newer GoTrue image; otherwise the fallback below |
-| Rowboat Desktop doesn't accept a custom org address or fails to sign in against our server | Test early with one desktop as soon as Harbor + GoTrue are up behind Funnel | Rowboat-hosted Harbor with test data; the bridge only gets a different `HARBOR_URL` |
-| sales-mcp requires authentication or is only meant for the compose network (`:8765` answers over Tailscale, auth unverified) | When building `sources/sales.py`, test a read call first | Read access via the existing sales-claw configuration; no write access |
-| Funnel ports: only 443, 8443, 10000 allowed | Two services split across 443/8443 | – |
-| Harbor upstream code changes assumptions the patches rely on | Pinned commit (D2) | – |
+| OpenClaw `2026.7.1` has no OpenAI-compatible chat endpoint, or a non-WhatsApp caller gets the wrong rights | First plan step, time-boxed | Bridge data only for Sales; the demo shows chat with Marketing only |
+| sales-mcp path/auth unknown (`/mcp` returns 404) | Find the mount path when building `sources/sales.py` | Read-only access via the existing sales-claw configuration |
+| Marketing chats are async and slow on stage | Measure in the dress rehearsal | Pre-generated draft; trigger in Sales UI |
+| Rowboat agent prefers grep over our MCP tools | Skill instruction; dress rehearsal | Ask explicitly in the prompt |
+| Images not shown in notes | Test one note with an http image early | Link instead of embed |
 
-**Order:** The riskiest part first (GoTrue OAuth + Harbor + Funnel + one desktop sign-in),
-the bridge in parallel or afterwards. The bridge can be tested independently of sign-in (Harbor
-in dev mode locally without Funnel).
+**Order:** Sales chat check (time-boxed) → note model + example data → bridge → indexer + MCP →
+skill → dress rehearsal.
+
+## 9. Tests
+
+- **Unit (pytest):** render (umlauts, empty lists, links); bridge never overwrites files without
+  `managed_by`; private leads and contact details absent; unchanged content → no write.
+- **Integration:** bridge with fake sources into a test vault, indexer over it, `semantic_search`
+  finds the expected company; chat wrappers against the real Marketing API.
+- **Dress rehearsal:** full demo twice on the demo PC, once with Sales switched off.
+
+## 10. Demo flow (3–4 min within the 6-min pitch)
+
+1. Rowboat open on the graph view (companies, products, channels).
+2. Create a contact live in Sales-Claw → the organization note appears/updates, the graph grows (~1 min).
+3. Ask the Rowboat agent: "Create a newsletter about P1 for all interested customers."
+4. The agent finds companies (semantic search / Sales chat), has Marketing draft text and image,
+   and files `Content/…` linked to P1, Newsletter and the companies; the new node appears (2–3 min).
 
 ## 11. Out of scope
 
-- Path back from Rowboat to Sales/Marketing (changing dates, approving, creating contacts).
-- Syncing other members' Claws (possible later via additional `SALES_MCP_URL`s).
-- Images as files in the Space (links only).
-- Own domain, reverse proxy, single sign-on.
-- Task/kanban objects (Harbor has none; possibly later as Markdown files).
-- The Rowboat fork in `vibemind-os/spaces/rowboat`.
+- Harbor / Spaces / Funnel; other team members' PCs (later possible via folder sync).
+- Sending or approving from Rowboat.
+- Customer individuals as notes.
+- Changes to Rowboat's code; the Rowboat fork in `vibemind-os/spaces/rowboat`.
 
 ## 12. Prior work and licences
 
@@ -197,5 +223,6 @@ in dev mode locally without Funnel).
 |---|---|---|
 | Sales-Claw | `github.com/Flissel/sales-claw` (before the hackathon) | own |
 | Marketing | `github.com/Flissel/vibemind-os`, `spaces/marketing` (before the hackathon) | own |
-| Rowboat Desktop, Harbor | `github.com/rowboatlabs/rowboat` | Apache 2.0 |
-| **New at the hackathon** | `harbor/` (compose, patches, scripts), `bridge/` | own |
+| Rowboat Desktop | `github.com/rowboatlabs/rowboat` | Apache 2.0 |
+| Qdrant, mcp-server-qdrant, fastembed | upstream | Apache 2.0 |
+| **New at the hackathon** | `bridge/`, `indexer/`, `agents-mcp/`, `example-data/`, EHL skill | own |
