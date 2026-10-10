@@ -31,7 +31,10 @@ const toSource = (s: string | null | undefined): Source =>
 // App -> Torque: {type: "visu:ready"} and {type: "visu:select", ...} whenever a part is selected.
 const PARAMS = new URLSearchParams(location.search);
 const EMBED = PARAMS.has("embed");
-type Context = { series: string | null; market: string; title: string; focus: string | null; focusSignal: number };
+/** Scores Torque computes itself where no comments exist (China: its customer study per purchase driver). */
+type Override = { label: string; note?: string; scores: Record<string, number> };
+type Context = { series: string | null; market: string; title: string; focus: string | null; focusSignal: number;
+  override?: Override | null };
 const post = (msg: unknown) => { if (EMBED) window.parent.postMessage(msg, location.origin); };
 
 export default function App() {
@@ -100,14 +103,18 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const usingFeedback = source !== "synthetic" && feedback !== null && !scoreError;
+  const override = EMBED ? ctx.override ?? null : null;
+  const usingFeedback = !override && source !== "synthetic" && feedback !== null && !scoreError;
   const scores = useMemo(() => {
+    if (override) return override.scores;
     if (!usingFeedback) return synthetic;
     return Object.fromEntries(Object.entries(feedback!.components).map(([k, v]) => [k, v.score]));
-  }, [usingFeedback, feedback, synthetic]);
-  const dataLabel = usingFeedback
-    ? `${feedback!.series_label} · ${fallback ? "all markets" : feedback!.market_label ?? "all markets"} · ${feedback!.rows_used.toLocaleString()} classified mentions`
+  }, [override, usingFeedback, feedback, synthetic]);
+  const dataLabel = override ? override.label : usingFeedback
+    ? `${feedback!.series_label} · ${fallback ? "all markets" : feedback!.market_label ?? "all markets"} · ` +
+      `${(feedback!.comments ?? feedback!.rows_used).toLocaleString()} comments`
     : "synthetic demo scores";
+  const note = override ? override.note ?? null : fallback;
   const sourceLabel = usingFeedback ? `customer feedback (${dataLabel})` : "synthetic demo score";
 
   // Only components that were actually found in the model are listed/scored.
@@ -123,9 +130,9 @@ export default function App() {
   useEffect(() => {
     if (load.kind !== "ready") return;
     post({ type: "visu:select", id: selected?.id ?? null, name: selected?.name ?? null,
-      category: selected?.category ?? null, score: selected?.score ?? null, data: dataLabel, fallback,
+      category: selected?.category ?? null, score: selected?.score ?? null, data: dataLabel, fallback: note,
       detail: usingFeedback && selected ? feedback!.components[selected.id] ?? null : null });
-  }, [selected?.id, selected?.score, dataLabel, fallback, load.kind]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selected?.id, selected?.score, dataLabel, note, load.kind]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onLoaded = useCallback((report: SegmentationReport) => setLoad({ kind: "ready", report }), []);
   const onError = useCallback((message: string) => setLoad({ kind: "error", message }), []);
@@ -155,7 +162,7 @@ export default function App() {
         <div className="embed-head">
           <b>{ctx.title || model.displayName}</b>
           <span>{dataLabel}</span>
-          {fallback && <span className="warn">{fallback}</span>}
+          {note && <span className="warn">{note}</span>}
           <span className="muted">3D stand-in: {model.displayName}</span>
         </div>
       )}
@@ -174,11 +181,11 @@ export default function App() {
       </div>
       {mode === "heatmap" && (
         <div className="legend">
-          <div className="legend-title">{usingFeedback ? "Customer sentiment (relative)" : "Demo scores (synthetic)"}</div>
+          <div className="legend-title">{override ? "Customer study (relative)" : usingFeedback ? "Customer sentiment (relative)" : "Demo scores (synthetic)"}</div>
           <div className="legend-bar" style={{ background: LEGEND_GRADIENT }} />
           <div className="legend-labels">
-            <span>{usingFeedback ? "0 — Most criticised" : "0 — Low"}</span><span>50</span>
-            <span>{usingFeedback ? "100 — Best rated" : "100 — High"}</span>
+            <span>{usingFeedback || override ? "0 — Most criticised" : "0 — Low"}</span><span>50</span>
+            <span>{usingFeedback || override ? "100 — Best rated" : "100 — High"}</span>
           </div>
         </div>
       )}
