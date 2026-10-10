@@ -16,8 +16,12 @@ Rowboat lists Torque under Apps and serves it on `http://torque.apps.localhost:3
 ## What syncs
 
 - **Torque to vault:** every decision makes Torque write `data/torque.json` (rankings of every model and market plus the decisions). `sync.py` turns it into one note per purchase driver and one top 10 note per model in `~/.rowboat/knowledge/Purchase Drivers`, linked to the product, theme and market notes.
-- **Vault to Torque:** the product and topic notes go to `data/rowboat.json`. Torque shows them in Data and workflow, links every driver to its notes and gives the facts to its copilot.
+- **Vault to Torque:** the product and topic notes, Yunes' dataset graph (`BMW/`) and car parts (`Vehicle Parts/`) go to `data/rowboat.json`. Torque shows per purchase driver its customer themes with the comment numbers of the model and its car parts with their heat, lists the most criticised car parts of the model and market on the overview, and gives all of it to its copilot.
 - Only notes with `managed_by: torque` are rewritten. Delete that line in a note to keep your own edits.
+
+## Essentials and Analyst
+
+Essentials (black) is for deciding: the top 10 with a recommendation, the decision and the car parts customers criticise. Analyst (grey background, blue switch and badge) adds every number: scores, weightings, robustness, evidence, simulator and audit trail.
 
 ## Not in git
 

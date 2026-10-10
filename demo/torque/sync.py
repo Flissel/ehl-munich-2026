@@ -7,8 +7,9 @@ Lives in the Torque app folder (demo/torque, symlinked to ~/.rowboat/apps/torque
   Torque -> vault   data/torque.json (rankings of every model and market plus the review decisions, written by
                     Torque inside Rowboat on every change) becomes one note per purchase driver and one top 10
                     note per model in <vault>/Purchase Drivers, linked to the product, theme and market notes.
-  vault -> Torque   the product and topic notes go into data/rowboat.json, which Torque shows in Data and
-                    workflow, in the "In Rowboat" links and in the copilot's context.
+  vault -> Torque   the product, topic, dataset graph (BMW/) and car part (Vehicle Parts/) notes go into
+                    data/rowboat.json: Torque shows per driver its theme and car part numbers, the model notes in
+                    Data and workflow, and gives them to the copilot.
 Only notes with "managed_by: torque" in their front matter are ever rewritten; delete that line to keep a note
 as you edited it. A file is only written when its content changes. Standard library only (Python 3.9+).
 """
@@ -42,22 +43,36 @@ MARKET_NOTES = {"EU": "Market Europe", "CN": "Market China", "US": "Market USA",
 STATUS = {"approved": "Approved", "modified": "Edited", "challenged": "Challenged", "rejected": "Rejected"}
 
 
+GROUPS = ("Projects", "Topics", "BMW", "Vehicle Parts")   # WP1 notes, Yunes' dataset graph and car parts (demo/visu)
+
+
 def parse_note(path: Path, rel: str) -> dict:
     text = path.read_text(encoding="utf-8")
     body = re.sub(r"^---\n.*?\n---\n", "", text, flags=re.S)
     title = next((l[2:].strip() for l in body.splitlines() if l.startswith("# ")), path.stem)
-    field = lambda k: (re.search(rf"\*\*{k}:\*\*\s*(.+)", body) or [None, ""])[1].strip()
+    field = lambda k: (re.search(r"\*\*" + re.escape(k) + r":\*\*\s*(.+)", body) or [None, ""])[1].strip()
     section = re.search(r"^## Key facts\n(.*?)(?=^## |\Z)", body, flags=re.S | re.M)
     facts = [DASH.sub(", ", l[2:].replace("`", "").strip()) for l in (section[1].splitlines() if section else []) if l.startswith("- ")]
-    m = re.search(r"([\d,]+) distinct comment IDs", section[1] if section else "")
-    return {"title": DASH.sub(", ", title), "group": rel.split("/")[1], "type": field("Type"), "model": field("Model"),
+    m = re.search(r"([\d,]+) distinct comment IDs", section[1] if section else "") or re.match(r"([\d,]+) \(unique IDs\)", field("Comments"))
+    # "- [[Projects/G60]]: 482 comments, 60 % wants or usability issues" -> ann["Projects/G60"]
+    ann = {t.strip(): DASH.sub(", ", a.strip()) for t, a in re.findall(r"^- \[\[([^\]|#]+)[^\]]*\]\]:\s*(.+)$", body, flags=re.M)}
+    # car part heat map rows (demo/visu): | G60 | EU | heat | comments | mentions | likes | difficult | defects | wants |
+    # -> heat["G60|EU"] = [heat, comments, likes, difficult to use, defects, wants]
+    heat = {f"{r[0]}|{r[1]}": [int(r[2]), int(r[3])] + [int(v) for v in r[5:]]
+            for r in re.findall(r"^\| ([A-Z0-9]+) \| ([A-Za-z]+) \| (\d+) \| (\d+) \| (\d+) \| (\d+) \| (\d+) \| (\d+) \| (\d+) \|", body, flags=re.M)}
+    note = {"title": DASH.sub(", ", title), "group": rel.split("/")[1], "type": field("Type"), "model": field("Model") or field("Derivate (e-code)"),
             "links": sorted(set(re.findall(r"\[\[([^\]|#]+)", body))), "facts": facts,
             "comments": int(m[1].replace(",", "")) if m else None}
+    if ann:
+        note["ann"] = ann
+    if heat:
+        note["heat"] = heat
+    return note
 
 
 def read_vault(vault: Path) -> dict:
     return {f"knowledge/{g}/{f.name}": parse_note(f, f"knowledge/{g}/{f.name}")
-            for g in ("Projects", "Topics") for f in sorted((vault / g).glob("*.md"))}
+            for g in GROUPS for f in sorted((vault / g).glob("*.md"))}
 
 
 def link(rel: str) -> str:
@@ -108,8 +123,8 @@ def run(app: Path, vault: Path, out: Path | None = None) -> int:
     mk_label = lambda k: mk[k] + (" (modelled)" if k == "CN" else "")
     driver_rel = {rid: f"knowledge/{FOLDER}/{safe_name(r['title'])}.md" for rid, r in T["reqs"].items()}
     top_rel = {m: f"knowledge/{FOLDER}/{v['name']} top {top}.md" for m, v in T["models"].items()}
-    model_notes = {m: [rel for rel, n in notes.items() if n["group"] == "Projects"
-                       and (Path(rel).stem.startswith(v["code"]) or v["name"] in n["model"])] for m, v in T["models"].items()}
+    model_notes = {m: [rel for rel, n in notes.items() if (n["group"] == "Projects" and (Path(rel).stem.startswith(v["code"]) or v["name"] in n["model"]))
+                       or (n["group"] == "BMW" and n["type"] == "Model" and n["model"] == v["code"])] for m, v in T["models"].items()}
     topic_rel = {t: f"knowledge/Topics/{t}.md" for ts in TOPICS.values() for t in ts}
     market_rel = {k: f"knowledge/Topics/{t}.md" for k, t in MARKET_NOTES.items() if f"knowledge/Topics/{t}.md" in notes}
     head = f"---\nsource: torque\nmanaged_by: torque\nreviewed_on: {today}\n"
@@ -167,7 +182,9 @@ def run(app: Path, vault: Path, out: Path | None = None) -> int:
         if at(rel).exists():
             notes[rel] = parse_note(at(rel), rel)
     snap = {"notes": notes, "models": model_notes, "tops": top_rel,
-            "drivers": {rid: {"note": driver_rel[rid], "topics": [topic_rel[t] for t in TOPICS.get(rid, []) if topic_rel[t] in notes]}
+            "drivers": {rid: {"note": driver_rel[rid], "topics": [topic_rel[t] for t in TOPICS.get(rid, []) if topic_rel[t] in notes],
+                              "parts": sorted(rel for rel, n in notes.items() if n["group"] == "Vehicle Parts" and n.get("heat")
+                                              and driver_rel[rid][len("knowledge/"):-len(".md")] in n["links"])}
                         for rid in T["reqs"]},
             "count": {"notes": len(notes), "drivers": len(driver_rel) + len(top_rel)}}
     dst = app / "data" / "rowboat.json"
@@ -183,7 +200,7 @@ def run(app: Path, vault: Path, out: Path | None = None) -> int:
 
 
 def signature(app: Path, vault: Path) -> tuple:
-    files = [app / "data" / "torque.json"] + [f for g in ("Projects", "Topics") for f in (vault / g).glob("*.md")]
+    files = [app / "data" / "torque.json"] + [f for g in GROUPS for f in (vault / g).glob("*.md")]
     return tuple(sorted((str(f), f.stat().st_mtime_ns, f.stat().st_size) for f in files if f.exists()))
 
 

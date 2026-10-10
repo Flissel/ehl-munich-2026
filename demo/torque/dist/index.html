@@ -868,15 +868,13 @@ body:not(.analyst) .rrow,body:not(.analyst) .rhdr{grid-template-columns:44px min
 .st.challenged svg{stroke:var(--s7)}
 /* next decisions on the essentials overview */
 .ndl{display:flex;flex-direction:column}
-.nd{display:grid;grid-template-columns:26px minmax(0,1fr) auto 64px;gap:12px;align-items:center;padding:11px 6px;border-bottom:1px solid var(--line);border-radius:9px;cursor:pointer}
+.nd{display:grid;grid-template-columns:24px minmax(0,1fr) auto 20px 58px;gap:10px;align-items:center;padding:9px 6px;border-bottom:1px solid var(--line);border-radius:9px;cursor:pointer}
 .nd:last-child{border-bottom:0}
 .nd:hover{background:var(--surface-2)}
 .nd .n{font:600 16px var(--disp);color:var(--ink-3);text-align:center}
-.nd-t{display:flex;gap:8px;align-items:baseline;min-width:0}
-.nd-t b{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nd p{margin:4px 0 0;font-size:12.5px;color:var(--ink-2);display:flex;gap:8px;align-items:center;min-width:0}
-.nd-q{font-size:11px;color:var(--ink-3);white-space:nowrap}
-.nd-q.challenged{color:var(--s7)}
+.nd-b{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.nd.done{opacity:.72}
+.nd.done:hover{opacity:1}
 .nd .netv{text-align:right}
 .recent{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .recent li{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center;font-size:13px}
@@ -942,17 +940,7 @@ body:not(.analyst) .rrow,body:not(.analyst) .rhdr{grid-template-columns:44px min
 .row-btns{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
 .au td del{color:var(--ink-3)}
 @media (max-width:640px){
-  .g.kp3{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-  .kp3 .kpi{padding:12px;grid-column:auto}
-  .kp3 .kpi .num{font-size:24px}
-  .kp3 .kpi .num small{font-size:13px}
-  .kp3 .kpi .lbl{font-size:11px}
-  .kp3 .kpi .foot{display:none}
-  .nd{align-items:start}
-  .nd-t{flex-wrap:wrap;gap:2px 8px}
-  .nd-t b{white-space:normal}
-  .nd p{display:block}
-  .nd p .rchip{margin-right:6px}
+  .nd-b{white-space:normal}
   .le-t{flex-basis:100%}
   .stats3{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
   .stat{padding:8px 9px}
@@ -962,8 +950,7 @@ body:not(.analyst) .rrow,body:not(.analyst) .rhdr{grid-template-columns:44px min
   .decide .keys{display:none}
   body:not(.analyst) .rrow{grid-template-columns:36px minmax(0,1fr) 70px}
   .rwhy{display:none}
-  .nd{grid-template-columns:22px minmax(0,1fr) 56px}
-  .nd-q{display:none}
+  .nd{grid-template-columns:20px minmax(0,1fr) auto 18px 46px;gap:8px}
   .decide .opts.five{grid-template-columns:repeat(3,1fr)}
   .rvbar .rvtrack{display:none}
 }
@@ -990,7 +977,6 @@ details.rest>summary em{font-style:normal;text-transform:none;letter-spacing:0;c
 .mkr{border:1px solid var(--line);background:transparent;border-radius:var(--r-s);padding:1px 7px;font:500 11.5px var(--mono);color:var(--ink-3)}
 .mkr.in{color:var(--ink);border-color:var(--line-2)}
 .mkr.cur{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.rbrow{margin-top:-6px}
 .rbl{border:1px solid var(--line);background:transparent;border-radius:var(--r-s);padding:1px 8px;font-family:inherit;font-size:11.5px;font-weight:500;color:var(--accent);cursor:pointer}
 .rbl:hover{border-color:var(--accent)}
 .rbnote{border-top:1px solid var(--line);padding:10px 0}
@@ -999,8 +985,6 @@ details.rest>summary em{font-style:normal;text-transform:none;letter-spacing:0;c
 .rbh small{color:var(--ink-3)}
 .rbnote ul{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--ink-2)}
 
-
-@media (max-width:640px){.nd p .why{display:none}}
 /* Compact layout: more of the decision on one screen (Rowboat frame is about 1240 x 700); desktop only, phones keep their own layout */
 @media (min-width:901px){
 .app{grid-template-columns:208px minmax(0,1fr)}
@@ -1032,15 +1016,9 @@ details.rest>summary em{font-style:normal;text-transform:none;letter-spacing:0;c
 .nextstep{padding:9px 14px;gap:12px}
 .nextstep .nb{width:34px;height:34px;padding:2px}
 .nextstep b{font-size:13.5px}
-.nd{grid-template-columns:24px minmax(0,1fr) auto 58px;gap:10px;padding:6px 6px}
-.nd-m{display:flex;align-items:center;gap:10px;min-width:0}
-.nd-t{flex:0 1 auto;max-width:52%}
-.nd-t b{font-size:13px}
-.nd p{margin:0;flex:1 1 0;min-width:0;white-space:nowrap;overflow:hidden}
-.nd p .why{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.nd{padding:7px 6px}
+.nd-b{font-size:13px}
 .nd .n{font-size:14px}
-.nd.done{opacity:.72}
-.nd.done:hover{opacity:1}
 .nd .st span{font-size:11.5px}
 .rrow{padding:7px 10px;gap:12px}
 .rk b{font-size:16px}
@@ -1064,14 +1042,52 @@ details.rest>summary em{font-style:normal;text-transform:none;letter-spacing:0;c
 .mkranks{margin:6px 0 8px}
 .rk{flex-direction:row;align-items:baseline;gap:5px}
 .rhdr span{white-space:nowrap}
-.rbrow{margin:10px 0 0}
-.nd-t .rid{flex:none}
-.nd-t b{min-width:0}
 body.analyst .rmain{display:block}
 body.analyst .rtop{max-width:none}
 body.analyst .rmeta{margin-top:3px;flex-wrap:nowrap}
 body.analyst .rrow,body.analyst .rhdr{grid-template-columns:36px minmax(0,1fr) 96px 84px minmax(96px,150px) 44px 96px}
 @media (max-width:1180px){.ctrls{flex-wrap:wrap;justify-content:flex-end}.top{flex-wrap:wrap}}
+}
+
+/* Analyst mode: a greyer workspace, a blue line under the header, the switch and a badge in blue, so the mode is never in doubt */
+:root:has(body.analyst){--bg:#e4e5e8;--surface:#fbfbfc;--surface-2:#f0f1f3;--line:#d9dadf;--line-2:#c6c8ce}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]):has(body.analyst){--bg:#1e1f23;--surface:#27282d;--surface-2:#2f3036;--line:#383a41;--line-2:#4a4c54}
+}
+:root[data-theme="dark"]:has(body.analyst){--bg:#1e1f23;--surface:#27282d;--surface-2:#2f3036;--line:#383a41;--line-2:#4a4c54}
+body.analyst .top{box-shadow:inset 0 -2px 0 var(--accent)}
+#lvlSeg button[data-level="analyst"][aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+#lvlSeg button svg{width:13px;height:13px}
+body.analyst #lvlSeg{border-color:var(--accent)}
+body.analyst .crumb h1::after{content:"Analyst mode";display:inline-block;margin-left:10px;vertical-align:3px;padding:3px 8px;border-radius:999px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent-2);font:600 10.5px/1.2 var(--font);letter-spacing:.06em;text-transform:uppercase}
+body:not(.analyst) .stats3{grid-template-columns:repeat(2,minmax(0,1fr))}
+body:not(.analyst) .rd-f{border-top:0;padding-top:0}
+body:not(.analyst) .sum .qt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* car parts customers criticise (Vehicle Parts notes) and the knowledge graph block of a purchase driver */
+.parts{display:flex;flex-direction:column}
+.pr{display:grid;grid-template-columns:10px minmax(0,1fr) auto 24px;gap:10px;align-items:center;padding:7px 2px;border-bottom:1px solid var(--line)}
+.pr:last-child{border-bottom:0}
+.pr>b{font-size:12px;text-align:right;color:var(--ink-2)}
+.hd{display:block;width:10px;height:10px;border-radius:50%}
+.pn{border:0;background:transparent;padding:0;text-align:left;font-size:13px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pn:hover{color:var(--accent)}
+.pids{display:inline-flex;gap:4px}
+.kg{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:8px 12px 4px;background:var(--surface-2)}
+.kg-h{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin-bottom:2px}
+.kg-h>span{margin-right:auto}
+.kg-h .rbl{text-transform:none;letter-spacing:0}
+.kgr{display:grid;grid-template-columns:14px auto minmax(0,1fr);gap:8px;align-items:center;width:100%;border:0;border-top:1px solid var(--line);background:transparent;padding:7px 0;text-align:left;font-size:12.5px;color:var(--ink-2)}
+.kgr:first-of-type{border-top:0}
+.kgr b{color:var(--ink);font-weight:600;white-space:nowrap}
+.kgr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.kgr:hover b{color:var(--accent)}
+.kgi{display:grid;place-items:center}
+.kgi svg{width:13px;height:13px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.kgr .hd{margin-left:2px}
+@media (max-width:640px){
+  .kgr{grid-template-columns:14px minmax(0,1fr);row-gap:1px}
+  .kgr span{grid-column:2;white-space:normal}
+  body.analyst .crumb h1::after{content:"Analyst";margin-left:8px}
 }
 </style>
 
@@ -1823,10 +1839,40 @@ const rbName = p => p.split("/").pop().replace(/\.md$/, "");
 const rbOpen = p => window.open(p === "graph" ? "rowboat://open?type=graph" : "rowboat://open?type=file&path=" + encodeURIComponent(p), "_blank");
 const rbBtn = (p, label) => `<button type="button" class="rbl" data-rb="${esc(p)}" title="Open in Rowboat">${esc(label || rbName(p))}</button>`;
 const rbModelNotes = () => RB ? (RB.models[state.model] || []).filter(p => RB.notes[p]) : [];
+// Car part heat from the Vehicle Parts notes (demo/visu, the colours of Concept 3D): [heat, comments, likes, difficult to use,
+// defects, wants], heat 0 = most criticised part. A market with few comments on this model (China has none) shows all its markets.
+const HEAT = [[0,255,32,32],[25,255,122,26],[50,255,230,0],[75,155,226,45],[100,32,214,90]];
+function heatHex(v){
+  v = Math.max(0, Math.min(100, v)); const i = Math.max(1, HEAT.findIndex(h => v <= h[0])), a = HEAT[i - 1], b = HEAT[i], t = (v - a[0]) / (b[0] - a[0]);
+  return `rgb(${[1, 2, 3].map(j => Math.round(a[j] + (b[j] - a[j]) * t)).join(",")})`;
+}
+function rbPartScope(){
+  const key = `${M().code}|${state.market}`, n = RB ? Object.values(RB.notes).reduce((a, o) => a + (o.heat && o.heat[key] ? o.heat[key][1] : 0), 0) : 0;
+  return n >= 30 ? {key, label:mkLabel()} : {key:`${M().code}|ALL`, label:"all markets"};
+}
+function rbParts(){
+  if(!RB) return [];
+  const {key} = rbPartScope();
+  return Object.entries(RB.notes).filter(([, n]) => n.heat && n.heat[key] && n.heat[key][1] >= 3)
+    .map(([p, n]) => ({p, h:n.heat[key], ids:Object.keys(RB.drivers).filter(id => (RB.drivers[id].parts || []).includes(p))}))
+    .sort((a, b) => a.h[0] - b.h[0] || b.h[1] - a.h[1]);
+}
+const heatTip = (o, label) => tipAttr(`<b>${esc(RB.notes[o.p].title)}</b><br>Heat ${o.h[0]} of 100 (0 = most criticised), ${label}<br>${o.h[1]} comments: ${o.h[3]} difficult to use, ${o.h[4]} defects, ${o.h[5]} wants, ${o.h[2]} likes`);
+function rbPartsHTML(){
+  const rows = rbParts().slice(0, 6); if(!rows.length) return "";
+  const {label} = rbPartScope();
+  return `<section class="card c4"><div class="card-h"><div><h3>Criticised car parts</h3><p class="sub">${M().code} comments · ${label}</p></div><button type="button" class="link" data-go="concept">Concept 3D</button></div>
+    <div class="parts">${rows.map(o => `<div class="pr" ${heatTip(o, label)}><i class="hd" style="background:${heatHex(o.h[0])}"></i><button type="button" class="pn" data-rb="${esc(o.p)}" title="Open the note in Rowboat">${esc(RB.notes[o.p].title)}</button><span class="pids">${o.ids.slice(0, 2).map(id => `<button type="button" class="rid" data-open="${id}">${id}</button>`).join("")}</span><b class="mono">${o.h[0]}</b></div>`).join("")}</div>
+    <p class="note">Heat 0 to 100 as on the 3D car, 0 = most criticised, with the purchase drivers that fix it. From the Vehicle Parts notes in Rowboat.</p></section>`;
+}
 function rbDriverHTML(r){
   const d = RB && RB.drivers[r.id]; if(!d) return "";
-  const links = [d.note, ...(d.topics || []), RB.tops && RB.tops[state.model]].filter(Boolean);
-  return `<p class="mkranks rbrow"><span>In Rowboat</span>${links.map(p => rbBtn(p)).join("")}</p>`;
+  const {key, label} = rbPartScope(), code = M().code;
+  const themes = (d.topics || []).map(p => { const a = RB.notes[p].ann && RB.notes[p].ann["Projects/" + code];
+    return `<button type="button" class="kgr" data-rb="${esc(p)}"><i class="kgi">${SVGI.spark}</i><b>${esc(RB.notes[p].title)}</b><span>${a ? `${code}: ${esc(a)}` : "Customer theme"}</span></button>`; });
+  const parts = (d.parts || []).filter(p => RB.notes[p] && RB.notes[p].heat && RB.notes[p].heat[key]).map(p => ({p, h:RB.notes[p].heat[key]})).sort((a, b) => a.h[0] - b.h[0]).slice(0, 3)
+    .map(o => `<button type="button" class="kgr" data-rb="${esc(o.p)}" ${heatTip(o, label)}><i class="hd" style="background:${heatHex(o.h[0])}"></i><b>${esc(RB.notes[o.p].title)}</b><span>Heat ${o.h[0]} · ${o.h[1]} ${code} comments${o.h[1] ? `, ${o.h[3] + o.h[4]} difficult or defect` : ""}</span></button>`);
+  return `<div class="kg"><div class="kg-h"><span>In the knowledge graph</span>${rbBtn(d.note, "Driver note")}${RB.tops && RB.tops[state.model] ? rbBtn(RB.tops[state.model], `${M().name} top ${TOP}`) : ""}</div>${themes.join("")}${parts.join("")}</div>`;
 }
 function rbDataHTML(){
   if(!RB) return "";
@@ -1837,11 +1883,11 @@ function rbDataHTML(){
     ${rows || `<p class="muted">No note in the vault links to the ${M().name} yet.</p>`}<p class="note">Last sync with the vault: ${esc(RB.generated)}. Decisions and rankings go to the purchase driver notes, new or edited notes come back here, as long as <span class="mono">sync.py --watch</span> runs next to Rowboat.</p></section>`;
 }
 const VIEWS = {
-  overview:{n:"Overview", s:() => `What to decide next for the ${mName()} successor · ${mkLabel()}`},
-  req:{n:"Purchase drivers", s:() => `Top ${TOP} customer requirements by what makes customers buy, not by what they wish for · ${mkLabel()}`},
+  overview:{n:"Overview", s:() => `${mName()} successor · ${mkLabel()}`},
+  req:{n:"Purchase drivers", s:() => `Ranked by what makes customers buy · ${mkLabel()}`},
   sim:{n:"Simulator", s:() => `What if: which spec wins customers and which loses them · ${mkLabel()}`},
   concept:{n:"Concept 3D", s:() => `The ${M().name} successor, built live from your decisions · ${mkLabel()}`},
-  log:{n:"Review log", s:() => `Every decision on the ${mName()} successor with its reason, what changed and what needs another look`},
+  log:{n:"Review log", s:() => `Decisions on the ${mName()} successor`},
   audit:{n:"Audit trail", s:() => "Append only record of every change to content, score, priority, evidence and status"},
   voice:{n:"Customer voice", s:() => `What ${fmt(BMW.issues.unique)} BMW owners say, and what makes them buy · ${mkLabel()}`},
   map:{n:"Feature map", s:() => "Vector space of real customer comments: what belongs together and what is new"},
@@ -1859,7 +1905,7 @@ function renderNav(){
     + (isAnalyst() ? "" : `<button type="button" class="more" data-level="analyst"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Analyst views</button>`);
   $("#modelSeg").innerHTML = Object.entries(MODELS).map(([k, m]) => `<button type="button" data-model="${k}" aria-pressed="${state.model === k}" title="${m.name} ${m.code}">${m.name}</button>`).join("");
   $("#mktSeg").innerHTML = MKS.map(k => `<button type="button" data-market="${k}" aria-pressed="${state.market === k}" ${sold(k) ? `title="${MK[k]}: ${BASIS[basisOf(k)]}, plan 2030 ${fmtK(plan(k))}"` : `disabled title="The ${M().name} is not sold here in the BMW sales plan"`}>${k === "RoW" ? "Rest" : MK[k]}</button>`).join("");
-  $("#lvlSeg").innerHTML = [["essentials","Essentials"],["analyst","Analyst"]].map(([k, l]) => `<button type="button" data-level="${k}" aria-pressed="${state.level === k}">${l}</button>`).join("");
+  $("#lvlSeg").innerHTML = [["essentials","Essentials",""],["analyst","Analyst",`<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-6M21 20H3"/></svg>`]].map(([k, l, i]) => `<button type="button" data-level="${k}" aria-pressed="${state.level === k}">${i}${l}</button>`).join("");
   document.body.classList.toggle("analyst", state.level === "analyst");
   $("#vTitle").textContent = VIEWS[state.view].n;
   $("#vSub").textContent = VIEWS[state.view].s();
@@ -1964,24 +2010,20 @@ RENDER.overview = () => {
   const flagged = rk.map(x => x.r).filter(r => confOf(r) < 60 || g[r.id].wish - g[r.id].buy >= 12 || revOf(r) >= 12 || r.ev0.level !== "High").slice(0, 6);
   const alerts = flagged.map(r => { const low = confOf(r) < 60 || r.ev0.level !== "High"; return `<div role="button" tabindex="0" class="alert ${low ? "low" : "conf"}" data-open="${r.id}">${low ? SVGI.low : SVGI.warn}<div><b>${r.id} ${esc(r.short)}</b><p>${esc(r.cs)}</p></div><span class="tag">${low ? `Evidence ${r.ev0.level.toLowerCase()}` : "Conflict"}</span></div>`; }).join("");
   const todoLine = [c.open ? `${c.open} proposed` : "", c.challenged ? `${c.challenged} waiting for evidence` : "", c.recheck ? `${c.recheck} to re-check` : ""].filter(Boolean).join(", ");
-  const banner = firstOpen ? `<div class="nextstep" id="t-next"><span class="nb">${nordi("wave")}</span><div><b>${queue.length} of the top ${TOP} in ${mkLabel()} need you: ${todoLine}</b><span>Next: ${firstOpen.r.id} ${esc(firstOpen.r.short)}, ranked #${rk.indexOf(firstOpen) + 1}. The review goes through them in order.</span></div><button type="button" class="btn" data-act="review">${SVGI.play}Start review</button></div>`
+  const stat = `${c.done} of ${c.total} decided · ${fmtK(sim.units)} buyers a year with the proposed spec, ${pc >= 0 ? "+" : ""}${pc.toFixed(1)} % vs today`;
+  const banner = firstOpen ? `<div class="nextstep" id="t-next"><span class="nb">${nordi("wave")}</span><div><b>${queue.length} of the top ${TOP} in ${mkLabel()} need you: ${todoLine}</b><span>${isAnalyst() ? `Next: ${firstOpen.r.id} ${esc(firstOpen.r.short)}, ranked #${rk.indexOf(firstOpen) + 1}. The review goes through them in order.` : `Next: ${esc(firstOpen.r.title)} (#${rk.indexOf(firstOpen) + 1}) · ${stat}`}</span></div><button type="button" class="btn" data-act="review">${SVGI.play}Start review</button></div>`
     : `<div class="nextstep"><span class="nb">${nordi("cheer")}</span><div><b>The top ${TOP} in ${mkLabel()} are decided for review round ${roundNow()}</b><span>The spec is ready for the steering board. Switch the market for its top ${TOP}; new data or a new round brings decisions back for a second look.</span></div><button type="button" class="btn" data-go="log">Open review log</button></div>`;
   if(!isAnalyst()){
     const todo = new Set(queue);
     const next = rk.map((x, i) => { const id = x.r.id, rc = recoOf(x.r, i + 1, net);
-      return `<div role="button" tabindex="0" class="nd${todo.has(id) ? "" : " done"}" data-open="${id}"><span class="n">${i + 1}</span><div class="nd-m"><div class="nd-t"><span class="rid">${id}</span><b>${esc(x.r.title)}</b></div><p>${recoChip(rc)}<span class="why" title="${esc(rc.why)}">${esc(rc.why)}</span></p></div>${stChip(id, true)}<span class="netv ${net[id].net < 0 ? "neg" : "pos"}" ${tipAttr("Buyers won minus buyers lost per year")}>${fmtK(net[id].net)}</span></div>`; }).join("");
+      return `<div role="button" tabindex="0" class="nd${todo.has(id) ? "" : " done"}" data-open="${id}" title="${id}: ${esc(rc.why)}"><span class="n">${i + 1}</span><b class="nd-b">${esc(x.r.title)}</b>${recoChip(rc)}${stChip(id, true)}<span class="netv ${net[id].net < 0 ? "neg" : "pos"}">${fmtK(net[id].net)}</span></div>`; }).join("");
     const recent = state.log.filter(l => l.model === state.model && l.id).slice(0, 6).map(l => `<li><button type="button" class="rid" data-open="${l.id}">${l.id}</button><span>${l.kind === "revert" ? `Reverted to ${STATUS[l.status].l.toLowerCase()}` : l.kind === "confirm" ? `Kept ${STATUS[l.status].l.toLowerCase()}` : STATUS[l.status].l} <span class="muted">${esc(RBY[l.id]?.short || "")}</span></span><small>${when(l.at)} · ${esc(l.by)}</small></li>`).join("");
     return `${banner}
-    <div class="g kp3">
-      ${kpi("Decided", `${c.done}<small> of ${c.total}</small>`, `${c.approved} approved · ${c.modified} edited · ${c.rejected} rejected · top ${TOP} in ${mkLabel()}`, "c4")}
-      ${kpi("Needs a second look", c.challenged + c.recheck, `${c.challenged} waiting for evidence · ${c.recheck} to re-check`, "c4")}
-      ${kpi("Projected buyers per year", fmtK(sim.units), `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> with the proposed spec vs today's car in ${mkLabel()}`, "c4")}
-    </div>
     <div class="g">
-      <section class="card c8" id="t-reco"><div class="card-h"><div><h3>Top ${TOP} purchase drivers in ${mkLabel()}</h3><p class="sub">Recommendation, your decision, buyers won per year</p></div><button type="button" class="link" data-go="req">All candidates</button></div>
+      <section class="card c8" id="t-reco"><div class="card-h"><div><h3>Top ${TOP} purchase drivers in ${mkLabel()}</h3><p class="sub">Recommendation, your decision, net buyers a year</p></div><button type="button" class="link" data-go="req">All candidates</button></div>
         <div class="ndl">${next || `<p class="muted" style="margin:0">Nothing to decide right now.</p>`}</div></section>
-      <section class="card c4"><div class="card-h"><div><h3>Recently decided</h3><p class="sub">${mName()}</p></div><button type="button" class="link" data-go="log">Review log</button></div>
-        <ul class="recent">${recent || `<li class="muted">No decisions yet.</li>`}</ul></section>
+      ${rbPartsHTML() || `<section class="card c4"><div class="card-h"><div><h3>Recently decided</h3><p class="sub">${mName()}</p></div><button type="button" class="link" data-go="log">Review log</button></div>
+        <ul class="recent">${recent || `<li class="muted">No decisions yet.</li>`}</ul></section>`}
     </div>`;
   }
   return `
@@ -2320,15 +2362,15 @@ function renderDrawer(){
   <div class="db-body">
     <div class="sum">
       <div class="reco-line">${recoChip(rc)}<span>${esc(rc.why)}</span></div>
-      <p class="cut">${robustChip(r.id)}<span>${esc(cutoffLine(r.id))}</span></p>
-      <p class="mkranks"><span>Rank by market</span>${MKS.filter(k => sold(k)).map(k => { const n = rankMap(k)[r.id]; return `<button type="button" class="mkr${n <= TOP ? " in" : ""}${k === state.market ? " cur" : ""}" data-market="${k}" title="${n <= TOP ? `In the top ${TOP}` : `Below the top ${TOP}`} in ${MK[k]}">${MK[k]} #${n}</button>`; }).join("")}</p>
+      <p class="cut adv">${robustChip(r.id)}<span>${esc(cutoffLine(r.id))}</span></p>
+      <p class="mkranks adv"><span>Rank by market</span>${MKS.filter(k => sold(k)).map(k => { const n = rankMap(k)[r.id]; return `<button type="button" class="mkr${n <= TOP ? " in" : ""}${k === state.market ? " cur" : ""}" data-market="${k}" title="${n <= TOP ? `In the top ${TOP}` : `Below the top ${TOP}`} in ${MK[k]}">${MK[k]} #${n}</button>`; }).join("")}</p>
       ${rck ? `<div class="risk">${SVGI.warn}<span><b>Re-check:</b> ${esc(rck)}.</span></div>` : ""}
       <p class="motive"><b>Why customers buy it:</b> ${esc(r.motive)}</p>
-      <blockquote>“${esc(SRCQ(r.says))}”<footer>${esc(qMeta(r.says))} · real BMW comment</footer></blockquote>
+      <blockquote><span class="qt">“${esc(SRCQ(r.says))}”</span><footer>${esc(qMeta(r.says))} · real BMW comment</footer></blockquote>
       <div class="stats3">
         <div class="stat" ${tipAttr("Share of all purchase signals in the BMW comments (praise after buying, purchase reasons, switching threats) vs share of all wishes, 0 to 100")}><small>Purchase signal</small><b>${bu}</b><span>Asked for ${wi} · ${bu - wi >= 0 ? "+" : ""}${bu - wi} gap</span></div>
         <div class="stat" ${tipAttr("Choice simulator: buyers won minus buyers lost per year, including the price increase")}><small>Net buyers a year</small><b>${sgnK(n.net)}</b><span>Won ${fmtK(n.gain)} · lost ${fmtK(-n.loss)}</span></div>
-        <div class="stat"><small>Confidence</small><b>${confLabel(cf)}</b><span>${state.market === "CN" ? "China: study and research, no comments" : `${ev}% from ${mkLabel()} comments`}<span class="adv"> · rank #${rr.best} to #${rr.worst}</span></span></div>
+        <div class="stat adv"><small>Confidence</small><b>${confLabel(cf)}</b><span>${state.market === "CN" ? "China: study and research, no comments" : `${ev}% from ${mkLabel()} comments`}<span class="adv"> · rank #${rr.best} to #${rr.worst}</span></span></div>
       </div>
       <div class="kanos adv"><span>Kano</span>${mks.map(k => kanoChip(r, k)).join("")}${revOf(r) ? `<span class="kano" ${tipAttr("Share of comments about switching it off, overload or annoyance")}>Puts off <b>${revOf(r)}%</b></span>` : ""}</div>
       <div class="tgt"><div><small>Target</small>${esc(effTarget(r))}${d && d.target ? `<span class="chg">Was: ${esc(r.target)}</span>` : ""}</div><div><small>Acceptance</small>${esc(effAccept(r))}${d && d.accept ? `<span class="chg">Was: ${esc(r.accept)}</span>` : ""}</div></div>
@@ -2381,7 +2423,7 @@ function renderDrawer(){
       <button type="button" class="opt reject" data-mode="rejected" aria-pressed="${decMode === "rejected"}">${SVGI.xc}Reject <kbd>R</kbd></button>
     </div>
     <div id="dform"></div>
-    <div class="keys"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> ${review ? "previous or next in the review" : "browse"} · <kbd>A</kbd> <kbd>E</kbd> <kbd>C</kbd> <kbd>R</kbd> decide · <kbd>Ctrl</kbd>+<kbd>Enter</kbd> record · <kbd>Esc</kbd> close · decisions hold for the ${esc(M().name)} in all markets</div>
+    <div class="keys adv"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> ${review ? "previous or next in the review" : "browse"} · <kbd>A</kbd> <kbd>E</kbd> <kbd>C</kbd> <kbd>R</kbd> decide · <kbd>Ctrl</kbd>+<kbd>Enter</kbd> record · <kbd>Esc</kbd> close · decisions hold for the ${esc(M().name)} in all markets</div>
   </div>`;
   $$("#drawer [data-dn]").forEach(b => b.onclick = () => b.dataset.dn === "close" ? closeDrawer() : stepDrawer(+b.dataset.dn));
   $$("#drawer .opt").forEach(b => b.onclick = () => setDecMode(b.dataset.mode));
@@ -2782,18 +2824,18 @@ RENDER.log = () => {
   return `<section class="card round" id="t-log">
     <div class="rd-h"><div><b>Review round ${rd.n}</b><span>${mName()} successor${rd.at ? ` · started ${when(rd.at)}` : ""} · ${c.done} of the top ${N} in ${mkLabel()} decided</span></div><div class="rd-a">${acts}</div></div>
     ${bar}
-    <div class="rd-f"><p class="note">Requirements are prioritised again over about two years. A new round brings every decision back for a quick confirmation, and a rank that moves 3 places flags it.</p>
+    <div class="rd-f"><p class="note adv">Requirements are prioritised again over about two years. A new round brings every decision back for a quick confirmation, and a rank that moves 3 places flags it.</p>
       <label class="signas">Sign as <input id="who" value="${esc(state.user)}" maxlength="40"></label><button type="button" class="btn sm adv" id="reset">Reset demo</button></div></section>
   <div class="g">
-    <section class="card c8"><div class="card-h"><div><h3>Review log</h3><p class="sub">Newest first. Every decision with its reason, what changed and the rank at that moment.</p></div></div>
+    <section class="card c8"><div class="card-h"><div><h3>Review log</h3><p class="sub">Newest first, each decision with its reason and what changed</p></div></div>
       <div class="filters"><label class="search">${SVGI.search}<input id="logq" type="search" placeholder="Search R-11 or a word" value="${esc(logQ)}"></label>
         <div class="chips">${LOG_F.map(([k, l]) => `<button type="button" class="fchip" data-logf="${k}" aria-pressed="${logF === k}">${l}</button>`).join("")}</div></div>
       <ul class="lelist" id="logList"></ul></section>
     <div class="c4 stackcol">
-      <section class="card"><div class="card-h"><div><h3>Needs another look</h3><p class="sub">${c.challenged + c.recheck ? `${c.challenged + c.recheck} requirements, part of the next review` : "Every decision is current"}</p></div></div>
+      ${waiting || rechecks || isAnalyst() ? `<section class="card"><div class="card-h"><div><h3>Needs another look</h3><p class="sub">${c.challenged + c.recheck ? `${c.challenged + c.recheck} requirements, part of the next review` : "Every decision is current"}</p></div></div>
         ${waiting ? `<div class="fsub">Waiting for evidence</div><ul class="openl">${waiting}</ul>` : ""}
         ${rechecks ? `<div class="fsub"${waiting ? ' style="margin-top:14px"' : ""}>To re-check</div><ul class="openl">${rechecks}</ul>` : ""}
-        ${waiting || rechecks ? "" : `<p class="muted" style="margin:0;font-size:13px">Nothing is waiting for evidence and no rank moved since the decisions.</p>`}</section>
+        ${waiting || rechecks ? "" : `<p class="muted" style="margin:0;font-size:13px">Nothing is waiting for evidence and no rank moved since the decisions.</p>`}</section>` : ""}
       <section class="card"><div class="card-h"><div><h3>Spec for the steering board</h3><p class="sub">${spec.length} approved or edited requirements</p></div></div>
         <ol class="specl">${spec.slice(0, 8).map(x => `<li><button type="button" class="rid" data-open="${x.r.id}">${x.r.id}</button><span>${esc(x.r.short)}</span>${statusOf(x.r.id) === "modified" ? `<span class="muted">edited</span>` : ""}</li>`).join("") || `<li class="muted">Nothing approved yet.</li>`}${spec.length > 8 ? `<li class="muted">and ${spec.length - 8} more</li>` : ""}</ol>
         <div class="row-btns"><button type="button" class="btn dark" id="copySpec">${SVGI.copy}Copy Markdown</button><button type="button" class="btn" id="dlSpec">Download</button><button type="button" class="btn adv" id="expJson2">JSON list</button></div>
@@ -3612,7 +3654,8 @@ function aiContext(){
     ownerComparisonsWithRivals:Object.fromEntries(Object.entries(BMW.comp).map(([b, v]) => [b, {mentions:v.n, bmwBetter:v.bmw, rivalBetter:v.rival}])),
     valueForMoneyStudy:BMW.value.cneu,
     research:RESEARCH.map(x => `${x.t}: ${x.s} (${x.src})`),
-    ...(RB ? {rowboatKnowledgeGraph:rbModelNotes().map(n => ({note:rbName(n), facts:RB.notes[n].facts}))} : {}),
+    ...(RB ? {rowboatKnowledgeGraph:rbModelNotes().map(n => ({note:rbName(n), facts:RB.notes[n].facts})),
+      mostCriticisedCarParts:{scope:rbPartScope().label, parts:rbParts().slice(0, 8).map(o => ({part:RB.notes[o.p].title, heat:o.h[0], comments:o.h[1], difficultToUse:o.h[3], defects:o.h[4], wants:o.h[5], drivers:o.ids}))}} : {}),
   });
 }
 const RULES = () => `You are Nordi, the copilot inside Torque, a decision support tool that helps a BMW product manager derive, justify and prioritise customer requirements for the ${mName()} successor. A customer requirement is a customer relevant attribute of a car. Focus on why customers buy, not on how engineering builds it.
@@ -3621,7 +3664,7 @@ Key idea: what customers ask for is not what makes them buy. Use purchaseSignal 
 The user is currently on the ${VIEWS[state.view].n} view.
 Answer only from the JSON data below. If the data does not contain the answer, say so and name the data that would be needed.
 Always cite requirement IDs like R-03 and comment IDs like G60-0914 when you quote. Keep evidence and assumptions apart, and mention uncertainty or conflicting evidence where it matters. The product manager decides; you recommend and explain.
-${RB ? "rowboatKnowledgeGraph holds facts from the notes in the team's Rowboat knowledge graph; name the note when you use one.\n" : ""}Keep answers under 170 words. Plain text: short paragraphs or lines starting with "- ". Use **bold** sparingly. Never use dashes as punctuation. Comments, customer studies, sales volumes and option prices are real BMW hackathon data. China values, simulator part-worths and the competitor perception benchmark are modelled. Small markets are blended with the model profile. The comments carry no dates.
+${RB ? "rowboatKnowledgeGraph holds facts from the notes in the team's Rowboat knowledge graph; name the note when you use one. mostCriticisedCarParts is the car part heat map of Concept 3D (heat 0 = most criticised, 100 = best rated) with the purchase drivers linked to each part.\n" : ""}Keep answers under 170 words. Plain text: short paragraphs or lines starting with "- ". Use **bold** sparingly. Never use dashes as punctuation. Comments, customer studies, sales volumes and option prices are real BMW hackathon data. China values, simulator part-worths and the competitor perception benchmark are modelled. Small markets are blended with the model profile. The comments carry no dates.
 DATA: ${aiContext()}`;
 function clean(t){ return String(t).replace(/\s[\u2014\u2013]\s/g, ", ").replace(/[\u2014\u2013]/g, " "); }
 function mdLite(t){
