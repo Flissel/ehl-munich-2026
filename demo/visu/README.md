@@ -48,13 +48,19 @@ The part data lives in the vault, so Rowboat (and its AI) is where it is changed
 ```bash
 python demo/dataset_to_notes.py --out ~/.rowboat/knowledge   # WP1: Projects/ and Topics/ (models, themes, markets)
 python demo/torque/sync.py                                    # Torque: Purchase Drivers/
-python demo/visu/vault.py notes                               # Vehicle Parts/: hub, sides, areas, 56 parts
+python demo/visu/vault.py notes                               # Vehicle Parts/ (56 parts) and BMW/ (Dataset graph)
 python demo/visu/vault.py sync --watch                        # keep running: vault -> dist/visu/data/visu.json
 ```
 
 - **Graph:** `Vehicle Parts/Vehicle` → `Exterior` / `Interior` → 11 areas (Wheels and brakes, Lighting, Seats,
   Cockpit and displays, …) → one note per part. Each part note links to its purchase drivers
   (`Purchase Drivers/…`), WP1 themes (`Topics/…`) and the models (`Projects/F70` …).
+- **Dataset graph** (`brand.py`, folder `BMW/`): brand `BMW` → models (F70, G60, G68, G70) → per model the
+  sub nodes Country, ID, Engine, VFC 1 (Vfc level2, feature class), VFC 2 (Vfc level3, aspect), VFC 3
+  (level 2 3 combined), Source, Sales and Feedback. Every table comes from `Dataset/` (comments per value,
+  rows, likes / difficult to use / defects / wants / untyped; ID lists every comment ID without text). Models
+  link to `Vehicle Parts/Vehicle`, Torque's `Purchase Drivers/<series> top 10` and `Projects/<model>`;
+  VFC 1 rows link to the car part they colour, and every part note links back to the models' VFC 1 nodes.
 - **Fixed links:** what belongs to what (part ↔ area ↔ driver ↔ theme, feature classes per part) is
   `demo/torque/dist/visu/graph.json`, built by `vault.py graph` and committed. The UI only uses this map, so
   editing or deleting links in a note never breaks the 3D view. Notes are found by `part_id` in their front

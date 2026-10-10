@@ -1,7 +1,7 @@
 """The 3D car in Rowboat's knowledge graph: fixed links, editable data.
 
     python demo/visu/vault.py graph                  # rebuild the link map demo/torque/dist/visu/graph.json
-    python demo/visu/vault.py notes [--vault V]      # write missing part notes into <vault>/Vehicle Parts
+    python demo/visu/vault.py notes [--vault V]      # write missing notes: <vault>/Vehicle Parts and <vault>/BMW (brand.py)
     python demo/visu/vault.py notes --refresh        # also rewrite existing notes (overwrites edits)
     python demo/visu/vault.py sync [--watch]         # vault -> demo/torque/dist/visu/data/visu.json
 
@@ -157,6 +157,9 @@ def part_note(pid: str, p: dict, g: dict, scores: dict, opts: dict, today: str) 
     lines += [f"- {link(d[r]['note'])}: {r} {d[r]['short']}" for r in p["drivers"]]
     lines += [f"- {link(t)}" for t in p["topics"]]
     lines += [f"- {link(n)}" for n in MODELS.values()]
+    # Dataset graph (brand.py): the feature classes of this part per model
+    lines += [f"- {link(f'BMW/{code} VFC 1')}: feature classes in the {code} feedback" for code in feedback.SERIES
+              if any(c["components"].get(pid, {}).get("comments") for (s, m), c in scores.items() if s == code and m == "ALL")]
     lines += ["", "## Activity", f"- {today}: created from Dataset/ (feedback) and outputs/markdown/options",
               "", "## Key facts", "",
               "### Customer feedback heat map",
@@ -303,6 +306,8 @@ def main() -> int:
         write_graph()
     elif args.command == "notes":
         write_notes(vault, args.refresh)
+        import brand  # Dataset graph: Brand -> Model -> Country, ID, Engine, VFC 1-3, Source, Sales, Feedback
+        brand.write(vault, args.refresh)
     else:
         last = None
         while True:
