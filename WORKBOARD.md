@@ -11,7 +11,7 @@ shared branch); update it as described in `CLAUDE.md` on `main`. Fresh PC: `SETU
 
 | WP | Branch | Owner (person / session) | Status | Plan | PR | Now doing | Blockers |
 |---|---|---|---|---|---|---|---|
-| WP1 Demo content & setup | `feat/ehl-demo-content` | – | open | – | – | – | – |
+| WP1 Demo content & setup | `feat/ehl-demo-content` | Peter (PedroLemonade) / cloud Claude session · 2026-10-10 17:05 | claimed | – | – | setup: team repo + board done, Rowboat `ehl` build running; reading specs | own fork `PedroLemonade/rowboat` not created yet (only needed for Rowboat changes) |
 | WP2 Bridge | `feat/ehl-bridge` | – | open | – | – | – | waits for WP1 link targets (can start with sales-mcp access check) |
 | WP3 Semantic search | `feat/ehl-search` | – | open | – | – | – | – |
 | WP4 Agent chat | `feat/ehl-agent-chat` | – | open | – | – | – | – |
@@ -64,6 +64,7 @@ A claim is active if the row was updated less than 2 h ago.
 | – | – | – | – | – |
 
 ## Log (newest first)
+- 2026-10-10 17:05 – WP1 claimed by Peter (PedroLemonade). Setup via SETUP.md quick path in a cloud Claude session; next: read parent + WP1 spec, then plan and M1 link targets.
 - 2026-10-10 – Team PC setup: `scripts/setup_pc.py` + requirements in `SETUP.md` (PR #3, awaiting merge). Rowboat dev mode verified on the orchestrator PC (Windows). Requirements: **Node 22 LTS or 24.15+** (24.4 crashes `pnpm install`), pnpm 10, Python 3.12, Docker, ~5 GB disk, own LLM API key. `dev:sandbox` broken on Windows → `npm run dev` + `ROWBOAT_WORKDIR`.
 
 - 2026-10-10 – Rowboat changes now via **personal forks**: fork `Flissel/rowboat`, push `ehl/<wp>-<topic>` to your fork, PR into `Flissel/rowboat:ehl` (CLAUDE.md + SETUP.md updated, PR #2 merged). Open for review: PR #1 (Paolabeiia) – data pipeline plan + deliverables for the BMW challenge.
