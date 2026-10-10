@@ -62,7 +62,7 @@ A claim is active if the row was updated less than 2 h ago.
 
 | # | Change | Requested by | Agreed by | State |
 |---|---|---|---|---|
-| C1 | New vault folder `Vehicle Parts/` (managed_by: ehl-visu): hub, sides, areas and 56 car-part notes linked to Purchase Drivers, Topics, Projects; data tables editable in Rowboat, read by Torque Concept 3D (PR #7) | yunes-mahan | – | proposed |
+| C1 | New vault folders `Vehicle Parts/` and `BMW/` (Dataset graph: brand -> model -> Country, ID, Engine, VFC 1-3, Source, Sales, Feedback; managed_by: ehl-visu): hub, sides, areas and 56 car-part notes linked to Purchase Drivers, Topics, Projects; data tables editable in Rowboat, read by Torque Concept 3D (PR #7) | yunes-mahan | – | proposed |
 
 ## Log (newest first)
 - 2026-10-10 21:00: yunes-mahan: PR #7 now reads the 3D car's data from Rowboat (`Vehicle Parts/` notes, fixed links in `visu/graph.json`, `demo/visu/vault.py sync --watch`); contract change request C1 for the new folder.
