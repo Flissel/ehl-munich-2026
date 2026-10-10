@@ -34,6 +34,7 @@ A claim is active if the row was updated less than 2 h ago.
 | Qdrant | `127.0.0.1:6333`, collection `ehl_notes` | frozen |
 | MCP servers | `ehl-search` (WP3), `ehl-agents` (WP4), stdio | frozen |
 | Products in the graph | The machines from `Dataset/`: F70, G60, G68, G70 (test data; replaces invented P1–P3, spec D9) | frozen |
+| PC roles (spec D11) | Every team member runs Rowboat Desktop locally: `demo/install.ps1` (repo notes + `ehl-search`) and `bridge --fake` (fake companies). Demo PC only: `install.ps1 -Demo` (+ `ehl-agents`, bridge on real sources). Real company notes never in git | frozen |
 | Link targets (exact note names for products, roadmaps, topics, team) | – | **pending WP1 (M1)** |
 
 ## Handoffs
@@ -43,6 +44,8 @@ A claim is active if the row was updated less than 2 h ago.
 | WP1 → WP2 | Exact link-target names + product keyword list (for F70/G60/G68/G70) | open |
 | WP3 → WP1 | `mcp.json` entry for `ehl-search` | open |
 | WP4 → WP1 | `mcp.json` entry for `ehl-agents` | open |
+| WP2 → all | `bridge/fixtures/` fake companies + `bridge --fake` (needed on every team PC – deliver early) | open |
+| WP1 → all | `demo/install.ps1` + `demo/SETUP.md` for team PCs | open |
 
 ## Open questions
 
@@ -58,5 +61,6 @@ A claim is active if the row was updated less than 2 h ago.
 
 ## Log (newest first)
 
+- 2026-10-10 – Decided (spec D11): everyone runs Rowboat on their own PC with repo notes + fake companies + local search; Sales/Marketing agents and real data only on the demo PC. WP1/WP2 specs updated.
 - 2026-10-10 – Q1 decided: `Dataset/` is the test data; products = F70, G60, G68, G70 (spec D9 updated on `feat/rowboat-ehl-space` and in the WP1 spec).
 - 2026-10-10 – board created; WP specs on their branches; all WPs open.
