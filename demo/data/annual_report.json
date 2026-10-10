@@ -1,0 +1,90 @@
+{
+  "_about": "Public BMW Group figures (BMW Group Report 2025, sales releases 2025 and 2026, Neue Klasse and connected car pages). Each fact carries its source. Where sources differ, the press release value is used and the difference is noted.",
+  "sources": {
+    "S1": "https://www.press.bmwgroup.com/global/article/detail/T0454859EN/bmw-group-vehicle-sales-grew-in-2025-",
+    "S3": "https://www.press.bmwgroup.com/global/article/detail/T0456175EN/stable-group-earnings-thanks-to-consistent-strategy:-bmw-group-on-track",
+    "S4": "https://www.bmwgroup.com/en/report/2025/downloads/BMW-Group-Management-Report-2025-en.pdf",
+    "S5": "https://www.bmwgroup.com/en/report/2025/downloads/BMW-Group-Report-2025-en.pdf",
+    "S7": "https://www.bmwblog.com/2026/03/12/bmw-global-sales-2025-how-every-model-series-stacked-up/",
+    "S8": "https://www.bmwblog.com/2026/07/30/bmw-global-sales-breakdown-h1-2026/",
+    "S10": "https://www.press.bmwgroup.com/global/article/detail/T0459223EN/",
+    "S11": "https://www.press.bmwgroup.com/global/article/detail/T0459738EN",
+    "S13": "https://www.press.bmwgroup.com/global/article/detail/T0460314EN",
+    "S15": "https://www.press.bmwgroup.com/global/article/detail/T0461229EN",
+    "S16": "https://www.bmwgroup.com/en/company/neue-klasse.html",
+    "S17": "https://www.press.bmwgroup.com/global/article/detail/T0454649EN",
+    "S18": "https://www.electrive.com/2025/09/17/bmw-to-start-ix3-series-production-in-debrecen-in-october",
+    "S22": "https://cnevpost.com/2026/08/21/bmw-pre-sales-china-only-long-wheelbase-neue-klasse-ix3/",
+    "S23": "https://electrive.com/2026/08/06/bmw-i3-series-production-launches-in-munich",
+    "S24": "https://www.bmwgroup.com/en/innovation/connected-car.html",
+    "S25": "https://www.press.bmwgroup.com/global/article/detail/T0445455EN"
+  },
+  "group": [
+    ["BMW Group deliveries 2025: 2,463,715 (+0.5 %); BMW brand 2,169,761 (-1.4 %), MINI 288,290 (+17.7 %)", "S1"],
+    ["Revenues 2025: EUR 133,453 m (-6.3 %); Automotive EBIT margin 5.3 % (2024: 6.3 %); outlook 2026: 4 to 6 %", "S3"],
+    ["R&D expenditure 2025: EUR 8,319 m, R&D ratio 6.2 %; capex EUR 7,237 m", "S3"],
+    ["H1 2026 deliveries: 1,156,742 (-4.2 %); BMW brand 1,004,681 (-6.2 %)", "S10"]
+  ],
+  "markets": {
+    "EU": [
+      ["Europe 2025: 1,016,360 BMW Group deliveries (+7.3 %), Germany 290,742 (+8.7 %)", "S1"],
+      ["Europe 2025: BEV about 25 % of sales, BEV and PHEV together over 40 %, BEV volume +28.2 %", "S1"],
+      ["Europe H1 2026: 496,651 deliveries (+5.4 %)", "S10"],
+      ["Europe H1 2026: BEV share about 28 %", "S13"],
+      ["Q2 2026: almost one in three BMW Group vehicles sold in Europe was all electric", "S11"]
+    ],
+    "CN": [
+      ["China 2025: 625,527 BMW Group deliveries (-12.5 %)", "S1"],
+      ["China H1 2026: 261,773 deliveries (-20.4 %)", "S10"],
+      ["Long wheelbase Neue Klasse iX3 only for China: pre-sale from 21 Aug 2026, from RMB 269,900, over 900 km CLTC, deliveries from November", "S22"],
+      ["China version of BMW Operating System X is about 70 % locally developed; the China iX3 uses Alibaba and DeepSeek language models", "S5"]
+    ],
+    "US": [
+      ["USA 2025: 417,638 BMW Group deliveries (+5.0 %); Americas 508,221 (the Group Report states over 419,000 for the USA)", "S1"],
+      ["USA H1 2026: 200,661 deliveries (+3.9 %), Q2 2026 +11.9 %", "S10"]
+    ],
+    "RoW": [
+      ["Asia 2025: 871,550 BMW Group deliveries (-9.3 %), of which about 246,000 outside China (calculated: Asia minus China)", "S1"]
+    ]
+  },
+  "models": {
+    "F70": [["BMW 1 and 2 Series 2025: 214,175 deliveries (+8 %), secondary source", "S7"]],
+    "G60": [["BMW 5 and 6 Series 2025: 299,582 deliveries (+19.5 %), secondary source", "S7"]],
+    "G68": [["Long wheelbase models are China specific; the Neue Klasse iX3 follows the same pattern with a China only long wheelbase version", "S22"]],
+    "G70": [["BMW 7 and 8 Series H1 2026: -20.6 % year on year, secondary source", "S8"]]
+  },
+  "trends": {
+    "Trend Electrification": {
+      "summary": "BEV demand grows in Europe while China falls; the next generation sets new charging and range benchmarks.",
+      "facts": [
+        ["BEV deliveries 2025: 442,072 (+3.6 %), about 18 % of BMW Group sales; BEV and PHEV 642,087, 26 %", "S1"],
+        ["Q2 2026 BEV share 19.8 % (116,807, +5.2 %); H1 2026 BEV 204,295 (-7.4 %)", "S10"],
+        ["Europe: BEV about 25 % of 2025 sales and about 28 % in H1 2026", "S13"]
+      ],
+      "links": ["Topics/Range and charging", "Topics/Market Europe", "Topics/Market China", "Projects/G60", "Projects/G70"]
+    },
+    "Trend Neue Klasse": {
+      "summary": "BMW's next vehicle architecture: 6th generation eDrive, 800 V, new operating system. It is the technical baseline every successor is measured against.",
+      "facts": [
+        ["Gen6 eDrive with 800 V and cylindrical cells with 20 % more energy density", "S16"],
+        ["iX3 50 xDrive: 805 km WLTP, 108.7 kWh usable, up to 400 kW DC, 10 to 80 % in 21 min, 372 km added in 10 min", "S17"],
+        ["Four central computers (superbrains): driving dynamics, basic functions, infotainment, automated driving", "S5"],
+        ["Panoramic iDrive on BMW Operating System X (AOSP based)", "S4"],
+        ["40 new models and model updates with Neue Klasse technology by 2027", "S5"],
+        ["Over 100,000 iX3 orders in Europe", "S15"],
+        ["BMW i3 (Neue Klasse sedan) in series production in Munich since 6 Aug 2026", "S23"]
+      ],
+      "links": ["Topics/Range and charging", "Topics/Infotainment and operation", "Topics/Connectivity and digital services", "Topics/Market China", "Projects/G60 Roadmap", "Projects/F70 Roadmap", "Projects/G70 Roadmap"]
+    },
+    "Trend Software and connected car": {
+      "summary": "Cars are updated over the air and the assistant moves to large language models; digital experience becomes a purchase reason.",
+      "facts": [
+        ["Over 22 million connected BMW vehicles", "S24"],
+        ["My BMW and MINI apps: over 13 million users (2024)", "S24"],
+        ["Over 10 million Remote Software Upgrades installed by end of September 2024", "S25"],
+        ["Intelligent Personal Assistant with Alexa+ (large language model) in Germany and the USA by H2 2026 at the latest; ConnectedDrive Store with over 85 apps", "S17"]
+      ],
+      "links": ["Topics/Connectivity and digital services", "Topics/Infotainment and operation", "Topics/Market USA", "Topics/Market China"]
+    }
+  }
+}
