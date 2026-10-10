@@ -1,0 +1,1547 @@
+<title>EHL Pitch Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column, sections in pitch order, a type-plate badge per derivative, charts on a quiet surface. */
+:root {
+  --bg: #f3f5f7; --surface: #fdfdfc; --ink: #10161d; --ink-2: #46515c; --muted: #6f7a85;
+  --line: #dfe4e9; --line-2: #c3ccd5; --accent: #1c5cab; --accent-soft: #e3edf9;
+  --ph: #8a5100; --ph-bg: #fff3dc; --ph-line: #d68a00;
+  --c1: #2a78d6; --c2: #eb6834; --c3: #1baf7a; --c4: #eda100; --c5: #e87ba4; --c6: #008300; --neutral: #b9b8b0;
+  --y1: #86b6ef; --y2: #2a78d6; --y3: #104281;
+  --s0: #cde2fb; --s1: #9ec5f4; --s2: #6da7ec; --s3: #3987e5; --s4: #256abf; --s5: #184f95; --s6: #0d366b;
+  --s-ink-lo: #10161d; --s-ink-hi: #ffffff;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1115; --surface: #151a1f; --ink: #e8ecef; --ink-2: #b3bcc5; --muted: #8893a0;
+  --line: #252d35; --line-2: #3a4652; --accent: #6da7ec; --accent-soft: #17283b;
+  --ph: #f2b54a; --ph-bg: #2b2110; --ph-line: #c98500;
+  --c1: #3987e5; --c2: #d95926; --c3: #199e70; --c4: #c98500; --c5: #d55181; --c6: #008300; --neutral: #5d5c57;
+  --y1: #184f95; --y2: #3987e5; --y3: #9ec5f4;
+  --s0: #1a2633; --s1: #184f95; --s2: #1c5cab; --s3: #2a78d6; --s4: #5598e7; --s5: #86b6ef; --s6: #b7d3f6;
+  --s-ink-lo: #e8ecef; --s-ink-hi: #0d1115; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0d1115; --surface: #151a1f; --ink: #e8ecef; --ink-2: #b3bcc5; --muted: #8893a0;
+  --line: #252d35; --line-2: #3a4652; --accent: #6da7ec; --accent-soft: #17283b;
+  --ph: #f2b54a; --ph-bg: #2b2110; --ph-line: #c98500;
+  --c1: #3987e5; --c2: #d95926; --c3: #199e70; --c4: #c98500; --c5: #d55181; --c6: #008300; --neutral: #5d5c57;
+  --y1: #184f95; --y2: #3987e5; --y3: #9ec5f4;
+  --s0: #1a2633; --s1: #184f95; --s2: #1c5cab; --s3: #2a78d6; --s4: #5598e7; --s5: #86b6ef; --s6: #b7d3f6;
+  --s-ink-lo: #e8ecef; --s-ink-hi: #0d1115; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.05; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.6rem, 7vw, 4.4rem); letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.8rem, 4vw, 2.4rem); }
+h3 { font-size: 1.25rem; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.eyebrow { font: 600 0.75rem/1.2 var(--body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--ink-2); font-size: 1.05rem; }
+.src { font-size: 0.8rem; color: var(--muted); }
+.mono { font-family: var(--mono); font-size: 0.85em; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* header */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.bar-in { display: flex; align-items: center; gap: 16px; padding-block: 10px; }
+.brand { font: 600 1.1rem/1 var(--display); letter-spacing: 0.02em; white-space: nowrap; }
+.bar nav { display: flex; gap: 4px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: none; }
+.bar nav a { color: var(--ink-2); text-decoration: none; font-size: 0.85rem; padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
+.bar nav a:hover { background: var(--accent-soft); color: var(--ink); }
+#phToggle { font: 600 0.8rem/1 var(--body); color: var(--ph); background: var(--ph-bg); border: 1px dashed var(--ph-line); border-radius: 999px; padding: 7px 12px; cursor: pointer; white-space: nowrap; }
+#phToggle[aria-pressed="false"] { color: var(--muted); background: transparent; border-color: var(--line-2); }
+
+main > section { padding-block: 56px; border-bottom: 1px solid var(--line); display: grid; gap: 24px; }
+main > section:last-of-type { border-bottom: 0; }
+.head { display: grid; gap: 8px; }
+
+/* placeholders */
+span.ph, div.ph { color: var(--ph); background: var(--ph-bg); border: 1px dashed var(--ph-line); border-radius: 4px; padding: 0 0.3em; font-style: italic; font-family: var(--body); font-weight: 500; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+h1 span.ph { font-family: var(--display); font-weight: 600; font-style: normal; padding: 0 0.15em; }
+.quiet span.ph, .quiet div.ph { background: transparent; border-color: transparent; color: var(--muted); }
+.quiet .phn path, .quiet .phn rect, .quiet .phn circle { stroke: var(--line-2); }
+.flash { animation: flash 1.2s ease-out 1; }
+@keyframes flash { 0% { box-shadow: 0 0 0 6px var(--ph-line); } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+/* pitch */
+#pitch { padding-block: 64px 48px; }
+.claim { font-size: clamp(1.15rem, 2.4vw, 1.45rem); line-height: 1.4; max-width: 46ch; }
+.kpis { display: flex; flex-wrap: wrap; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.kpi { flex: 1 1 170px; background: var(--surface); padding: 16px; display: grid; gap: 4px; align-content: start; }
+.kpi b { font: 600 2rem/1 var(--display); }
+.kpi span { font-size: 0.82rem; color: var(--ink-2); }
+
+/* product plates */
+.plates { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.plate { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.plate-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.code { font: 700 1.6rem/1 var(--mono); letter-spacing: 0.04em; border: 2px solid var(--ink); border-radius: 4px; padding: 3px 7px 1px; }
+.model { color: var(--ink-2); font-size: 0.9rem; }
+.plate dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-size: 0.85rem; }
+.plate dt { color: var(--muted); }
+.plate dd { margin: 0; min-width: 0; }
+.stack { display: flex; gap: 2px; height: 10px; }
+.stack i { display: block; height: 100%; min-width: 2px; }
+.stack i:first-child { border-radius: 4px 0 0 4px; } .stack i:last-child { border-radius: 0 4px 4px 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.8rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+/* charts */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.multiples { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart text { fill: var(--muted); font: 11px var(--body); font-variant-numeric: tabular-nums; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .base { stroke: var(--line-2); stroke-width: 1; }
+.hbars { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr) auto; gap: 6px 10px; align-items: center; font-size: 0.82rem; }
+.hbars .lab { color: var(--ink-2); overflow-wrap: anywhere; }
+.hbars .track { height: 10px; }
+.hbars .fill { height: 100%; border-radius: 0 4px 4px 0; background: var(--c1); }
+.hbars .val { font-variant-numeric: tabular-nums; text-align: right; color: var(--ink); }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+.panel.scroll table { min-width: 760px; }
+th { text-align: left; font-weight: 600; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px; border-bottom: 1px solid var(--line-2); white-space: nowrap; }
+td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.heat td.cell { text-align: center; font-variant-numeric: tabular-nums; min-width: 64px; border: 2px solid var(--surface); }
+.heat td.item { color: var(--ink-2); min-width: 200px; }
+.btn { font: 600 0.82rem/1 var(--body); color: var(--accent); background: transparent; border: 1px solid var(--line-2); border-radius: 6px; padding: 8px 12px; cursor: pointer; justify-self: start; }
+.btn:hover { background: var(--accent-soft); }
+
+/* workflow */
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; counter-reset: s; }
+.flow li { counter-increment: s; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 6px; align-content: start; }
+.flow li::before { content: counter(s); font: 600 0.8rem/1 var(--mono); color: var(--muted); }
+.flow li.human { border-color: var(--c2); box-shadow: inset 0 0 0 1px var(--c2); }
+.who { justify-self: start; font: 600 0.7rem/1 var(--body); letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 7px; border-radius: 999px; border: 1px solid currentColor; }
+.who.ai { color: var(--c1); } .who.system { color: var(--ink-2); } .who.human { color: var(--c2); }
+
+/* requirements and audit */
+.req tbody tr.main { cursor: pointer; }
+.req tbody tr.main:hover td { background: var(--accent-soft); }
+.req tr.detail td { background: var(--bg); }
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 20px; padding: 6px 0; }
+.detail-grid div { display: grid; gap: 2px; }
+.detail-grid b { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.status { font: 600 0.72rem/1 var(--body); padding: 4px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.note { font-size: 0.78rem; color: var(--muted); display: block; margin-top: 2px; }
+tr.example td { color: var(--muted); }
+
+/* demo */
+.steps { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; align-content: start; }
+.step-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.shot { aspect-ratio: 16 / 9; max-width: 100%; display: grid; place-items: center; text-align: center; padding: 12px; font-size: 0.85rem; }
+div.shot.ph { border-radius: 8px; }
+#finale > .shot, #finale > .shot-img { max-width: 720px; width: 100%; }
+.shot-img { width: 100%; border-radius: 8px; border: 1px solid var(--line); }
+.prompt { font-family: var(--mono); font-size: 0.82rem; background: var(--bg); border-left: 3px solid var(--accent); padding: 8px 10px; border-radius: 0 6px 6px 0; }
+.fallback { font-size: 0.8rem; color: var(--ink-2); }
+
+/* finale */
+#finale h2 { font-size: clamp(2.2rem, 5vw, 3.2rem); }
+.graph-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; overflow-x: auto; }
+.graph-wrap svg { width: 100%; min-width: 640px; height: auto; display: block; }
+.graph-wrap .edge { stroke: var(--line-2); stroke-width: 1.2; }
+.graph-wrap .lbl { font: 11px var(--body); fill: var(--ink-2); }
+.graph-wrap .phn .lbl { fill: var(--ph); font-style: italic; }
+.graph-wrap .node { stroke: var(--surface); stroke-width: 2; }
+.graph-wrap .phn .node { fill: var(--ph-bg); stroke: var(--ph-line); stroke-dasharray: 3 2; stroke-width: 1.5; }
+.closing { display: grid; gap: 12px; font-size: clamp(1.2rem, 2.6vw, 1.6rem); line-height: 1.35; font-family: var(--display); font-weight: 500; }
+.open-group summary { cursor: pointer; font-weight: 600; padding-block: 6px; }
+.open-group summary b { color: var(--ph); }
+.open-list { columns: 2 280px; column-gap: 24px; padding-left: 18px; margin: 0; font-size: 0.82rem; }
+.open-list li { break-inside: avoid; margin-bottom: 6px; }
+.open-list button { all: unset; cursor: pointer; color: var(--ph); text-decoration: underline dotted; }
+.open-list .mono { color: var(--muted); }
+footer { padding-block: 32px 64px; }
+
+#tip { position: fixed; z-index: 20; max-width: 300px; background: var(--ink); color: var(--bg); font-size: 0.78rem; line-height: 1.4; padding: 6px 9px; border-radius: 6px; pointer-events: none; }
+@media (max-width: 640px) { .brand { display: none; } main > section { padding-block: 40px; } }
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <span class="brand" id="brand">EHL 2026</span>
+    <nav aria-label="Sections">
+      <a href="#pitch">Pitch</a><a href="#data">Data</a><a href="#voice">Customer voice</a><a href="#workflow">Workflow</a>
+      <a href="#requirements">Requirements</a><a href="#audit">Audit trail</a><a href="#demo">Live demo</a><a href="#finale">Finale</a>
+    </nav>
+    <button id="phToggle" type="button" aria-pressed="true" title="Mark or quiet the placeholders">Placeholders <b id="phCount">0</b></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="pitch"></section>
+  <section id="data"></section>
+  <section id="voice"></section>
+  <section id="workflow"></section>
+  <section id="requirements"></section>
+  <section id="audit"></section>
+  <section id="demo"></section>
+  <section id="finale"></section>
+</main>
+<footer class="wrap" id="open"></footer>
+<div id="tip" role="tooltip" hidden></div>
+
+<!-- REAL DATA: generated by demo/showcase/fill_data.py from Dataset/. Do not edit by hand. -->
+<script id="data-real" type="application/json">
+{
+ "generated": "2026-10-10",
+ "source": "Dataset/ (BMW hackathon files) and demo/link-targets.json",
+ "kpis": {
+  "feedback_rows": 13771,
+  "unique_comments": 10121,
+  "derivatives": 4,
+  "study_cells": 185,
+  "us_study_items": 103,
+  "volume_2030": 486000
+ },
+ "products": [
+  {
+   "code": "F70",
+   "model": "BMW 1 Series",
+   "sales_sheet": "F70",
+   "feedback": {
+    "rows": 4076,
+    "unique": 2128,
+    "types": {
+     "likes": 1168,
+     "untyped": 300,
+     "difficult": 276,
+     "defect": 238,
+     "wants": 146
+    },
+    "markets": {
+     "EU": 1433,
+     "RoW": 695
+    },
+    "engines": {
+     "ICE": 2128
+    },
+    "signals": [
+     {
+      "kind": "pain",
+      "category": "Touch screen, operation",
+      "count": 109,
+      "market": "EU",
+      "defects": 34
+     },
+     {
+      "kind": "pain",
+      "category": "Drivetrain",
+      "count": 99,
+      "market": "EU",
+      "defects": 20
+     },
+     {
+      "kind": "pain",
+      "category": "ConnectedDrive and Infotainment, overall technology",
+      "count": 96,
+      "market": "EU",
+      "defects": 42
+     },
+     {
+      "kind": "pain",
+      "category": "Owner's Manual",
+      "count": 44,
+      "market": "EU",
+      "defects": 0
+     },
+     {
+      "kind": "pain",
+      "category": "General enquiry: customer feedback",
+      "count": 40,
+      "market": "EU",
+      "defects": 0
+     },
+     {
+      "kind": "pain",
+      "category": "Seats",
+      "count": 40,
+      "market": "EU",
+      "defects": 25
+     },
+     {
+      "kind": "want",
+      "category": "Body equipment, overall technology",
+      "count": 32,
+      "market": "EU",
+      "defects": 0
+     },
+     {
+      "kind": "want",
+      "category": "Handling / Riding",
+      "count": 21,
+      "market": "RoW",
+      "defects": 0
+     },
+     {
+      "kind": "want",
+      "category": "Owner's Manual",
+      "count": 19,
+      "market": "EU",
+      "defects": 0
+     }
+    ]
+   },
+   "option_list": true,
+   "satisfaction": [
+    {
+     "market": "EU",
+     "value": 8.46
+    }
+   ]
+  },
+  {
+   "code": "G60",
+   "model": "BMW 5 Series",
+   "sales_sheet": "G60_G68",
+   "feedback": {
+    "rows": 5005,
+    "unique": 4000,
+    "types": {
+     "likes": 1711,
+     "difficult": 1117,
+     "wants": 471,
+     "untyped": 446,
+     "defect": 255
+    },
+    "markets": {
+     "US": 3610,
+     "RoW": 279,
+     "EU": 111
+    },
+    "engines": {
+     "ICE": 2259,
+     "BEVE": 1363,
+     "PHEV": 378
+    },
+    "signals": [
+     {
+      "kind": "pain",
+      "category": "Body equipment, overall technology",
+      "count": 60,
+      "market": "US",
+      "defects": 0
+     },
+     {
+      "kind": "pain",
+      "category": "Electric Range",
+      "count": 52,
+      "market": "US",
+      "defects": 0
+     },
+     {
+      "kind": "pain",
+      "category": "Drivetrain",
+      "count": 51,
+      "market": "US",
+      "defects": 15
+     },
+     {
+      "kind": "pain",
+      "category": "Seats",
+      "count": 42,
+      "market": "US",
+      "defects": 13
+     },
+     {
+      "kind": "pain",
+      "category": "non-contact trunk lid opening",
+      "count": 40,
+      "market": "US",
+      "defects": 1
+     },
+     {
+      "kind": "pain",
+      "category": "Apple CarPlay",
+      "count": 33,
+      "market": "US",
+      "defects": 11
+     },
+     {
+      "kind": "want",
+      "category": "Body equipment, overall technology",
+      "count": 25,
+      "market": "US",
+      "defects": 0
+     },
+     {
+      "kind": "want",
+      "category": "Drivetrain",
+      "count": 15,
+      "market": "US",
+      "defects": 0
+     },
+     {
+      "kind": "want",
+      "category": "Interior design",
+      "count": 15,
+      "market": "US",
+      "defects": 0
+     }
+    ]
+   },
+   "option_list": true,
+   "satisfaction": [
+    {
+     "market": "EU",
+     "value": 8.32
+    }
+   ]
+  },
+  {
+   "code": "G68",
+   "model": "BMW 5 Series LWB",
+   "sales_sheet": "G60_G68",
+   "feedback": null,
+   "option_list": false,
+   "satisfaction": [
+    {
+     "market": "CN",
+     "value": 8.77
+    }
+   ]
+  },
+  {
+   "code": "G70",
+   "model": "BMW 7 Series",
+   "sales_sheet": "G70",
+   "feedback": {
+    "rows": 4690,
+    "unique": 3993,
+    "types": {
+     "likes": 1735,
+     "difficult": 1010,
+     "wants": 454,
+     "untyped": 452,
+     "defect": 342
+    },
+    "markets": {
+     "US": 3785,
+     "RoW": 189,
+     "EU": 19
+    },
+    "engines": {
+     "ICE": 2565,
+     "BEVE": 1128,
+     "PHEV": 300
+    },
+    "signals": [
+     {
+      "kind": "pain",
+      "category": "Body equipment, overall technology",
+      "count": 52,
+      "market": "US",
+      "defects": 0
+     },
+     {
+      "kind": "pain",
+      "category": "Drivetrain",
+      "count": 43,
+      "market": "US",
+      "defects": 21
+     },
+     {
+      "kind": "pain",
+      "category": "Vehicle, climatization",
+      "count": 38,
+      "market": "US",
+      "defects": 6
+     },
+     {
+      "kind": "pain",
+      "category": "Exterior",
+      "count": 37,
+      "market": "US",
+      "defects": 28
+     },
+     {
+      "kind": "pain",
+      "category": "ConnectedDrive and Infotainment, overall technology",
+      "count": 36,
+      "market": "US",
+      "defects": 24
+     },
+     {
+      "kind": "pain",
+      "category": "Personal eSIM",
+      "count": 36,
+      "market": "US",
+      "defects": 11
+     },
+     {
+      "kind": "want",
+      "category": "Wheels / tires",
+      "count": 19,
+      "market": "US",
+      "defects": 0
+     },
+     {
+      "kind": "want",
+      "category": "Exterior design",
+      "count": 17,
+      "market": "US",
+      "defects": 0
+     },
+     {
+      "kind": "want",
+      "category": "Body equipment, overall technology",
+      "count": 15,
+      "market": "US",
+      "defects": 0
+     }
+    ]
+   },
+   "option_list": true,
+   "satisfaction": [
+    {
+     "market": "CN",
+     "value": 9.64
+    },
+    {
+     "market": "EU",
+     "value": 7.98
+    }
+   ]
+  }
+ ],
+ "volumes": {
+  "years": [
+   2024,
+   2025,
+   2030
+  ],
+  "sheets": {
+   "F70": {
+    "EU": [
+     80000,
+     85000,
+     87000
+    ],
+    "CN": [
+     0,
+     0,
+     0
+    ],
+    "US": [
+     0,
+     0,
+     0
+    ],
+    "RoW": [
+     25000,
+     28000,
+     31000
+    ]
+   },
+   "G60_G68": {
+    "EU": [
+     110000,
+     115000,
+     127000
+    ],
+    "CN": [
+     68000,
+     75000,
+     78000
+    ],
+    "US": [
+     75600,
+     78000,
+     80000
+    ],
+    "RoW": [
+     25000,
+     28000,
+     31000
+    ]
+   },
+   "G70": {
+    "EU": [
+     11000,
+     13000,
+     17000
+    ],
+    "CN": [
+     8000,
+     10000,
+     12000
+    ],
+    "US": [
+     10000,
+     12000,
+     14000
+    ],
+    "RoW": [
+     5000,
+     7000,
+     9000
+    ]
+   }
+  }
+ },
+ "study": {
+  "scale": "Mean satisfaction, 1 to 10",
+  "columns": [
+   {
+    "market": "CN",
+    "product": "G68"
+   },
+   {
+    "market": "CN",
+    "product": "G70"
+   },
+   {
+    "market": "EU",
+    "product": "F70"
+   },
+   {
+    "market": "EU",
+    "product": "G60"
+   },
+   {
+    "market": "EU",
+    "product": "G70"
+   }
+  ],
+  "items": [
+   {
+    "name": "Overall product satisfaction",
+    "values": [
+     8.77,
+     9.64,
+     8.46,
+     8.32,
+     7.98
+    ]
+   },
+   {
+    "name": "Exterior styling",
+    "values": [
+     8.19,
+     8.79,
+     9.01,
+     9.83,
+     8.38
+    ]
+   },
+   {
+    "name": "Interior styling",
+    "values": [
+     8.69,
+     8.57,
+     8.9,
+     8.55,
+     8.92
+    ]
+   },
+   {
+    "name": "Quality of interior and materials used",
+    "values": [
+     8.44,
+     8.43,
+     8.65,
+     7.75,
+     9.11
+    ]
+   },
+   {
+    "name": "Level of equipment",
+    "values": [
+     7.49,
+     9.82,
+     8.26,
+     7.77,
+     9.24
+    ]
+   },
+   {
+    "name": "Safety",
+    "values": [
+     8.17,
+     8.97,
+     9.03,
+     9.15,
+     9.28
+    ]
+   },
+   {
+    "name": "Freedom from faults/ squeaks/ rattles",
+    "values": [
+     8.48,
+     8.44,
+     8.86,
+     8.41,
+     8.61
+    ]
+   },
+   {
+    "name": "Value for money",
+    "values": [
+     7.92,
+     8.29,
+     7.82,
+     7.36,
+     6.47
+    ]
+   },
+   {
+    "name": "Reliability",
+    "values": [
+     8.84,
+     8.22,
+     9.4,
+     9.25,
+     9.67
+    ]
+   },
+   {
+    "name": "All round visibility",
+    "values": [
+     8.7,
+     8.43,
+     8.89,
+     8.64,
+     8.3
+    ]
+   },
+   {
+    "name": "Easy to read and use instruments/ controls/ displays",
+    "values": [
+     8.34,
+     8.43,
+     8.41,
+     8.07,
+     8.19
+    ]
+   },
+   {
+    "name": "Smartphone integration/ connectivity",
+    "values": [
+     8.14,
+     8.43,
+     8.59,
+     8.46,
+     8.36
+    ]
+   },
+   {
+    "name": "Features of information and entertainment system including in-car apps",
+    "values": [
+     8.37,
+     8.21,
+     8.23,
+     8.19,
+     8.29
+    ]
+   },
+   {
+    "name": "Easy to use information and entertainment system including in-car apps",
+    "values": [
+     8.35,
+     8.1,
+     8.16,
+     8.26,
+     7.99
+    ]
+   },
+   {
+    "name": "Integrated navigation system",
+    "values": [
+     8.52,
+     8.18,
+     8.3,
+     8.59,
+     8.82
+    ]
+   },
+   {
+    "name": "Overall seating comfort",
+    "values": [
+     8.67,
+     8.72,
+     8.98,
+     8.81,
+     9.29
+    ]
+   },
+   {
+    "name": "Interior storage for small items",
+    "values": [
+     8.53,
+     8.41,
+     8.1,
+     7.72,
+     7.96
+    ]
+   },
+   {
+    "name": "Acceleration",
+    "values": [
+     8.6,
+     8.83,
+     8.21,
+     8.85,
+     8.94
+    ]
+   },
+   {
+    "name": "Roadholding",
+    "values": [
+     8.92,
+     8.6,
+     8.29,
+     8.15,
+     8.94
+    ]
+   },
+   {
+    "name": "Fuel economy/ energy efficiency",
+    "values": [
+     8.43,
+     8.18,
+     9.3,
+     7.45,
+     7.68
+    ]
+   },
+   {
+    "name": "Braking",
+    "values": [
+     7.38,
+     7.82,
+     8.89,
+     8.25,
+     9.6
+    ]
+   },
+   {
+    "name": "Sportiness",
+    "values": [
+     8.86,
+     8.64,
+     9.34,
+     7.64,
+     6.97
+    ]
+   },
+   {
+    "name": "Prestige/ manufacturer reputation",
+    "values": [
+     8.9,
+     9.17,
+     9.21,
+     8.95,
+     9.23
+    ]
+   },
+   {
+    "name": "Manoeuvrability",
+    "values": [
+     8.48,
+     8.38,
+     8.87,
+     8.73,
+     8.97
+    ]
+   },
+   {
+    "name": "Quality of ride",
+    "values": [
+     8.45,
+     8.62,
+     9.2,
+     9.95,
+     9.52
+    ]
+   },
+   {
+    "name": "Front interior roominess",
+    "values": [
+     7.77,
+     7.69,
+     9.2,
+     8.88,
+     9.69
+    ]
+   },
+   {
+    "name": "Rear interior roominess",
+    "values": [
+     8.71,
+     7.52,
+     8.59,
+     7.46,
+     9.41
+    ]
+   },
+   {
+    "name": "Ease of loading/ unloading luggage",
+    "values": [
+     7.25,
+     7.46,
+     7.5,
+     7.24,
+     8.67
+    ]
+   },
+   {
+    "name": "Luggage capacity",
+    "values": [
+     8.73,
+     7.66,
+     7.07,
+     7.54,
+     7.41
+    ]
+   },
+   {
+    "name": "Ease of entry into and out of car",
+    "values": [
+     8.51,
+     8.71,
+     8.76,
+     7.91,
+     9.25
+    ]
+   },
+   {
+    "name": "Environm. friendliness",
+    "values": [
+     7.49,
+     7.44,
+     7.55,
+     7.59,
+     7.51
+    ]
+   },
+   {
+    "name": "Heating/ ventilation/ air conditioning",
+    "values": [
+     7.58,
+     8.82,
+     7.3,
+     7.47,
+     8.8
+    ]
+   },
+   {
+    "name": "Overall build quality",
+    "values": [
+     8.81,
+     9.36,
+     7.95,
+     7.67,
+     8.78
+    ]
+   },
+   {
+    "name": "Quietness when driving",
+    "values": [
+     7.52,
+     9.39,
+     7.62,
+     7.79,
+     9.78
+    ]
+   },
+   {
+    "name": "Driving position",
+    "values": [
+     8.69,
+     8.8,
+     9.18,
+     9.17,
+     9.13
+    ]
+   },
+   {
+    "name": "Connected services",
+    "values": [
+     7.35,
+     7.32,
+     7.36,
+     7.37,
+     7.86
+    ]
+   },
+   {
+    "name": "Interior versatility",
+    "values": [
+     8.35,
+     8.04,
+     8.57,
+     8.14,
+     8.32
+    ]
+   }
+  ]
+ },
+ "candidates": [
+  {
+   "attribute": "Connected services",
+   "mean": 7.45,
+   "worst": 7.32,
+   "worst_in": {
+    "market": "CN",
+    "product": "G70"
+   }
+  },
+  {
+   "attribute": "Environm. friendliness",
+   "mean": 7.52,
+   "worst": 7.44,
+   "worst_in": {
+    "market": "CN",
+    "product": "G70"
+   }
+  },
+  {
+   "attribute": "Value for money",
+   "mean": 7.57,
+   "worst": 6.47,
+   "worst_in": {
+    "market": "EU",
+    "product": "G70"
+   }
+  },
+  {
+   "attribute": "Ease of loading/ unloading luggage",
+   "mean": 7.62,
+   "worst": 7.24,
+   "worst_in": {
+    "market": "EU",
+    "product": "G60"
+   }
+  },
+  {
+   "attribute": "Luggage capacity",
+   "mean": 7.68,
+   "worst": 7.07,
+   "worst_in": {
+    "market": "EU",
+    "product": "F70"
+   }
+  },
+  {
+   "attribute": "Heating/ ventilation/ air conditioning",
+   "mean": 7.99,
+   "worst": 7.3,
+   "worst_in": {
+    "market": "EU",
+    "product": "F70"
+   }
+  },
+  {
+   "attribute": "Interior storage for small items",
+   "mean": 8.14,
+   "worst": 7.72,
+   "worst_in": {
+    "market": "EU",
+    "product": "G60"
+   }
+  },
+  {
+   "attribute": "Easy to use information and entertainment system including in-car apps",
+   "mean": 8.17,
+   "worst": 7.99,
+   "worst_in": {
+    "market": "EU",
+    "product": "G70"
+   }
+  },
+  {
+   "attribute": "Fuel economy/ energy efficiency",
+   "mean": 8.21,
+   "worst": 7.45,
+   "worst_in": {
+    "market": "EU",
+    "product": "G60"
+   }
+  },
+  {
+   "attribute": "Features of information and entertainment system including in-car apps",
+   "mean": 8.26,
+   "worst": 8.19,
+   "worst_in": {
+    "market": "EU",
+    "product": "G60"
+   }
+  }
+ ],
+ "graph": {
+  "products": [
+   {
+    "id": "Projects/F70",
+    "roadmap": "Projects/F70 Roadmap",
+    "model": "BMW 1 Series"
+   },
+   {
+    "id": "Projects/G60",
+    "roadmap": "Projects/G60 Roadmap",
+    "model": "BMW 5 Series (sedan)"
+   },
+   {
+    "id": "Projects/G68",
+    "roadmap": "Projects/G60 Roadmap",
+    "model": "BMW 5 Series long wheelbase (China)"
+   },
+   {
+    "id": "Projects/G70",
+    "roadmap": "Projects/G70 Roadmap",
+    "model": "BMW 7 Series"
+   }
+  ],
+  "roadmaps": [
+   "Projects/F70 Roadmap",
+   "Projects/G60 Roadmap",
+   "Projects/G70 Roadmap"
+  ],
+  "channels": [
+   "Topics/Newsletter",
+   "Topics/Social Media",
+   "Topics/Email"
+  ],
+  "research": [
+   "Topics/Market Research"
+  ],
+  "team": [
+   "People/Peter (Team)"
+  ],
+  "frozen": "2026-10-10"
+ }
+}
+</script>
+
+<!-- TEAM CONTENT: edit by hand.
+     Any value {"ph": "...", "from": "..."} renders as a marked placeholder. Replace it with a plain string
+     (an image path or URL where "kind" is "image").
+     requirements[]: add title, description, score, priority, evidence, rationale, assumptions, uncertainties;
+       missing fields show as placeholders. "signal" is "pain|<category>" or "want|<category>" from the feedback,
+       "study" is an attribute name from the CN/EU study (both are looked up in the real data).
+     audit[]: remove "example": true from real events.
+     finale.top10: {"<study attribute>": "Must"} fills the priority column of the top 10 chart. -->
+<script id="data-team" type="application/json">
+{
+ "meta": {
+  "product": {"ph": "Product name", "from": "team decision for the pitch"},
+  "claim": {"ph": "One sentence: what a BMW product manager can decide now that was not possible before", "from": "pitch deck, slide 1"},
+  "team": {"ph": "Team name and members who agreed to be named", "from": "WORKBOARD, spec D8"},
+  "challenge": "Derive, justify and prioritise customer requirements for the successor of a BMW model in Europe, China and the USA, three to five years ahead. Evidence and assumptions stay apart, and the product manager makes every decision."
+ },
+ "workflow": [
+  {"step": "Ingest", "what": "Read the sources, assign stable IDs, mask personal data", "who": "ai"},
+  {"step": "Classify", "what": "Classify untagged comments, cluster them and name the clusters", "who": "ai"},
+  {"step": "Link", "what": "Link clusters to customer studies, option lists and competitors", "who": "ai"},
+  {"step": "Draft", "what": "Draft requirement text, evidence level and assumptions as a proposal", "who": "ai"},
+  {"step": "Score", "what": "Compute the score with the current weights; the weights version is logged", "who": "system"},
+  {"step": "Weigh", "what": "Set and adjust weights and effort", "who": "human"},
+  {"step": "Decide", "what": "Approve, reject, edit or challenge every requirement", "who": "human"},
+  {"step": "Re-score and log", "what": "Re-score after edits or new evidence; old and new value, actor and reason go to the audit trail", "who": "system"}
+ ],
+ "requirements": [
+  {"id": "REQ-F70-EU-0001", "product": "F70", "market": "EU", "signal": "pain|Touch screen, operation", "study": "Easy to use information and entertainment system including in-car apps", "status": "proposed"},
+  {"id": "REQ-G60-US-0001", "product": "G60", "market": "US", "signal": "pain|Electric Range", "study": "Fuel economy/ energy efficiency", "status": "proposed"},
+  {"id": "REQ-G60-US-0002", "product": "G60", "market": "US", "signal": "pain|non-contact trunk lid opening", "study": "Ease of loading/ unloading luggage", "status": "proposed"},
+  {"id": "REQ-G70-US-0001", "product": "G70", "market": "US", "signal": "pain|Personal eSIM", "study": "Connected services", "status": "proposed"},
+  {"id": "REQ-G70-EU-0001", "product": "G70", "market": "EU", "signal": null, "study": "Value for money", "status": "proposed"},
+  {"id": "REQ-F70-EU-0002", "product": "F70", "market": "EU", "signal": null, "study": "Luggage capacity", "status": "proposed"}
+ ],
+ "audit": [
+  {"example": true, "event_id": "EVT-000001", "time": "hh:mm", "requirement": "REQ-G60-US-0001", "change_type": "status", "old": "", "new": "proposed", "actor": "ai:drafter@v1", "rationale": "Drafted from the Electric Range signal"},
+  {"example": true, "event_id": "EVT-000002", "time": "hh:mm", "requirement": "REQ-G60-US-0001", "change_type": "score", "old": "", "new": "x.xx", "actor": "system:scorer@weights-v1", "rationale": "First score with the default weights"},
+  {"example": true, "event_id": "EVT-000003", "time": "hh:mm", "requirement": "REQ-G60-US-0001", "change_type": "score", "old": "x.xx", "new": "y.yy", "actor": "user:pm", "rationale": "PM raised the weight of the competitor gap"},
+  {"example": true, "event_id": "EVT-000004", "time": "hh:mm", "requirement": "REQ-G60-US-0001", "change_type": "status", "old": "proposed", "new": "approved", "actor": "user:pm", "rationale": "Feedback and study evidence accepted"}
+ ],
+ "demo": [
+  {"title": "Graph view", "duration": {"ph": "about 20 s", "from": "dress rehearsal"}, "say": "Rowboat is open on the graph: products, roadmaps, channels and companies.", "shot": {"ph": "Screenshot: Rowboat graph before the live step", "from": "dress rehearsal M5", "kind": "image"}},
+  {"title": "Live contact", "duration": "about 1 min", "say": "Create a contact in Sales-Claw. Within about 60 seconds the organization note appears and the graph grows.", "shot": {"ph": "Screenshot: new organization note in the graph", "from": "dress rehearsal M5", "kind": "image"}, "fallback": "Pre-recorded organization note and screenshot"},
+  {"title": "Ask the agent", "duration": "2 to 3 min with the next step", "prompt": "Create a newsletter about the F70 for all interested customers.", "shot": {"ph": "Screenshot: agent at work", "from": "dress rehearsal M5", "kind": "image"}, "fallback": "Name the tools explicitly in the prompt"},
+  {"title": "Result in the graph", "say": "The agent files a Content note linked to F70, Newsletter and the companies. Nothing is sent.", "shot": {"ph": "Screenshot: Content note and the new node", "from": "dress rehearsal M5", "kind": "image"}, "fallback": "Pre-generated draft, triggered in the Sales UI"},
+  {"title": "Requirement question for the jury", "duration": {"ph": "about 30 s", "from": "team decision"}, "prompt": {"ph": "Which three customer requirements for the G60 successor in the USA have the strongest evidence, and where does each come from?", "from": "team decision: links the live demo to the BMW deliverables"}, "shot": {"ph": "Screenshot: answer with linked sources", "from": "dress rehearsal M5", "kind": "image"}}
+ ],
+ "graph": {
+  "organizations": [
+   {"name": {"ph": "Company A", "from": "bridge/fixtures (WP2) or the live vault"}, "product": "Projects/F70", "channel": "Topics/Newsletter"},
+   {"name": {"ph": "Company B", "from": "bridge/fixtures (WP2) or the live vault"}, "product": "Projects/G60", "channel": "Topics/Email"},
+   {"name": {"ph": "Company C", "from": "bridge/fixtures (WP2) or the live vault"}, "product": "Projects/G70", "channel": "Topics/Social Media"}
+  ],
+  "content": {"name": {"ph": "Content/<date> F70 newsletter", "from": "agent result in the live demo"}, "product": "Projects/F70", "channel": "Topics/Newsletter"}
+ },
+ "finale": {
+  "recording": {"ph": "Screenshot or short recording of the Rowboat graph after the live step", "from": "dress rehearsal M5", "kind": "image"},
+  "closing": {"ph": "Closing line: the one result the jury should remember", "from": "pitch deck, last slide"},
+  "ask": {"ph": "Next step we propose to BMW (pilot model, market, data access)", "from": "team decision"},
+  "top10": {}
+ }
+}
+</script>
+
+<script>
+const REAL = JSON.parse(document.getElementById('data-real').textContent || '{}');
+const TEAM = JSON.parse(document.getElementById('data-team').textContent);
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = n => Number(n).toLocaleString('en-US');
+const isPh = x => x == null || x === '' || (typeof x === 'object' && 'ph' in x);
+let phN = 0;
+
+/* A placeholder carries its JSON path and where the real content comes from. */
+function phAttrs(path, from) {
+  return `id="ph-${++phN}" data-ph="${esc(path)}" data-from="${esc(from || '')}" tabindex="0" data-tip="${esc('Placeholder: ' + path + (from ? '. From: ' + from : ''))}"`;
+}
+function v(x, path, hint = 'to be filled', from = '') {
+  if (!isPh(x)) return esc(x);
+  const p = x && x.ph ? x : { ph: hint, from };
+  return `<span class="ph" ${phAttrs(path, p.from)}>${esc(p.ph)}</span>`;
+}
+function shot(x, path) {
+  if (!isPh(x)) return `<img class="shot-img" src="${esc(x)}" alt="" loading="lazy">`;
+  return `<div class="shot ph" ${phAttrs(path, x && x.from)}>${esc((x && x.ph) || 'Screenshot')}</div>`;
+}
+const noReal = what => `<p>${v(null, 'real.' + what, 'Run python demo/showcase/fill_data.py to load the real numbers', 'Dataset/')}</p>`;
+const section = (id, eyebrow, title, lede, body) => {
+  $('#' + id).innerHTML = `<div class="head"><p class="eyebrow">${eyebrow}</p><h2>${title}</h2>${lede ? `<p class="lede">${lede}</p>` : ''}</div>${body}`;
+};
+const product = code => (REAL.products || []).find(p => p.code === code);
+const studyItem = name => REAL.study && REAL.study.items.find(i => i.name === name);
+function studyCells(name, code) {
+  const it = studyItem(name);
+  if (!it) return [];
+  return REAL.study.columns.map((c, i) => ({ ...c, value: it.values[i] })).filter(c => c.product === code);
+}
+function signal(code, key) {
+  if (!key) return null;
+  const [kind, category] = key.split('|');
+  const p = product(code);
+  return p && p.feedback && p.feedback.signals.find(s => s.kind === kind && s.category === category);
+}
+function niceMax(x) { const e = 10 ** Math.floor(Math.log10(x)); return Math.ceil(x / e) * e; }
+function barPath(x, y, w, h, r) {
+  r = Math.min(r, w / 2, h);
+  return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`;
+}
+
+/* 1 Pitch */
+function renderPitch() {
+  const m = TEAM.meta, k = REAL.kpis;
+  const kpis = k ? [
+    [fmt(k.feedback_rows), `feedback rows, ${fmt(k.unique_comments)} unique comments (F70, G60, G70)`],
+    [k.derivatives, 'derivatives: F70, G60, G68, G70'],
+    [fmt(k.study_cells), 'satisfaction scores from the 2025 studies in China and Europe'],
+    [fmt(k.us_study_items), 'items in the 2025 US study (G60, G70)'],
+    [fmt(k.volume_2030), 'units in the 2030 sales plan, all markets'],
+  ].map(([b, s]) => `<div class="kpi"><b class="num">${b}</b><span>${s}</span></div>`).join('') : '';
+  $('#pitch').innerHTML = `<div class="head"><p class="eyebrow">EHL Grand Finale 2026, BMW challenge: AI for Product Decision Making</p>
+    <h1>${v(m.product, 'team.meta.product')}</h1></div>
+    <p class="claim">${v(m.claim, 'team.meta.claim')}</p>
+    <p class="lede">${esc(m.challenge)}</p>
+    ${k ? `<div class="kpis">${kpis}</div><p class="src">Source: Dataset/ (BMW hackathon files), aggregated by fill_data.py on ${esc(REAL.generated)}.</p>` : noReal('kpis')}
+    <p class="src">${v(m.team, 'team.meta.team')}</p>`;
+  if (!isPh(m.product)) $('#brand').textContent = m.product;
+}
+
+/* 2 Data basis */
+const TYPES = [['likes', 'Likes', '--c1'], ['wants', 'Wants', '--c2'], ['difficult', 'Difficult to use', '--c3'], ['defect', 'Defect', '--c4'], ['untyped', 'No type', '--neutral']];
+function renderData() {
+  if (!REAL.products) return section('data', 'Data basis', 'Four derivatives, one dataset', '', noReal('products'));
+  const legend = `<div class="legend">${TYPES.map(([, l, c]) => `<span><i class="sw" style="background:var(${c})"></i>${l}</span>`).join('')}</div>`;
+  const plates = REAL.products.map(p => {
+    const f = p.feedback;
+    const stack = f ? `<div class="stack" role="img" aria-label="Feedback types">${TYPES.map(([key, l, c]) => {
+      const n = f.types[key] || 0;
+      return n ? `<i style="flex:${n};background:var(${c})" data-tip="${esc(`${p.code}: ${l} ${fmt(n)} (${Math.round(n / f.unique * 100)} %)`)}"></i>` : '';
+    }).join('')}</div>` : '';
+    const markets = f ? Object.entries(f.markets).map(([m, n]) => `${m} ${fmt(n)}`).join(', ') : '';
+    const sat = p.satisfaction.map(s => `${s.market} ${s.value.toFixed(2)}`).join(', ');
+    const vol = REAL.volumes.sheets[p.sales_sheet];
+    const tot = i => Object.values(vol).reduce((a, r) => a + r[i], 0);
+    return `<article class="plate"><div class="plate-top"><span class="code">${p.code}</span><span class="model">${esc(p.model)}</span></div>${stack}
+      <dl>
+        <dt>Feedback</dt><dd class="num">${f ? `${fmt(f.unique)} unique of ${fmt(f.rows)} rows` : 'No feedback file in Dataset/'}</dd>
+        ${f ? `<dt>Markets</dt><dd class="num">${markets}</dd>` : ''}
+        <dt>Satisfaction</dt><dd class="num">${sat || 'not in the CN/EU study'} <span class="note">overall mean, 1 to 10, study 2025</span></dd>
+        <dt>Volume</dt><dd class="num">${fmt(tot(1))} (2025) to ${fmt(tot(2))} (2030)${p.sales_sheet.includes('_') ? '<span class="note">sheet shared by G60 and G68</span>' : ''}</dd>
+        <dt>Option list</dt><dd>${p.option_list ? 'PDF in Dataset/' : 'not in Dataset/'}</dd>
+      </dl></article>`;
+  }).join('');
+  section('data', 'Data basis', 'Four derivatives, one dataset',
+    'What the requirements rest on: customer feedback, studies, sales plan and option lists for each derivative. Hover a bar for the numbers.',
+    `${legend}<div class="plates">${plates}</div>
+     <div class="panel"><h3>Sales plan by market</h3>
+      <div class="legend">${REAL.volumes.years.map((y, i) => `<span><i class="sw" style="background:var(--y${i + 1})"></i>${y}</span>`).join('')}</div>
+      <div class="multiples">${volumeCharts()}</div>
+      <p class="src">Source: Dataset/sales_volumes.xlsx. Same scale in every panel. F70 has no volume in China or the USA.</p></div>`);
+}
+function volumeCharts() {
+  const sheets = REAL.volumes.sheets, mk = ['EU', 'CN', 'US', 'RoW'];
+  const max = niceMax(Math.max(...Object.values(sheets).flatMap(s => Object.values(s).flat())));
+  const W = 320, H = 190, L = 44, B = 22, T = 8, ph = H - B - T, gw = (W - L) / mk.length, bw = Math.min(16, gw / 4);
+  const y = val => T + ph - val / max * ph;
+  const names = { F70: 'F70', G60_G68: 'G60 and G68', G70: 'G70' };
+  return Object.entries(sheets).map(([sheet, rows]) => {
+    const ticks = [0, max / 2, max].map(t => `<line class="grid" x1="${L}" x2="${W}" y1="${y(t)}" y2="${y(t)}"/><text x="${L - 6}" y="${y(t) + 4}" text-anchor="end">${t ? fmt(t / 1000) + 'k' : 0}</text>`).join('');
+    const bars = mk.map((m, i) => {
+      const x0 = L + i * gw + (gw - bw * 3 - 4) / 2;
+      const vals = rows[m] || [0, 0, 0];
+      return vals.map((val, j) => {
+        const tip = esc(`${names[sheet]}, ${m}, ${REAL.volumes.years[j]}: ${fmt(val)} units`);
+        const x = x0 + j * (bw + 2);
+        return `<path d="${barPath(x, y(val), bw, Math.max(val / max * ph, 0.01), 4)}" fill="var(--y${j + 1})"/><rect x="${x - 1}" y="${T}" width="${bw + 2}" height="${ph}" fill="transparent" data-tip="${tip}"/>`;
+      }).join('') + `<text x="${L + i * gw + gw / 2}" y="${H - 6}" text-anchor="middle">${m}</text>`;
+    }).join('');
+    return `<figure class="chart" style="margin:0"><figcaption class="src" style="color:var(--ink)">${names[sheet]}</figcaption>
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Sales volumes ${names[sheet]}">${ticks}<line class="base" x1="${L}" x2="${W}" y1="${y(0)}" y2="${y(0)}"/>${bars}</svg></figure>`;
+  }).join('');
+}
+
+/* 3 Customer voice */
+let heatAll = false;
+function renderVoice() {
+  if (!REAL.study) return section('voice', 'Customer voice', 'Where satisfaction is lowest', '', noReal('study'));
+  const cols = REAL.study.columns;
+  const items = REAL.study.items.filter(i => !i.name.startsWith('Overall product'))
+    .map(i => ({ ...i, avg: i.values.reduce((a, b) => a + b, 0) / i.values.length })).sort((a, b) => a.avg - b.avg);
+  const all = items.flatMap(i => i.values), lo = Math.min(...all), hi = Math.max(...all);
+  const step = val => Math.min(6, Math.floor((hi - val) / (hi - lo) * 7));
+  const rows = (heatAll ? items : items.slice(0, 12)).map(i => `<tr><td class="item">${esc(i.name)}</td>${i.values.map((val, c) => {
+    const s = step(val);
+    return `<td class="cell" style="background:var(--s${s});color:var(${s >= 3 ? '--s-ink-hi' : '--s-ink-lo'})" data-tip="${esc(`${i.name}: ${cols[c].product} in ${cols[c].market}, mean ${val.toFixed(2)}`)}">${val.toFixed(1)}</td>`;
+  }).join('')}</tr>`).join('');
+  const heat = `<div class="panel"><h3>Satisfaction by attribute, lowest first</h3>
+    <div class="legend"><span>Darker cell = lower satisfaction</span><span class="num">range ${lo.toFixed(1)} to ${hi.toFixed(1)} on a 10 point scale</span></div>
+    <div class="scroll"><table class="heat"><thead><tr><th>Attribute</th>${cols.map(c => `<th>${c.product} ${c.market}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
+    <button class="btn" id="heatToggle" type="button">${heatAll ? 'Show the 12 lowest' : `Show all ${items.length} attributes`}</button>
+    <p class="src">Source: Dataset/F70_G60_G68_G70_customer_studies.xlsx, sheet CN_EU_2025. G60 is covered in Europe only, G68 in China only.</p></div>`;
+  const prods = REAL.products.filter(p => p.feedback);
+  const max = Math.max(...prods.flatMap(p => p.feedback.signals.map(s => s.count)));
+  const pains = prods.map(p => {
+    const sig = p.feedback.signals;
+    const bars = sig.filter(s => s.kind === 'pain').map(s => `<span class="lab">${esc(s.category)}</span>
+      <div class="track" data-tip="${esc(`${p.code}: ${s.count} comments (${s.defects} defects), mostly ${s.market}`)}"><div class="fill" style="width:${s.count / max * 100}%"></div></div>
+      <span class="val">${s.count}</span>`).join('');
+    const wants = sig.filter(s => s.kind === 'want').map(s => `${esc(s.category)} (${s.count})`).join(', ');
+    return `<div class="panel"><h3><span class="mono">${p.code}</span> pain points</h3><div class="hbars">${bars}</div>
+      <p class="src">Most wanted: ${wants}</p></div>`;
+  }).join('');
+  section('voice', 'Customer voice', 'Where satisfaction is lowest',
+    'Two independent sources: rated studies and free text feedback. A requirement is stronger when both point the same way.',
+    `${heat}<div class="multiples">${pains}</div>
+     <p class="src">Pain points: unique comments typed "Difficult to Use" or "Defect", grouped by the BMW component category (Vfc level 2). Source: Dataset/*_feedback_hackathon.xlsx. No comment text leaves the pipeline.</p>`);
+  $('#heatToggle').onclick = () => { heatAll = !heatAll; rerender(); };
+}
+
+/* 4 Workflow */
+function renderWorkflow() {
+  const label = { ai: 'AI, autonomous', system: 'System', human: 'Human, mandatory' };
+  const steps = TEAM.workflow.map(s => `<li class="${s.who}"><h3>${esc(s.step)}</h3><p>${esc(s.what)}</p><span class="who ${s.who}">${label[s.who]}</span></li>`).join('');
+  section('workflow', 'Workflow', 'From comment to decision',
+    'The AI proposes, the system scores, the product manager decides. No requirement reaches "approved" without a person.',
+    `<ol class="flow">${steps}</ol><p class="src">Source: docs/deliverables.md (team plan, PR #1).</p>`);
+}
+
+/* 5 Requirements */
+const FIELDS = {
+  title: ['Requirement title in customer language', 'pipeline draft, checked by the PM'],
+  description: ['Clear, actionable requirement text with the customer benefit', 'pipeline draft'],
+  score: ['Score 0 to 1', 'scorer, weights version logged'],
+  priority: ['Must, Should or Could', 'PM decision'],
+  evidence: ['High, Medium or Low', 'evidence rule in docs/deliverables.md'],
+  rationale: ['Factor breakdown and the weights used', 'scorer'],
+  assumptions: ['Future-facing assumption, 3 to 5 years', 'pipeline draft, PM review'],
+  uncertainties: ['Known gaps: sample size, inferred sources, missing market', 'pipeline'],
+};
+const field = (r, i, f) => v(r[f], `team.requirements[${i}].${f}`, FIELDS[f][0], FIELDS[f][1]);
+let openReq = null;
+function renderRequirements() {
+  const rows = TEAM.requirements.map((r, i) => {
+    const s = signal(r.product, r.signal);
+    const cells = studyCells(r.study, r.product);
+    const gap = REAL.study && !cells.some(c => c.market === r.market) ? `<span class="note">No study column for ${esc(r.product)} in ${esc(r.market)}</span>` : '';
+    const sig = !r.signal ? '<span class="note">Study only</span>'
+      : s ? `${esc(s.category)} <span class="num">(${s.count})</span><span class="note">${s.defects} defects, mostly ${esc(s.market)}</span>`
+      : v(null, `real.signal ${r.signal}`, 'Signal not in the data yet', 'fill_data.py');
+    const study = cells.length ? `${esc(r.study)}<span class="note num">${cells.map(c => `${c.market} ${c.value.toFixed(2)}`).join(', ')}</span>${gap}` : (r.study ? esc(r.study) : '');
+    const open = openReq === i;
+    return `<tr class="main" data-i="${i}" tabindex="0" aria-expanded="${open}"><td class="mono">${esc(r.id)}</td><td>${field(r, i, 'title')}</td><td>${sig}</td><td>${study}</td>
+      <td class="num">${field(r, i, 'score')}</td><td>${field(r, i, 'priority')}</td><td>${field(r, i, 'evidence')}</td><td><span class="status">${esc(r.status || 'proposed')}</span></td></tr>
+      <tr class="detail" ${open ? '' : 'hidden'}><td colspan="8"><div class="detail-grid">${['description', 'rationale', 'assumptions', 'uncertainties'].map(f => `<div><b>${f}</b><span>${field(r, i, f)}</span></div>`).join('')}</div></td></tr>`;
+  }).join('');
+  section('requirements', 'Requirements', 'Requirement records',
+    'Each record links to the real signals behind it. Text, score, priority and evidence level come from the pipeline and the product manager. Click a row for details.',
+    `<div class="panel scroll"><table class="req"><thead><tr><th>ID</th><th>Requirement</th><th>Feedback signal</th><th>Study</th><th>Score</th><th>Priority</th><th>Evidence</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div>
+     <p class="src">Record schema: docs/deliverables.md. Signals and study values: Dataset/ via fill_data.py.</p>`);
+  document.querySelectorAll('.req tr.main').forEach(tr => {
+    const toggle = () => { openReq = openReq === +tr.dataset.i ? null : +tr.dataset.i; rerender(); };
+    tr.onclick = e => { if (!e.target.closest('.ph')) toggle(); };
+    tr.onkeydown = e => { if (e.key === 'Enter' && e.target === tr) toggle(); };
+  });
+}
+
+/* 6 Audit trail */
+function renderAudit() {
+  const rows = TEAM.audit.map((e, i) => `<tr class="${e.example ? 'example' : ''}">
+    <td class="mono">${esc(e.event_id)}${e.example ? `<br>${v(null, `team.audit[${i}]`, 'Example, replace with the real log', 'pipeline audit log, append only')}` : ''}</td>
+    <td class="mono">${esc(e.time)}</td><td class="mono">${esc(e.requirement)}</td><td>${esc(e.change_type)}</td>
+    <td class="num">${esc(e.old || 'none')} to ${esc(e.new)}</td><td class="mono">${esc(e.actor)}</td><td>${esc(e.rationale)}</td></tr>`).join('');
+  section('audit', 'Audit trail', 'Every change, who made it and why',
+    'Append only. One row per change to content, score, priority, evidence or status.',
+    `<div class="panel scroll"><table><thead><tr><th>Event</th><th>Time</th><th>Requirement</th><th>Change</th><th>Old to new</th><th>Actor</th><th>Rationale</th></tr></thead><tbody>${rows}</tbody></table></div>`);
+}
+
+/* 7 Live demo */
+function renderDemo() {
+  const steps = TEAM.demo.map((s, i) => `<article class="step"><div class="step-top"><h3>${i + 1}. ${esc(s.title)}</h3><span class="src num">${'duration' in s ? v(s.duration, `team.demo[${i}].duration`) : ''}</span></div>
+    ${shot(s.shot, `team.demo[${i}].shot`)}
+    ${s.say ? `<p>${esc(s.say)}</p>` : ''}${'prompt' in s ? `<div class="prompt">${v(s.prompt, `team.demo[${i}].prompt`)}</div>` : ''}
+    ${s.fallback ? `<p class="fallback"><b>Fallback:</b> ${esc(s.fallback)}</p>` : ''}</article>`).join('');
+  section('demo', 'Live demo', 'Rowboat, live',
+    'Three to four minutes of the six minute pitch. Each step has a screenshot slot for the fallback.',
+    `<div class="steps">${steps}</div><p class="src">Flow: parent spec section 10, risks and fallbacks: WP1 spec section 6.</p>`);
+}
+
+/* 8 Finale: knowledge graph, top attributes, closing */
+const GROUPS = { Projects: '--c1', Topics: '--c2', People: '--c3', Organizations: '--c4', Content: '--c5', Requirements: '--c6' };
+function shape(grp, r) {
+  if (grp === 'Topics') return `<rect class="node" x="${-r}" y="${-r}" width="${2 * r}" height="${2 * r}" rx="2"/>`;
+  if (grp === 'People') return `<path class="node" d="M0,${-r - 1}L${r + 1},${r}H${-r - 1}Z"/>`;
+  if (grp === 'Organizations') return `<path class="node" d="M0,${-r - 2}L${r + 2},0L0,${r + 2}L${-r - 2},0Z"/>`;
+  if (grp === 'Content') return `<rect class="node" x="${-r}" y="${-r}" width="${2 * r}" height="${2 * r}" rx="${r}" />`;
+  if (grp === 'Requirements') return `<path class="node" d="M${-r},${-r * 0.6}H${r}V${r * 0.6}H${-r}Z"/>`;
+  return `<circle class="node" r="${r}"/>`;
+}
+function layout(nodes, links, W, H) {
+  const at = new Map(nodes.map((n, i) => [n.id, i]));
+  const E = links.map(([a, b]) => [at.get(a), at.get(b)]).filter(([a, b]) => a != null && b != null);
+  const groups = Object.keys(GROUPS);
+  nodes.forEach((n, i) => { const a = groups.indexOf(n.grp) / groups.length * 2 * Math.PI + i * 0.37; n.x = W / 2 + Math.cos(a) * W * 0.3; n.y = H / 2 + Math.sin(a) * H * 0.3; });
+  const k = Math.sqrt(W * H / nodes.length) * 0.6;
+  for (let it = 0, t = W / 8; it < 500; it++, t *= 0.99) {
+    nodes.forEach(n => { n.dx = 0; n.dy = 0; });
+    for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j], dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy) || 0.01, f = k * k / d;
+      a.dx += dx / d * f; a.dy += dy / d * f; b.dx -= dx / d * f; b.dy -= dy / d * f;
+    }
+    E.forEach(([i, j]) => {
+      const a = nodes[i], b = nodes[j], dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy) || 0.01, f = d * d / k;
+      a.dx -= dx / d * f; a.dy -= dy / d * f; b.dx += dx / d * f; b.dy += dy / d * f;
+    });
+    nodes.forEach(n => { n.dx += (W / 2 - n.x) * 0.05; n.dy += (H / 2 - n.y) * 0.05; const d = Math.hypot(n.dx, n.dy) || 1; n.x += n.dx / d * Math.min(d, t); n.y += n.dy / d * Math.min(d, t); });
+  }
+  const xs = nodes.map(n => n.x), ys = nodes.map(n => n.y);
+  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  nodes.forEach(n => { n.x = 40 + (n.x - x0) / ((x1 - x0) || 1) * (W - 200); n.y = 30 + (n.y - y0) / ((y1 - y0) || 1) * (H - 60); });
+  return E;
+}
+function graphSvg() {
+  const g = REAL.graph, N = [], L = [];
+  const add = (id, label, grp, r = 8, path = null, from = '') => N.push({ id, label, grp, r, path, from });
+  const tail = s => s.split('/').pop();
+  g.products.forEach(p => { add(p.id, tail(p.id), 'Projects', 11); L.push([p.id, p.roadmap], [p.id, g.research[0]]); });
+  g.roadmaps.forEach(r => add(r, tail(r), 'Projects', 7));
+  [...g.channels, ...g.research].forEach(t => add(t, tail(t), 'Topics', 7));
+  g.team.forEach(t => add(t, tail(t), 'People', 7));
+  TEAM.graph.organizations.forEach((o, i) => {
+    const id = 'org' + i, ph = isPh(o.name);
+    add(id, ph ? o.name.ph : o.name, 'Organizations', 7, ph ? `team.graph.organizations[${i}].name` : null, ph && o.name.from);
+    L.push([id, o.product], [id, o.channel], [id, g.team[0]]);
+  });
+  const c = TEAM.graph.content, cph = isPh(c.name);
+  add('content', cph ? c.name.ph : c.name, 'Content', 8, cph ? 'team.graph.content.name' : null, cph && c.name.from);
+  L.push(['content', c.product], ['content', c.channel], ...TEAM.graph.organizations.map((o, i) => ['content', 'org' + i]));
+  TEAM.requirements.forEach(r => { add('req:' + r.id, r.id, 'Requirements', 8); L.push(['req:' + r.id, 'Projects/' + r.product]); });
+  const W = 960, H = 540, E = layout(N, L, W, H);
+  const edges = E.map(([a, b]) => `<line class="edge" x1="${N[a].x}" y1="${N[a].y}" x2="${N[b].x}" y2="${N[b].y}"/>`).join('');
+  const nodes = N.map(n => {
+    const attrs = n.path ? `class="phn" ${phAttrs(n.path, n.from)}` : `data-tip="${esc(`${n.grp}: ${n.label}`)}"`;
+    return `<g transform="translate(${n.x.toFixed(1)},${n.y.toFixed(1)})" ${attrs} style="fill:var(${GROUPS[n.grp]})">${shape(n.grp, n.r)}<text class="lbl" x="${n.r + 5}" y="4">${esc(n.label)}</text></g>`;
+  }).join('');
+  const counts = Object.keys(GROUPS).map(k => [k, N.filter(n => n.grp === k).length]);
+  const legend = counts.map(([k, n]) => `<span><svg width="14" height="14" viewBox="-7 -7 14 14" style="fill:var(${GROUPS[k]})">${shape(k, 5)}</svg>${k} <b class="num">${n}</b></span>`).join('');
+  return { svg: `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Knowledge graph of the demo vault">${edges}${nodes}</svg>`, legend, n: N.length, ph: N.filter(n => n.path).length };
+}
+function renderFinale() {
+  const f = TEAM.finale;
+  let graph = noReal('graph'), top = '';
+  if (REAL.graph) {
+    const gr = graphSvg();
+    graph = `<div class="legend">${gr.legend}</div><div class="graph-wrap">${gr.svg}</div>
+      <p class="src">Products, roadmaps, topics and team: frozen link targets (demo/link-targets.json, ${esc(REAL.graph.frozen)}). Requirements: this page. Dashed nodes: placeholders until the bridge and the agent deliver. ${gr.n} nodes, ${gr.ph} placeholders.</p>`;
+  }
+  if (REAL.candidates) {
+    const max = Math.ceil(Math.max(...REAL.candidates.map(c => 10 - c.mean)));
+    top = `<div class="panel"><h3>Top 10 attributes to work on</h3>
+      <p class="src">Candidates from the studies: gap to a perfect 10, averaged over all derivative and market columns. Final priority comes from the scoring and the product manager.</p>
+      <div class="hbars" style="grid-template-columns:minmax(0,1.4fr) minmax(0,2fr) auto minmax(0,0.9fr)">
+      <span></span><span class="src num" style="display:flex;justify-content:space-between">${Array.from({ length: max + 1 }, (_, i) => `<span>${i}</span>`).join('')}</span><span class="src">gap</span><span class="src">priority</span>
+      ${REAL.candidates.map((c, i) => `<span class="lab">${i + 1}. ${esc(c.attribute)}</span>
+        <div class="track" data-tip="${esc(`Mean ${c.mean.toFixed(2)}. Lowest: ${c.worst.toFixed(2)} for ${c.worst_in.product} in ${c.worst_in.market}`)}"><div class="fill" style="width:${(10 - c.mean) / max * 100}%;background:var(--c6)"></div></div>
+        <span class="val">${(10 - c.mean).toFixed(2)}</span>
+        <span>${v((f.top10 || {})[c.attribute], `team.finale.top10["${c.attribute}"]`, 'Must, Should or Could', 'PM decision after scoring')}</span>`).join('')}
+      </div></div>`;
+  }
+  section('finale', 'Finale', 'From a billion findings to one car',
+    'What the jury sees last: every requirement traced to its product, its sources and the decision behind it.',
+    `${graph}${shot(f.recording, 'team.finale.recording')}${top}
+     <div class="closing"><p>${v(f.closing, 'team.finale.closing')}</p><p>${v(f.ask, 'team.finale.ask')}</p></div>`);
+}
+
+/* Open placeholders, grouped by section */
+const AREAS = { meta: 'Pitch', requirements: 'Requirements', audit: 'Audit trail', demo: 'Live demo', graph: 'Graph', finale: 'Finale', real: 'Real data' };
+function renderOpen() {
+  const list = [...document.querySelectorAll('[data-ph]')];
+  $('#phCount').textContent = list.length;
+  const groups = {};
+  list.forEach(el => { const k = el.dataset.ph.split(/[.[]/)[el.dataset.ph.startsWith('real') ? 0 : 1]; (groups[k] = groups[k] || []).push(el); });
+  const html = Object.entries(groups).map(([k, els]) => `<details class="open-group"><summary>${esc(AREAS[k] || k)} <b class="num">${els.length}</b></summary>
+    <ol class="open-list">${els.map(el => `<li><button type="button" data-go="${el.id}">${esc(el.textContent.trim() || el.dataset.ph)}</button> <span class="mono">${esc(el.dataset.ph)}</span>${el.dataset.from ? `<br><span class="src">from: ${esc(el.dataset.from)}</span>` : ''}</li>`).join('')}</ol></details>`).join('');
+  $('#open').innerHTML = `<div class="head"><p class="eyebrow">Before the pitch</p><h2>Open placeholders: ${list.length}</h2>
+    <p class="lede">${list.length ? 'Fill them in the data-team block of this file, or run fill_data.py for anything from Dataset/. Open a group and click an entry to jump to it.' : 'All placeholders are filled.'}</p></div>
+    ${html}
+    <p class="src" style="margin-top:24px">Sources: Dataset/ (BMW hackathon files), demo/link-targets.json, docs/deliverables.md, docs/superpowers/specs (parent spec and WP1 spec).</p>`;
+  document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => {
+    const el = document.getElementById(b.dataset.go);
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.remove('flash'); void el.getBoundingClientRect(); el.classList.add('flash');
+  });
+}
+
+function rerender() {
+  const y = window.scrollY;
+  phN = 0;
+  renderPitch(); renderData(); renderVoice(); renderWorkflow(); renderRequirements(); renderAudit(); renderDemo(); renderFinale(); renderOpen();
+  window.scrollTo(0, y);
+}
+rerender();
+
+$('#phToggle').onclick = e => {
+  const on = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+  e.currentTarget.setAttribute('aria-pressed', on);
+  document.body.classList.toggle('quiet', !on);
+};
+
+/* Tooltip for everything with data-tip */
+const tip = $('#tip');
+function showTip(t, x, y) {
+  tip.textContent = t.dataset.tip; tip.hidden = false;
+  const r = tip.getBoundingClientRect();
+  tip.style.left = Math.min(x + 12, innerWidth - r.width - 8) + 'px';
+  tip.style.top = (y + 16 + r.height > innerHeight ? y - r.height - 10 : y + 16) + 'px';
+}
+document.addEventListener('pointermove', e => { const t = e.target.closest('[data-tip]'); t ? showTip(t, e.clientX, e.clientY) : (tip.hidden = true); });
+document.addEventListener('focusin', e => { const t = e.target.closest('[data-tip]'); if (t) { const r = t.getBoundingClientRect(); showTip(t, r.left, r.bottom - 8); } });
+document.addEventListener('focusout', () => { tip.hidden = true; });
+</script>
