@@ -41,6 +41,9 @@ GROUPS = {
                                            "complexity sensitivities (BETA, BETA_M, GAMMA, PW_SCALE, CX_SCALE), today's market share (SHARE0)."),
     "Ranking weights": (["weights"], "Weights of the ranking factors: the default ('Learned from data') and the presets."),
     "Car dimensions": (["carDims"], "Front overhang, wheelbase, rear overhang, width, height in metres per model."),
+    "External research": (["research"],
+                          "Published studies Torque cites next to the BMW data (key, title, statement, source, url). Not part "
+                          "of the Dataset; keep the source and url for every entry."),
     "Requirement parameters": (["requirements"],
                                "Per purchase driver: feasibility 0-100 (feas), China weights (cn) and the attribute index (pa)."),
 }

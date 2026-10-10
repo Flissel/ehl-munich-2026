@@ -1168,5 +1168,63 @@
    },
    "pa": 8
   }
- }
+ },
+ "research": [
+  {
+   "k": "fatigue",
+   "t": "Feature fatigue",
+   "s": "Before use, 66 percent chose the model with the most features. After using it, 56 percent preferred a simpler one.",
+   "src": "Thompson, Hamilton and Rust, Journal of Marketing Research 2005",
+   "url": "https://www.rhsmith.umd.edu/news/feature-fatigue-research-proves-simpler-products-are-better-manufacturers-advised-lose-extra"
+  },
+  {
+   "k": "intent",
+   "t": "Saying is not buying",
+   "s": "In one panel, 9.87 percent said they would buy a car within 12 months. 5.01 percent did.",
+   "src": "Study on purchase intentions and purchases, automobiles",
+   "url": "https://english.ckgsb.edu.cn/wp-content/uploads/2017/12/intention.pdf"
+  },
+  {
+   "k": "touch",
+   "t": "Touch costs attention",
+   "s": "Four basic tasks at 110 km/h took 10 seconds in a 2005 car with buttons and 44.6 seconds in the slowest touchscreen car.",
+   "src": "Vi Bilägare test 2022, via ETSC",
+   "url": "https://etsc.eu/physical-buttons-outperform-touchscreens-in-new-cars/"
+  },
+  {
+   "k": "ncap",
+   "t": "Regulation pulls buttons back",
+   "s": "From 2026 Euro NCAP expects physical controls for indicators, hazard lights, wipers, horn and SOS for five stars.",
+   "src": "Euro NCAP 2026 protocol, via TechSpot",
+   "url": "https://www.techspot.com/news/102134-car-makers-must-bring-back-physical-controls-if.html"
+  },
+  {
+   "k": "jdp",
+   "t": "Unused tech annoys",
+   "s": "Owners see front passenger screens as unnecessary: only 10 percent of vehicles carry a front passenger daily. Gesture controls: 43.4 problems per 100 vehicles.",
+   "src": "J.D. Power 2024 U.S. Tech Experience Index",
+   "url": "https://www.repairerdrivennews.com/2024/08/27/j-d-power-owners-find-some-vehicle-technology-not-necessary-and-hard-to-function/"
+  },
+  {
+   "k": "conti",
+   "t": "Markets differ",
+   "s": "69 percent of Chinese drivers welcome many functions on the display, 80 percent in Japan prefer simple interfaces.",
+   "src": "Continental Mobility Study 2024",
+   "url": "https://www.continental.com/en/press/studies-publications/continental-mobility-studies/mobility-study-2024/displays-in-the-car/"
+  },
+  {
+   "k": "wtp",
+   "t": "Range has a price",
+   "s": "Buyers in six European markets value extra EV range at about 27 to 29 EUR per km.",
+   "src": "Preferences and willingness to pay for BEVs and PHEVs, six European markets",
+   "url": "https://www.trafikdage.dk/abstracts_2026/Preferences%20and%20Willingness-to-Pay%20for%20BEVs%20and%20PHEVs%20Across%20Six%20European%20Markets.pdf"
+  },
+  {
+   "k": "derived",
+   "t": "Stated vs derived importance",
+   "s": "What people say matters and what statistically drives their choice often differ. Derived importance predicts the outcome better.",
+   "src": "Decision Analyst",
+   "url": "https://decisionanalyst.com/blog/stated-vs-derived-importance/"
+  }
+ ]
 }
