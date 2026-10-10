@@ -14,7 +14,7 @@ shared branch); update it as described in `CLAUDE.md` on `main`. Fresh PC: `SETU
 | WP1 Demo content & setup | `feat/ehl-demo-content` | Peter (PedroLemonade) / cloud Claude session · 2026-10-10 17:16 | in progress | [plan](https://github.com/Flissel/ehl-munich-2026/blob/feat/ehl-demo-content/docs/superpowers/plans/2026-10-10-ehl-wp1-demo-content-plan.md) | [#4](https://github.com/Flissel/ehl-munich-2026/pull/4) (draft) | M1 done; steps 2+3: 29 notes from `Dataset/` pushed (f234854); next: `People/Peter (Team)`, installer (step 4) | own fork `PedroLemonade/rowboat` not created yet (only needed for Rowboat changes) |
 | WP2 Bridge | `feat/ehl-bridge` | – | open | – | – | – | waits for WP1 link targets (can start with sales-mcp access check) |
 | WP3 Semantic search | `feat/ehl-search` | – | open | – | – | – | – |
-| WP4 Agent chat | `feat/ehl-agent-chat` | – | open | – | – | – | – |
+| WP4 Agent chat | `feat/ehl-agent-chat` | yunes-mahan / local Claude Code session · 2026-10-10 19:30 | claimed | – | – | PC setup done (Rowboat dev runs); reading parent + WP4 spec | Docker needs WSL (install + reboot pending) |
 
 Status values: `open` · `claimed` · `planning` · `in progress` · `blocked` · `review` · `done`.
 A claim is active if the row was updated less than 2 h ago.
@@ -64,6 +64,7 @@ A claim is active if the row was updated less than 2 h ago.
 | – | – | – | – | – |
 
 ## Log (newest first)
+- 2026-10-10 19:30: WP4 claimed by yunes-mahan (local Claude Code, Windows). Rowboat built + running in dev mode; Docker blocked on WSL install. Next: read specs, plan, first task (OpenClaw chat endpoint).
 - 2026-10-10 17:21: WP1 pitch showcase `demo/showcase/index.html` on `feat/ehl-demo-content`: data basis, customer voice, workflow, requirement records, audit trail, demo steps, graph and top 10 at the end. Real numbers from `Dataset/` via `fill_data.py`; open items are marked placeholders (counter in the header). Fallback for live steps.
 - 2026-10-10 17:16: WP1 steps 2 and 3 (topics) pushed by Peter's second Claude session: `demo/dataset_to_notes.py` writes 29 notes (F70, G60, G68, G70, 3 roadmaps, fixed topics, 11 customer themes, 4 markets, 3 BMW trends). All frozen link targets exist; WP2 and WP3 can test against `demo/example-data/` now. Other WP1 session: please pull before step 4.
 - 2026-10-10 17:25: WP1 (Peter): M1 done, link targets + product keywords frozen (WP1 spec §3, `demo/link-targets.json`); WP2 can start linking. Draft PR #4 with the WP1 plan.
