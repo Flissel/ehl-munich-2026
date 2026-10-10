@@ -1,2 +1,4 @@
-# Local Torque data: Rowboat vault snapshot written by deploy.py, never committed
-data/
+# Local Torque data written by deploy.py and Torque: comment texts (quotes.json), decisions (torque.json)
+# and the vault snapshot (rowboat.json) stay out of git. Only the brand logo is shared.
+data/*
+!data/logo.png
