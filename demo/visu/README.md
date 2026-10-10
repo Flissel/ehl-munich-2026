@@ -5,8 +5,7 @@ purchase drivers on the right, an info card on the car. Instead of the procedura
 car model coloured part by part with the customer comments from `Dataset/` (`F70`/`G60`/`G70_feedback_hackathon.xlsx`).
 
 - **Same selection as Torque:** "Successor of" picks the series (1 → F70, 5 → G60, 7 → G70), "Market"
-  picks the comments by country (Europe, USA, Rest of world; China has no owner comments in the
-  Dataset, so all markets are shown with a note, as Torque models China).
+  picks the comments by country (Europe, USA, Rest of world; China see below).
 - **Driver ↔ part:** clicking a top 10 driver flies to its part (`PART` in `demo/torque/dist/index.html`,
   e.g. R-11 → wheels, R-14 → front seats). Clicking a part focuses its best ranked driver. The card
   shows Torque's driver, status, rank and evidence plus the part's heat score, comment counts and a quote.
