@@ -22,3 +22,7 @@ Rowboat lists Torque under Apps and serves it on `http://torque.apps.localhost:3
 ## Not in git
 
 `data/` stays local: `quotes.json` (customer comment texts), `logo.png` (brand mark), `torque.json` (decisions) and `rowboat.json` (vault snapshot). For the demo PC copy `data/` from Peter's machine. The build itself comes from `docs/prototype/rowboat/deploy.py` in Peter's prototype repo.
+
+## Concept 3D
+
+The Concept 3D page embeds the customer feedback heat map from `demo/visu/` (built into `dist/visu/`). Run `python demo/visu/prepare_local.py --model <glTF zip>` once per PC for its data and car model; see `demo/visu/README.md`.

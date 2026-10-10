@@ -6,3 +6,10 @@
 .env
 *.env
 !*.env.example
+
+# Torque 3D view (demo/visu): local data (customer quotes) and the CC-BY-NC car model
+demo/torque/dist/visu/data/
+demo/torque/dist/visu/models/
+demo/visu/node_modules/
+__pycache__/
+*.tsbuildinfo

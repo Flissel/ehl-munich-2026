@@ -590,6 +590,9 @@ pre.spec{white-space:pre-wrap;word-break:break-word;font:12px/1.55 var(--mono);b
 .fc-a{display:flex;gap:6px}
 .fc-a .primary{margin-left:auto}
 .show-head{display:none}
+.stage.visu{height:860px;cursor:auto;touch-action:auto;background:var(--card,#fff)}
+.stage.visu iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.stage.visu.showroom iframe{top:96px;height:calc(100% - 96px)}
 .stage.showroom{position:fixed;inset:0;z-index:95;height:auto;border-radius:0;border:0}
 .stage.showroom .pins,.stage.showroom .st-top,.stage.showroom .focus-card,.stage.showroom .dims,.stage.showroom .st-bl{display:none}
 .stage.showroom .show-head{display:flex;position:absolute;left:28px;right:28px;top:24px;justify-content:space-between;align-items:flex-start;gap:16px}
@@ -3003,21 +3006,15 @@ function vConcept(){
   const len = Math.round((cp.fo + cp.wb + cp.ro + (c.lwb ? .13 : 0)) * 1000);
   return `
   <div class="g">
-    <section class="card c8"><div class="card-h"><div><h3>${M().name} successor, live concept</h3><p class="sub">Today's car plus the top ${TOP} purchase drivers for ${mkLabel()} and your decisions · reject one and the car changes · click a pin or a row to focus</p></div>
+    <section class="card c12"><div class="card-h"><div><h3>${M().name}: customer feedback on the car</h3><p class="sub">Heat map of the classified customer comments in Dataset/ per part · ${M().code} · click a part for quotes · design prompt runs on the Rowboat model</p></div>
       <button type="button" class="btn dark" id="showroomBtn">${SVGI.expand}Showroom</button></div>
-      <div class="stage" id="stage" tabindex="0" aria-label="3D concept of the ${M().name} successor. Drag to rotate, scroll to zoom.">
-        <canvas id="c3"></canvas><div class="dims" id="dimsL"></div><div class="pins" id="pins"></div>
-        <div class="st-top"><div class="seg glass" id="modeSeg">${[["exterior","Exterior"],["xray","X-ray"],["sensors","Sensors"]].map(([k,l]) => `<button type="button" data-mode3="${k}" aria-pressed="${cam3.mode===k}">${l}</button>`).join("")}</div>
-          <div class="st-tg"><button type="button" class="tg" data-tg="pins" aria-pressed="${cam3.pins}">Pins</button><button type="button" class="tg" data-tg="dims" aria-pressed="${cam3.dims}">Dimensions</button></div></div>
-        <div class="st-bl"><div class="seg glass">${[["front","Front"],["side","Side"],["rear","Rear"],["top","Top"]].map(([k,l]) => `<button type="button" data-cam="${k}" aria-pressed="false">${l}</button>`).join("")}<button type="button" id="autoRot" aria-pressed="${cam3.auto}" aria-label="Auto rotate" title="Auto rotate">${SVGI.rotate}</button></div></div>
-        <div class="st-br"><div class="swatches" role="group" aria-label="Paint">${PAINTS.map((p,i) => `<button type="button" class="sw" data-paint="${i}" aria-pressed="${state.paint===i}" title="${p[0]}" aria-label="${p[0]}" style="--c:${p[1]}"></button>`).join("")}</div></div>
-        <div class="focus-card" id="focusCard" hidden></div>
-        <div class="show-head"><div><b>${M().name} successor</b><span>${esc(FEAT["R-10"](c))} · ${c.kwh} kWh · ${c.lwb ? "long wheelbase" : "standard wheelbase"} · ${mkLabel()} · ${cnt.locked} of the top ${TOP} locked</span></div><button type="button" class="btn" id="showExit">Close</button></div>
-        <div class="stage-msg" id="stageMsg" hidden></div>
+      <div class="stage visu" id="stage">
+        <iframe id="visuFrame" src="visu/index.html?embed=1&series=${encodeURIComponent(M().code)}" title="3D customer feedback heat map of the ${M().name}"></iframe>
+        <div class="show-head"><div><b>${M().name} · customer feedback</b><span>${M().code} · ${mkLabel()}</span></div><button type="button" class="btn" id="showExit">Close</button></div>
       </div>
-      <div class="stage-foot"><div class="legend">${["approved","modified","rejected","open"].map(k => `<span class="st ${k}">${STATUS[k].i}<span>${STATUS[k].l}</span></span>`).join("")}</div><span class="muted" style="font-size:11.5px">Drag to rotate · scroll or pinch to zoom · double click to reset · stylised concept, not a design proposal</span></div></section>
-    <section class="card c4"><div class="card-h"><div><h3>Top ${TOP} on the car</h3><p class="sub">${mkLabel()} · ${cnt.locked} locked · ${cnt.pending} pending · ${cnt.removed} removed</p></div></div>
-      <div class="oncar" id="oncar">${rk.map((x,i) => `<div role="button" tabindex="0" class="oc ${statusOf(x.r.id)}" data-focus="${x.r.id}"><span class="n">${i+1}</span><span class="t"><b><span class="rid">${x.r.id}</span> ${esc(x.r.short)}</b><small>${esc(FEAT[x.r.id](c))}</small></span>${stChip(x.r.id, true)}</div>`).join("")}</div></section>
+      <div class="stage-foot"><span class="muted" style="font-size:11.5px">3D model: "2021 BMW M4 Competition" by Ricy (sketchfab.com/ngon_3d), CC-BY-NC-4.0, stand-in for the ${M().name} · scores = relative rank of positive feedback per part (0 most criticised, 100 best rated)</span></div></section>
+    <section class="card c12"><div class="card-h"><div><h3>Top ${TOP} purchase drivers</h3><p class="sub">${mkLabel()} · ${cnt.locked} locked · ${cnt.pending} pending · ${cnt.removed} removed</p></div></div>
+      <div class="oncar" id="oncar">${rk.map((x,i) => `<div role="button" tabindex="0" class="oc ${statusOf(x.r.id)}" data-open="${x.r.id}"><span class="n">${i+1}</span><span class="t"><b><span class="rid">${x.r.id}</span> ${esc(x.r.short)}</b><small>${esc(FEAT[x.r.id](c))}</small></span>${stChip(x.r.id, true)}</div>`).join("")}</div></section>
   </div>
   <section class="card"><div class="card-h"><div><h3>Concept sheet</h3><p class="sub">${lockedTop} of the top ${TOP} in ${mkLabel()} locked · length ${fmt(len)} mm · values follow the targets you approved</p></div><button type="button" class="link" data-go="log">Export spec</button></div>
     <div class="tiles">${conceptTiles(c).map(t => `<div class="tile ${statusOf(t.id)}"><div class="sk">${t.k}<button type="button" class="rid" data-open="${t.id}">${t.id}</button></div><div class="sv">${esc(t.v)}</div>${stChip(t.id)}</div>`).join("")}</div></section>`;
@@ -3310,215 +3307,20 @@ function gridTexture(T){
   const t = new T.CanvasTexture(cv); t.encoding = T.sRGBEncoding; return t;
 }
 function bConcept(){
-  const stage = $("#stage"), msg = $("#stageMsg"), card = $("#focusCard"), T = window.THREE, c = carConfig(), cp = CARP[state.model] || CARP["5"];
-  const setAuto = v => { cam3.auto = v; $("#autoRot").setAttribute("aria-pressed", v); };
-  $("#autoRot").onclick = () => setAuto(!cam3.auto);
-  if(!T){ msg.hidden = false; msg.textContent = "The 3D library could not load in this view. The concept sheet still updates with every decision."; return; }
-  let renderer;
-  try{ renderer = new T.WebGLRenderer({canvas:$("#c3"), antialias:true, alpha:true, powerPreference:"high-performance"}); }
-  catch(e){ msg.hidden = false; msg.textContent = "WebGL is not available in this browser. The concept sheet still updates with every decision."; return; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
-  renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
-  renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
-  const dark = isDark(), scene = new T.Scene(), camera = new T.PerspectiveCamera(28, 1, .1, 100);
-
-  const envScene = new T.Scene();
-  envScene.add(new T.Mesh(new T.SphereGeometry(40, 32, 16), new T.ShaderMaterial({side:T.BackSide, depthWrite:false,
-    uniforms:{a:{value:new T.Color(dark ? 0x2b2e34 : 0xf1f3f6)}, b:{value:new T.Color(dark ? 0x040405 : 0x5f656d)}},
-    vertexShader:"varying vec3 p; void main(){ p = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
-    fragmentShader:"uniform vec3 a; uniform vec3 b; varying vec3 p; void main(){ gl_FragColor = vec4(mix(b, a, smoothstep(-0.2, 0.55, p.y)), 1.0); }"})));
-  const softbox = (w, h, p, k) => { const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({color:new T.Color(k, k, k), side:T.DoubleSide})); m.position.set(p[0], p[1], p[2]); m.lookAt(0, 0, 0); envScene.add(m); };
-  softbox(30, 3, [0, 20, 4], 4); softbox(30, 3, [0, 20, -4], 3); softbox(7, 16, [24, 7, 4], 2.4); softbox(8, 12, [-24, 8, -6], 1.6); softbox(18, 5, [0, 5, -26], 1.2); softbox(18, 5, [0, 5, 26], 1.4);
-  let env = null;
-  try{ const pm = new T.PMREMGenerator(renderer); env = pm.fromScene(envScene, .02).texture; pm.dispose(); }catch(e){ env = null; }
-  envScene.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material) o.material.dispose(); });
-  if(!env || !envWorks(T, renderer, env)){ if(env) env.dispose(); env = cubeEnv(T, dark); }
-  scene.environment = env;
-
-  const paint = new T.Color(PAINTS[state.paint][1]);
-  const mats = {
-    paint:new T.MeshPhysicalMaterial({color:paint, metalness:.55, roughness:.32, clearcoat:1, clearcoatRoughness:.04, vertexColors:true}),
-    paintPlain:new T.MeshPhysicalMaterial({color:paint, metalness:.55, roughness:.32, clearcoat:1, clearcoatRoughness:.04}),
-    glass:new T.MeshPhysicalMaterial({color:0x090c11, metalness:.25, roughness:.03, clearcoat:1, transparent:true, opacity:.9}),
-    trim:new T.MeshPhysicalMaterial({color:0x0b0c0e, metalness:.3, roughness:.16, clearcoat:1}),
-    seam:new T.MeshBasicMaterial({color:0x07080a}),
-    liner:new T.MeshStandardMaterial({color:0x0c0c0d, roughness:.95, side:T.BackSide}),
-    chrome:new T.MeshStandardMaterial({color:0xd5d9de, metalness:1, roughness:.12}),
-    head:new T.MeshStandardMaterial({color:0xffffff, emissive:0xeaf2ff, emissiveIntensity:2.4}),
-    tail:new T.MeshStandardMaterial({color:0x3a0000, emissive:0xff1f1f, emissiveIntensity:1.8}),
-    tire:new T.MeshStandardMaterial({color:0x101113, roughness:.9}),
-    hub:new T.MeshStandardMaterial({color:0x1b1d20, metalness:.6, roughness:.45}),
-    rim:new T.MeshStandardMaterial({color:0xb9bfc7, metalness:1, roughness:.2}),
-    rimDark:new T.MeshStandardMaterial({color:0x26292d, metalness:.85, roughness:.28}),
-    brake:new T.MeshStandardMaterial({color:0x60656c, metalness:.9, roughness:.38}),
-    caliper:new T.MeshStandardMaterial({color:0x2f5fe8, metalness:.3, roughness:.35}),
-    seat:new T.MeshStandardMaterial({color:c.leather ? 0x7a4026 : 0x2a2b2e, roughness:.6}),
-    inDark:new T.MeshStandardMaterial({color:0x1a1b1e, roughness:.7}),
-    screen:new T.MeshStandardMaterial({color:0x0a1220, emissive:0x8fb8ff, emissiveIntensity:1.2}),
-    orb:new T.MeshStandardMaterial({color:0x111522, emissive:0x7aa2ff, emissiveIntensity:2}),
-    glow:new T.MeshStandardMaterial({color:0x000000, emissive:0x4f8cff, emissiveIntensity:2.4}),
-    battery:new T.MeshStandardMaterial({map:gridTexture(T), emissive:0x14b8a6, emissiveIntensity:.35, roughness:.5}),
-    fan:new T.MeshBasicMaterial({color:0x5b8cff, transparent:true, opacity:.14, side:T.DoubleSide, depthWrite:false}),
-  };
-  const car = buildCar(T, cp, c, mats); scene.add(car.group);
-
-  const sun = new T.DirectionalLight(0xffffff, 1.0); sun.position.set(3, 8, 4); sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, {left:-4.5, right:4.5, top:4.5, bottom:-4.5, near:1, far:20}); sun.shadow.bias = -.0004; sun.shadow.radius = 5;
-  scene.add(sun, new T.HemisphereLight(0xffffff, 0x404040, .25));
-  const ground = new T.Mesh(new T.PlaneGeometry(30, 30), new T.ShadowMaterial({opacity:dark ? .55 : .26})); ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; scene.add(ground);
-  const cv = document.createElement("canvas"); cv.width = cv.height = 256; const cx = cv.getContext("2d");
-  const gr = cx.createRadialGradient(128, 128, 6, 128, 128, 128); gr.addColorStop(0, "rgba(0,0,0,.55)"); gr.addColorStop(.5, "rgba(0,0,0,.18)"); gr.addColorStop(1, "rgba(0,0,0,0)");
-  cx.fillStyle = gr; cx.fillRect(0, 0, 256, 256);
-  const ao = new T.Mesh(new T.PlaneGeometry(car.len + .9, car.W2 * 2 + .7), new T.MeshBasicMaterial({map:new T.CanvasTexture(cv), transparent:true, depthWrite:false}));
-  ao.rotation.x = -Math.PI/2; ao.position.y = .002; scene.add(ao);
-  const ring = new T.Mesh(new T.RingGeometry(car.len * .72, car.len * .72 + .025, 180), new T.MeshBasicMaterial({color:dark ? 0x34353a : 0xd3d2cc, side:T.DoubleSide}));
-  ring.rotation.x = -Math.PI/2; ring.position.y = .001; scene.add(ring);
-  const dimGroup = new T.Group(); dimGroup.visible = cam3.dims; scene.add(dimGroup);
-  const lineMat = new T.LineBasicMaterial({color:dark ? 0x9a9993 : 0x6b6a65});
-  car.dimLines.forEach(([a, b]) => dimGroup.add(new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(...a), new T.Vector3(...b)]), lineMat)));
-  const dimsEl = $("#dimsL");
-  dimsEl.innerHTML = car.dimLabels.map(d => `<span class="dl">${d.t}</span>`).join("");
-  const dimEls = $$(".dl", dimsEl);
-
-  const pinsEl = $("#pins"), rk = topRank(), order = rk.map(x => x.r.id).filter(id => car.anchors[id]), rankOf = Object.fromEntries(rk.map((x,i) => [x.r.id, [i+1, x.s.total]]));
-  const spots = Object.entries(car.anchors).filter(([id]) => rankOf[id]).map(([id, a]) => {
-    const [rank, sc] = rankOf[id], st = statusOf(id), r = RBY[id];
-    const el = document.createElement("button"); el.type = "button"; el.className = `pin ${st}`; el.dataset.pin = id;
-    el.style.setProperty("--d", Math.round(20 + sc / 100 * 12) + "px");
-    el.innerHTML = `<span class="o">${rank}</span><span class="lab">${id} ${esc(r.short)} · ${STATUS[st].l}</span>`;
-    el.setAttribute("aria-label", `${id} ${r.title}, rank ${rank}, ${STATUS[st].l}`);
-    pinsEl.appendChild(el);
-    return {id, p:a.p, n:a.n, el};
-  });
-
-  const base = new T.Vector3(0, .62, 0), tgt = base.clone();
-  let tw = null, focusId = null, drag = null, moved = 0, pinch = null, hoverPin = false;
-  const ptrs = new Map();
-  g3 = {renderer, scene, mats, env, raf:0, ro:null, off:null};
-  const applyMode = () => {
-    const x = cam3.mode === "xray";
-    [mats.paint, mats.paintPlain, mats.trim].forEach(m => { m.transparent = x; m.opacity = x ? .13 : 1; m.depthWrite = !x; m.needsUpdate = true; });
-    mats.glass.opacity = x ? .08 : .9; mats.glass.depthWrite = !x; mats.glass.needsUpdate = true;
-    car.battery.visible = x; car.sensors.visible = cam3.mode === "sensors";
-    $$("[data-mode3]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode3 === cam3.mode));
-  };
-  applyMode();
-  const showCard = id => {
-    const i = order.indexOf(id), r = RBY[id];
-    card.innerHTML = `<div class="fc-h"><span class="rid">${id}</span>${stChip(id)}<span class="muted mono" style="font-size:11.5px">#${i+1} · ${rankOf[id][1].toFixed(1)}</span><button type="button" class="x" data-fc="close" aria-label="Close">${SVGI.x}</button></div>
-      <b>${esc(r.title)}</b><p>${esc(FEAT[id](c))}</p>
-      <div class="fc-a"><button type="button" class="btn" data-fc="prev" aria-label="Previous by rank">&lsaquo;</button><button type="button" class="btn" data-fc="next" aria-label="Next by rank">&rsaquo;</button><button type="button" class="btn primary" data-fc="open">Open details</button></div>`;
-    card.hidden = false;
-  };
-  const setFocus = id => {
-    const s = spots.find(x => x.id === id); if(!s) return;
-    focusId = id; focusPin = null; setAuto(false);
-    const n = s.n, flat = Math.hypot(n.x, n.z) > .25;
-    tw = {yaw:flat ? Math.atan2(n.z, n.x) : cam3.yaw, pitch:clamp(Math.asin(clamp(n.y, -1, 1)) * .75 + .16, .06, 1.15), dist:5.2, t:base.clone().lerp(s.p, .65)};
-    spots.forEach(x => x.el.classList.toggle("focus", x.id === id));
-    $$("#oncar .oc").forEach(el => el.classList.toggle("sel", el.dataset.focus === id));
-    const row = $(`#oncar .oc[data-focus="${id}"]`); if(row) row.scrollIntoView({block:"nearest", behavior:"smooth"});
-    showCard(id);
-  };
-  const clearFocus = () => {
-    if(!focusId) return; focusId = null; card.hidden = true;
-    spots.forEach(x => x.el.classList.remove("focus")); $$("#oncar .oc").forEach(el => el.classList.remove("sel"));
-    tw = {yaw:cam3.yaw, pitch:Math.max(.1, Math.min(cam3.pitch, .5)), dist:BASE_DIST, t:base.clone()};
-  };
-  const step = d => { const i = order.indexOf(focusId); setFocus(order[(i + d + order.length) % order.length]); };
-  card.onclick = e => { const b = e.target.closest("[data-fc]"); if(!b) return; const a = b.dataset.fc;
-    if(a === "close") clearFocus(); else if(a === "prev") step(-1); else if(a === "next") step(1); else if(a === "open") openDrawer(focusId); };
-  pinsEl.onclick = e => { const p = e.target.closest("[data-pin]"); if(p) setFocus(p.dataset.pin); };
-  pinsEl.addEventListener("pointerover", e => { if(e.target.closest(".pin")) hoverPin = true; });
-  pinsEl.addEventListener("pointerout", e => { if(e.target.closest(".pin")) hoverPin = false; });
-  const oncar = $("#oncar");
-  oncar.onclick = e => { const r = e.target.closest("[data-focus]"); if(r) setFocus(r.dataset.focus); };
-  oncar.onkeydown = e => { if(e.key === "Enter" || e.key === " "){ const r = e.target.closest("[data-focus]"); if(r){ e.preventDefault(); setFocus(r.dataset.focus); } } };
-  oncar.onpointerover = e => { const r = e.target.closest("[data-focus]"); spots.forEach(s => s.el.classList.toggle("hl", !!r && s.id === r.dataset.focus)); };
-  oncar.onpointerleave = () => spots.forEach(s => s.el.classList.remove("hl"));
-  $$("[data-mode3]").forEach(b => b.onclick = () => { cam3.mode = b.dataset.mode3; applyMode(); });
-  $$("[data-tg]").forEach(b => b.onclick = () => { const k = b.dataset.tg; cam3[k] = !cam3[k]; b.setAttribute("aria-pressed", cam3[k]); pinsEl.hidden = !cam3.pins; dimGroup.visible = cam3.dims; dimsEl.hidden = !cam3.dims; });
-  pinsEl.hidden = !cam3.pins; dimsEl.hidden = !cam3.dims;
-  $$("[data-cam]").forEach(b => b.onclick = () => { clearFocus(); const p = CAMPRE[b.dataset.cam]; tw = {yaw:p.yaw, pitch:p.pitch, dist:BASE_DIST, t:base.clone()}; setAuto(false); $$("[data-cam]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
-  $$("[data-paint]").forEach(b => b.onclick = () => { state.paint = +b.dataset.paint; save(); mats.paint.color.set(PAINTS[state.paint][1]); mats.paintPlain.color.set(PAINTS[state.paint][1]); $$("[data-paint]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
-  const holder = document.createComment("stage");
+  // The 3D view is the visu app (demo/visu, built into dist/visu/) in an iframe; the procedural car is gone.
+  const stage = $("#stage"), frame = $("#visuFrame"), holder = document.createElement("div");
+  focusPin = null;
+  g3 = {raf:0, mats:{}, scene:{traverse(){}}, renderer:{dispose(){}}};
   const showroom = on => {
     if(on && !stage.classList.contains("showroom")){ stage.parentNode.insertBefore(holder, stage); document.body.appendChild(stage); }
     if(!on && holder.parentNode){ holder.parentNode.insertBefore(stage, holder); holder.remove(); }
     stage.classList.toggle("showroom", on); document.body.classList.toggle("noscroll", on); $("#fab").hidden = on || state.view === "copilot";
-    if(on){ clearFocus(); tw = {...CAMPRE.front, dist:BASE_DIST * .92, t:base.clone()}; setAuto(true); stage.focus({preventScroll:true}); }
-    resize();
   };
   g3.cleanup = () => { if(holder.parentNode){ stage.remove(); holder.remove(); } document.body.classList.remove("noscroll"); };
+  g3.escape = () => { if(stage.classList.contains("showroom")){ showroom(false); return true; } return false; };
   $("#showroomBtn").onclick = () => showroom(true);
   $("#showExit").onclick = () => showroom(false);
-  g3.escape = () => { if(stage.classList.contains("showroom")){ showroom(false); return true; } if(focusId){ clearFocus(); return true; } return false; };
-
-  const resize = () => { const w = stage.clientWidth, h = stage.clientHeight; if(!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); };
-  g3.ro = new ResizeObserver(resize); g3.ro.observe(stage); resize();
-  const skip = e => e.target.closest(".pin,.st-top,.st-bl,.st-br,.focus-card,.show-head");
-  stage.addEventListener("pointerdown", e => {
-    if(skip(e)) return;
-    ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY}); try{ stage.setPointerCapture(e.pointerId); }catch(err){}
-    if(ptrs.size === 1){ drag = {x:e.clientX, y:e.clientY}; moved = 0; }
-    else if(ptrs.size === 2){ const [a, b] = [...ptrs.values()]; pinch = {d:Math.hypot(a.x - b.x, a.y - b.y) || 1, dist:cam3.dist}; drag = null; }
-  });
-  stage.addEventListener("pointermove", e => {
-    if(!ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
-    if(pinch && ptrs.size === 2){ const [a, b] = [...ptrs.values()]; cam3.dist = clamp(pinch.dist * pinch.d / (Math.hypot(a.x - b.x, a.y - b.y) || 1), 3.4, 16); tw = null; return; }
-    if(!drag) return;
-    const dx = e.clientX - drag.x, dy = e.clientY - drag.y; moved += Math.abs(dx) + Math.abs(dy);
-    if(moved > 4){ tw = null; cam3.yaw += dx * .008; cam3.pitch = clamp(cam3.pitch + dy * .006, .02, 1.35); stage.classList.add("drag"); }
-    drag = {x:e.clientX, y:e.clientY};
-  });
-  const up = e => {
-    const wasClick = drag && moved <= 4 && e.type === "pointerup" && ptrs.size === 1;
-    ptrs.delete(e.pointerId); if(ptrs.size < 2) pinch = null;
-    if(wasClick) clearFocus();
-    drag = null; stage.classList.remove("drag");
-  };
-  stage.addEventListener("pointerup", up); stage.addEventListener("pointercancel", up);
-  stage.addEventListener("wheel", e => { e.preventDefault(); tw = null; cam3.dist = clamp(cam3.dist * (1 + Math.sign(e.deltaY) * .08), 3.4, 16); }, {passive:false});
-  stage.addEventListener("dblclick", e => { if(skip(e)) return; clearFocus(); tw = {...CAMPRE.front, dist:BASE_DIST, t:base.clone()}; });
-  stage.addEventListener("keydown", e => {
-    const k = e.key;
-    if(k === "ArrowLeft"){ cam3.yaw -= .15; tw = null; } else if(k === "ArrowRight"){ cam3.yaw += .15; tw = null; }
-    else if(k === "ArrowUp"){ cam3.pitch = clamp(cam3.pitch + .08, .02, 1.35); tw = null; } else if(k === "ArrowDown"){ cam3.pitch = clamp(cam3.pitch - .08, .02, 1.35); tw = null; }
-    else if(k === "+" || k === "="){ cam3.dist = clamp(cam3.dist * .9, 3.4, 16); } else if(k === "-"){ cam3.dist = clamp(cam3.dist * 1.1, 3.4, 16); }
-    else return;
-    e.preventDefault();
-  });
-
-  const ang = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
-  const v = new T.Vector3(), toCam = new T.Vector3(), clock = new T.Clock();
-  const loop = () => {
-    if(!g3) return;
-    g3.raf = requestAnimationFrame(loop);
-    const t = clock.getElapsedTime();
-    if(tw){
-      const dy = ang(tw.yaw, cam3.yaw), dp = tw.pitch - cam3.pitch, dd = tw.dist - cam3.dist;
-      cam3.yaw += dy * .09; cam3.pitch += dp * .09; cam3.dist += dd * .09; tgt.lerp(tw.t, .09);
-      if(Math.abs(dy) < .002 && Math.abs(dp) < .002 && Math.abs(dd) < .01 && tgt.distanceTo(tw.t) < .005) tw = null;
-    } else if(cam3.auto && !drag && !hoverPin && !focusId) cam3.yaw += .0022;
-    const D = cam3.dist * (camera.aspect < 1.1 ? 1.55 : camera.aspect < 1.5 ? 1.18 : 1);
-    camera.position.set(tgt.x + D * Math.cos(cam3.pitch) * Math.cos(cam3.yaw), tgt.y + D * Math.sin(cam3.pitch), tgt.z + D * Math.cos(cam3.pitch) * Math.sin(cam3.yaw));
-    camera.lookAt(tgt);
-    if(car.orb) mats.orb.emissiveIntensity = 1.6 + .7 * Math.sin(t * 2.4);
-    if(c.flapGlow) mats.glow.emissiveIntensity = 1.8 + .8 * Math.sin(t * 2);
-    if(car.sensors.visible) mats.fan.opacity = .1 + .06 * Math.sin(t * 2.2);
-    renderer.render(scene, camera);
-    const w = stage.clientWidth, h = stage.clientHeight, xr = cam3.mode === "xray";
-    if(cam3.pins) for(const s of spots){
-      v.copy(s.p).project(camera);
-      s.el.style.transform = `translate(${((v.x * .5 + .5) * w).toFixed(1)}px,${((-v.y * .5 + .5) * h).toFixed(1)}px)`;
-      const back = !xr && toCam.copy(camera.position).sub(s.p).normalize().dot(s.n) < -.05;
-      if(s.el.classList.contains("back") !== back) s.el.classList.toggle("back", back);
-      s.el.style.zIndex = s.id === focusId ? 3 : back ? 1 : 2;
-    }
-    if(cam3.dims) car.dimLabels.forEach((d, i) => { v.copy(d.p).project(camera); dimEls[i].style.transform = `translate(${((v.x * .5 + .5) * w).toFixed(1)}px,${((-v.y * .5 + .5) * h).toFixed(1)}px)`; });
-  };
-  if(focusPin && car.anchors[focusPin]){ const id = focusPin; setTimeout(() => setFocus(id), 60); }
-  loop();
+  frame.addEventListener("load", () => frame.contentWindow.postMessage({type:"visu:series", series:M().code}, location.origin));
 }
 
 
