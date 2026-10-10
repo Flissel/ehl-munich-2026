@@ -1,0 +1,33 @@
+{
+  "frozen": "2026-10-10",
+  "owner": "WP1 (Peter)",
+  "spec": "docs/superpowers/specs/2026-10-10-ehl-wp1-demo-content-design.md#3",
+  "products": {
+    "Projects/F70": {
+      "model": "BMW 1 Series",
+      "roadmap": "Projects/F70 Roadmap",
+      "keywords": ["F70", "1 Series", "1er", "BMW 1", "116", "118d", "120", "120d", "123 xDrive", "M135", "M135 xDrive"]
+    },
+    "Projects/G60": {
+      "model": "BMW 5 Series (sedan)",
+      "roadmap": "Projects/G60 Roadmap",
+      "keywords": ["G60", "5 Series", "5er", "BMW 5", "520i", "520d", "520d xDrive", "530e", "530e xDrive", "540d xDrive", "550e xDrive", "i5", "i5 eDrive40", "i5 xDrive40", "i5 M60"]
+    },
+    "Projects/G68": {
+      "model": "BMW 5 Series long wheelbase (China)",
+      "roadmap": "Projects/G60 Roadmap",
+      "keywords": ["G68", "5 Series G68", "5 Series Long Wheelbase", "5 Series LWB"]
+    },
+    "Projects/G70": {
+      "model": "BMW 7 Series",
+      "roadmap": "Projects/G70 Roadmap",
+      "keywords": ["G70", "7 Series", "7er", "BMW 7", "740 xDrive", "i7", "i7 eDrive50", "i7 xDrive60", "i7 M70", "i7 M70 xDrive"]
+    }
+  },
+  "keywords_need_context": ["116", "120"],
+  "roadmaps": ["Projects/F70 Roadmap", "Projects/G60 Roadmap", "Projects/G70 Roadmap"],
+  "channels": ["Topics/Newsletter", "Topics/Social Media", "Topics/Email"],
+  "research": ["Topics/Market Research"],
+  "team_pattern": "People/<Display name> (Team)",
+  "team": ["People/Peter (Team)"]
+}

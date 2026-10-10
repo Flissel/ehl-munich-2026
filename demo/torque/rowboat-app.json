@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "name": "torque",
+  "version": "1.0.0",
+  "entry": "index.html",
+  "icon": "icon.svg",
+  "description": "Torque Decision Cockpit: the top 10 purchase drivers per BMW model and market, with evidence, review and audit trail.",
+  "capabilities": [
+    "llm"
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "_about": "Hand checked facts from the German price lists in Dataset/*_OptionList.PDF (prices in EUR incl. 19 % VAT). Product baseline: tells whether a customer want is already available and in which package.",
+  "F70": {
+    "price_list": "BMW 1er, Juli 2026 (Ausgabe 1, 28.05.2026)",
+    "models": {
+      "Petrol": {"116": 34250, "120": 39150, "123 xDrive": 45350, "M135 xDrive": 57150},
+      "Diesel": {"118d": 39350, "120d": 41750}
+    },
+    "tech": [
+      "Length 4,361 mm, wheelbase 2,670 mm",
+      "Luggage 380 to 1,200 l (300 to 1,135 l depending on drivetrain)",
+      "Curb weight 1,465 to 1,605 kg"
+    ],
+    "packages": [
+      {"name": "M Sport package", "code": "337", "price": 3550, "contents": "Additional M design and equipment"},
+      {"name": "M Sport package Pro", "code": "33B", "price": 1500, "contents": "Only with M Sport package"},
+      {"name": "Premium package", "code": "7EV", "price": 1900, "contents": "Comfort Access, interior and exterior mirror package, adaptive LED headlights, high beam assistant, wireless charging tray"},
+      {"name": "Innovation package", "code": "7EW", "price": 3800, "contents": "Premium package contents plus Iconic Glow kidney grille, Live Cockpit Professional with Head-Up Display, Curved Display, Operating System 9, navigation, 4G LTE, Remote Software Upgrade, My Modes, Intelligent Personal Assistant, Parking Assistant Plus with Remote 3D View"},
+      {"name": "M Technik package II", "code": "33F", "price": 3950, "contents": "19 inch M compound brakes and forged wheels, M sport seats, M lightweight measures, M seat belts"}
+    ]
+  },
+  "G60": {
+    "price_list": "BMW i5 / BMW 5er Limousine, Juli 2026 (Ausgabe 2, 22.06.2026)",
+    "models": {
+      "BEV": {"i5 eDrive40": 70900, "i5 xDrive40": 76300, "i5 M60 xDrive": 100200},
+      "PHEV": {"530e": 66700, "530e xDrive": 69300, "550e xDrive": 78700},
+      "Petrol": {"520i": 60000},
+      "Diesel": {"520d": 62300, "520d xDrive": 64900, "540d xDrive": 71900}
+    },
+    "tech": [
+      "Length 5,060 mm, wheelbase 2,995 mm",
+      "i5: battery 81.2 kWh net, range 513 to 627 km WLTP (eDrive40), 473 to 539 km (M60)",
+      "i5: DC charging up to 205 kW, 10 to 80 % in 30 min, 157 to 211 km added in 10 min (eDrive40)",
+      "PHEV electric range 84 to 105 km WLTP",
+      "Luggage 490 l (i5), 520 l (PHEV, petrol, diesel)"
+    ],
+    "packages": [
+      {"name": "M Sport package", "code": "337", "price": 4600, "contents": "Additional M design and equipment"},
+      {"name": "M Sport package Pro", "code": "33B", "price": 1700, "contents": "Only with M Sport package"},
+      {"name": "Innovation package", "code": "7EW", "price": 2400, "contents": "Live Cockpit Professional with Head-Up Display, interior camera, Parking Assistant Plus (Surround View, Remote 3D View, front panorama view, Drive Recorder, anti theft recorder)"},
+      {"name": "Comfort package", "code": "7VB", "price": 2750, "contents": "Electric seats with driver memory, seat heating front and rear, active seat ventilation front, 4 zone automatic climate control"},
+      {"name": "Travel package", "code": "7LK", "price": 1900, "contents": "Automatic tailgate, Comfort Access, Travel and Comfort System"},
+      {"name": "Iconic Glow exterior package", "code": "3DP", "price": 550, "contents": "Illuminated kidney grille"},
+      {"name": "M Carbon exterior package", "code": "71C", "price": 1900, "contents": "Only with M Sport package"}
+    ]
+  },
+  "G68": {
+    "price_list": "No price list in Dataset/ (long wheelbase 5 Series for China)",
+    "models": {},
+    "tech": [],
+    "packages": []
+  },
+  "G70": {
+    "price_list": "BMW 7er / BMW i7, Juli 2026 (Ausgabe 1, 28.05.2026)",
+    "models": {
+      "BEV": {"i7 50xDrive": 121400, "i7 60xDrive": 140100, "i7 M70 xDrive": 182400},
+      "PHEV": {"750e xDrive": 133900, "M760e xDrive": 159900},
+      "Petrol": {"740 xDrive": 117900},
+      "Diesel": {"740d xDrive": 122900}
+    },
+    "tech": [
+      "i7: battery 112.5 kWh net, range 621 to 727 km WLTP (50xDrive, 60xDrive)",
+      "i7: DC charging up to 250 kW, 10 to 80 % in 28 min, 195 to 235 km added in 10 min",
+      "Luggage 500 l (i7), 540 l (petrol)",
+      "Curb weight 2,770 to 2,845 kg (i7)"
+    ],
+    "packages": [
+      {"name": "Executive package", "code": "9DA", "price": 4450, "contents": "Active seat ventilation rear, multifunction rear seats, Executive Lounge rear console, massage rear"},
+      {"name": "Executive Lounge package", "code": "9DB", "price": 7450, "contents": "Executive Lounge Seating, rear entertainment experience; only with Executive and Connoisseur package"},
+      {"name": "Connoisseur package", "code": "9DC", "price": 3200, "contents": "Active seat ventilation front, massage front, comfort glazing"},
+      {"name": "Design Pure Excellence", "code": "7E1", "price": 17500, "contents": "BMW Individual two tone paint, crystal headlights Iconic Glow, Sky Lounge panorama roof, Individual wheels and Merino leather"},
+      {"name": "M Sport package", "code": "7EV", "price": 22940, "contents": "Incl. BMW Individual Premiere Collection"},
+      {"name": "M Sport package Pro", "code": "7EW", "price": 25840, "contents": "Incl. BMW Individual Premiere Collection"}
+    ]
+  }
+}
