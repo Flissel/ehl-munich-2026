@@ -597,6 +597,7 @@ pre.spec{white-space:pre-wrap;word-break:break-word;font:12px/1.55 var(--mono);b
 .stage.visu .focus-card{z-index:6;max-height:calc(100% - 120px);overflow-y:auto}
 .stage.visu.showroom .show-head{z-index:97}
 .fc-why{font-size:12px}
+.na{color:var(--ink-3);font-weight:600}
 .fc-part{display:flex;flex-direction:column;gap:3px;margin:0 0 10px;padding:8px 10px;border-radius:10px;background:var(--surface-2,rgba(127,127,127,.08));font-size:12.5px}
 .fc-part b{display:inline;margin:0;font-size:13px}
 .fc-part .heat{font:600 12px var(--disp);margin-left:4px}
@@ -1430,7 +1431,8 @@ const NF = new Intl.NumberFormat("en-US");
 const fmt = n => NF.format(Math.round(n));
 const fmtK = n => { const a = Math.abs(n); return (n < 0 ? "-" : "") + (a >= 10000 ? (a / 1000).toFixed(0) + "k" : a >= 1000 ? (a / 1000).toFixed(1) + "k" : Math.round(a)); };
 const sgn = n => (n > 0 ? "+" : n < 0 ? "-" : "") + fmt(Math.abs(n));
-const sgnK = n => (n > 0 ? "+" : "") + fmtK(n);
+// Net buyers in a market where the model is not sold: no sales plan, so N/A instead of a misleading +0 (2026-10-11).
+const sgnK = n => (!n && typeof state !== "undefined" && typeof sold === "function" && !sold(state.market)) ? "N/A" : (n > 0 ? "+" : "") + fmtK(n);
 const eur = n => NF.format(Math.round(n)) + " EUR";
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -1822,19 +1824,36 @@ function renderNav(){
   document.body.classList.toggle("analyst", state.level === "analyst");
   $("#vTitle").textContent = VIEWS[state.view].n;
   $("#vSub").textContent = VIEWS[state.view].s();
-  $("#dataChip").innerHTML = `<i class="dot"></i>BMW data · ${studyOnly() ? `${mkLabel()} study` : `${fmt(findingsNow())} ${M().code} comments`}${RB ? ` · Rowboat ${fmt(RB.count.notes)} notes` : ""} · assumptions ${DATA_SRC.assumptions && DATA_SRC.assumptions.startsWith("visu/") ? "from Rowboat" : "seed"}`;
+  $("#dataChip").innerHTML = `<i class="dot"></i>BMW data · ${studyOnly() ? `${mkLabel()} study` : findingsNow() ? `${fmt(findingsNow())} ${M().code} comments` : `${M().code} in ${mkLabel()}: N/A`}${RB ? ` · Rowboat ${fmt(RB.count.notes)} notes` : ""} · assumptions ${DATA_SRC.assumptions && DATA_SRC.assumptions.startsWith("visu/") ? "from Rowboat" : "seed"}`;
   $("#miniPipe").innerHTML = `<div>Round ${roundNow()} · ${M().code} · ${MK[state.market]}</div><div class="row"><span style="color:var(--side-ink)">${c.done} of the top ${c.total} decided</span><span>${c.challenged ? `${c.challenged} waiting` : ""}</span></div><div class="bar"><i style="width:${c.done / c.total * 100}%"></i></div>`;
   $("#fab").hidden = panelOpen || tourStep >= 0 || !!openId;
   renderCtx();
 }
 const RENDER = {}, BIND = {};
+function naCard(why){
+  const alt = MKS.filter(k => sold(k) && k !== state.market).map(k => MK[k]);
+  return `<section class="card na-card"><div class="card-h"><div><h3>N/A · ${esc(VIEWS[state.view]?.n || state.view)}</h3>
+    <p class="sub">${esc(M().name)} (${M().code}) in ${MK[state.market]}: not available, ${why}.</p></div></div>
+    <p class="muted">${alt.length ? `Pick another market in the header, e.g. ${alt.join(", ")}.` : "Pick another model in the header."}</p></section>`;
+}
 function render(animate = true){
   destroy3D();
   renderNav();
   const v = $("#view");
   v.className = "view" + (animate ? " enter" : "");
-  v.innerHTML = RENDER[state.view]();
-  BIND[state.view]();
+  // The simulator needs a sales plan: a model not sold in this market gets N/A instead of +0 everywhere.
+  if(state.view === "sim" && !sold(state.market)){
+    v.innerHTML = naCard(`the ${mName()} is not in the ${MK[state.market]} sales plan, so there are no buyers to simulate`);
+    return;
+  }
+  // A view that has no data for this model and market shows N/A instead of breaking the page (2026-10-11).
+  try{
+    v.innerHTML = RENDER[state.view]();
+    BIND[state.view]();
+  }catch(e){
+    console.error("view", state.view, M().code, state.market, e);
+    v.innerHTML = naCard(sold(state.market) ? "the data for this combination is incomplete" : `the ${mName()} is not in the ${MK[state.market]} sales plan and has no owner comments there`);
+  }
 }
 function go(view){
   if(view === "copilot"){ openPanel(); return; }
@@ -1888,6 +1907,7 @@ function recommendations(){
 }
 function recoOf(r, rank = rankMap()[r.id], net = netEffects()){
   const n = net[r.id], wi = wishOf(r), bu = buyOf(r);
+  if(!sold(state.market)) return {cls:"check", l:"N/A", why:`Not in the ${mkLabel()} sales plan for the ${mName()}: no buyers to win or lose here.`};
   if(n.net < 0) return {cls:"drop", l:"Offer as option", why:`Loses ${fmtK(-n.loss)}, wins ${fmtK(n.gain)} buyers a year. Offer it as an option instead.`};
   if(wi - bu >= 12) return {cls:"think", l:"Rethink", why:`Asked for ${wi}, but the purchase signal is only ${bu}.`};
   if(revOf(r) >= 12) return {cls:"think", l:"Rethink", why:`${revOf(r)} percent of its comments are about switching it off or overload.`};
@@ -1939,7 +1959,7 @@ RENDER.overview = () => {
     <div class="g kp4 n3">
       ${tile(c.done === c.total ? "green" : "ink", SVGI.check, "Decided", `${c.done}<small> of ${c.total}</small>`, `<button type="button" class="tf" data-go="log" data-logf="approved">${c.approved} approved</button> · <button type="button" class="tf" data-go="log" data-logf="modified">${c.modified} edited</button> · <button type="button" class="tf" data-go="log" data-logf="rejected">${c.rejected} rejected</button>`, 'data-go="log" data-logf="all"', "Open the review log")}
       ${tile(c.challenged + c.recheck ? "amber" : "muted", SVGI.think, "Needs a second look", c.challenged + c.recheck, `<button type="button" class="tf" data-go="log" data-logf="challenged">${c.challenged} waiting for evidence</button> · ${c.recheck ? `<button type="button" class="tf" data-act="review" data-only="recheck">${c.recheck} to re-check</button>` : "0 to re-check"}`, c.recheck ? 'data-act="review" data-only="recheck"' : 'data-go="log" data-logf="challenged"', c.recheck ? "Review the re-checks" : "See what is waiting")}
-      ${tile("blue", ICONSVG("markets"), "Projected buyers per year", fmtK(sim.units), `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> with the proposed spec vs today's car in ${mkLabel()}`, 'data-go="markets"', "Open the market map")}
+      ${tile("blue", ICONSVG("markets"), "Projected buyers per year", sold(state.market) ? fmtK(sim.units) : "<span class=\"na\">N/A</span>", sold(state.market) ? `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> with the proposed spec vs today's car in ${mkLabel()}` : `The ${mName()} is not in the BMW sales plan for ${mkLabel()}`, 'data-go="markets"', "Open the market map")}
     </div>
     <div class="g">
       <section class="card c12" id="t-reco"><div class="card-h"><div><h3>Top ${TOP} purchase drivers in ${mkLabel()}</h3><p class="sub">Most important first. Click one to see it on the 3D car</p></div></div>
@@ -1949,10 +1969,10 @@ RENDER.overview = () => {
   return `
   ${banner}
   <div class="g">
-    ${kpi("Projected buyers per year", fmtK(sim.units), `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> vs today's spec · BMW plan 2030 ${fmtK(plan())} in ${mkLabel()}`)}
+    ${sold(state.market) ? kpi("Projected buyers per year", fmtK(sim.units), `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> vs today's spec · BMW plan 2030 ${fmtK(plan())} in ${mkLabel()}`) : kpi("Projected buyers per year", "<span class=\"na\">N/A</span>", `The ${mName()} is not in the BMW sales plan for ${mkLabel()}`)}
     ${kpi("Decided", `${c.done}<small> of ${TOP}</small>`, `${c.approved} approved · ${c.modified} edited · ${c.rejected} rejected${c.challenged ? ` · ${c.challenged} challenged` : ""}`)}
-    ${kpi("Wishes that do not sell", traps, `Asked for more often than they drive a purchase in ${mkLabel()}`)}
-    ${kpi("Customer comments", studyOnly() ? "Study" : fmtK(findingsNow()), studyOnly() ? `No ${mkLabel()} comments in the BMW data, customer study only` : `${m.code} in ${mkLabel()} · ${BASIS[basisOf()].toLowerCase()}`)}
+    ${kpi("Wishes that do not sell", findingsNow() || studyOnly() ? traps : "<span class=\"na\">N/A</span>", findingsNow() || studyOnly() ? `Asked for more often than they drive a purchase in ${mkLabel()}` : `No ${m.code} owner comments in ${mkLabel()}`)}
+    ${kpi("Customer comments", studyOnly() ? "Study" : findingsNow() ? fmtK(findingsNow()) : "<span class=\"na\">N/A</span>", studyOnly() ? `No ${mkLabel()} comments in the BMW data, customer study only` : `${m.code} in ${mkLabel()} · ${BASIS[basisOf()].toLowerCase()}`)}
   </div>
   <div class="g">
     <section class="card c7" id="t-reco"><div class="card-h"><div><h3>Recommendation</h3><p class="sub">${mName()} · ${mkLabel()} · from purchase signals, customers won and lost, and confidence. You decide.</p></div></div>
@@ -2932,7 +2952,8 @@ function mapXY(lon, lat){
 }
 /* Sales upside per market: today's spec against the spec with the decided and open top 10 of that market (choice simulator, real 2030 volumes) */
 function marketUpside(mk){
-  if(!sold(mk)) return {mk, sold:false};
+  // Not in the sales plan (e.g. 1 Series in China/USA): same shape, empty values, so every view can show N/A.
+  if(!sold(mk)) return {mk, sold:false, plan:0, up:0, pct:0, drivers:[]};
   const base = simulate(baseCfg(), {mks:[mk]}), spec = simulate(specCfg(mk), {mks:[mk]}), net = netEffects(mk);
   const drivers = topIds(mk).filter(id => statusOf(id) !== "rejected" && net[id].net > 0).sort((a, b) => net[b].net - net[a].net).slice(0, 3).map(id => ({id, net:net[id].net}));
   return {mk, sold:true, plan:plan(mk), up:spec.units - base.units, pct:base.units ? (spec.units / base.units - 1) * 100 : 0, drivers};
