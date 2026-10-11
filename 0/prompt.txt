@@ -733,3 +733,7 @@ von rowboat
 ---
 
 ok
+
+---
+
+main gepusht die 3d modelle mit in die daten aufnehmen
