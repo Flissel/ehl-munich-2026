@@ -1698,7 +1698,10 @@ function uncertainties(r){
   if(b === "model") out.push("China: no comments in the BMW data. Values start from all comments of this model and are scaled by China research" + (BMW.study[r.id]?.[state.model]?.CN ? ", checked against the China customer study." : ". There is no China study item for this attribute."));
   if(b === "blend") out.push(`${MK[mk]}: only ${fmt(n)} comments for the ${M().name}, so they count ${pct(c.w)} percent and all ${M().code} comments ${100 - pct(c.w)} percent.`);
   if(b === "dv") out.push(`${MK[mk]}: only ${fmt(n)} comments for the ${M().name}, so the profile of all ${M().code} comments is used, mostly from the USA.`);
-  if(mk === "RoW") out.push(`${MK.RoW} in the comments is mainly ${Object.keys(M().meta.countries).filter(k => !["US","GB","SE","FR","DK","FI","NO","ES","LV"].includes(k)).slice(0, 4).join(", ")}; the sales plan does not say which countries it covers.`);
+  if(mk === "RoW"){
+    const rc = Object.entries(M().meta.countries).filter(([k]) => ((GEO.countries.find(x => x.id === k) || {}).mk || "RoW") === "RoW").sort((x, y) => y[1] - x[1]);
+    if(rc.length) out.push(`${MK.RoW} comments for the ${M().name} by country: ${rc.slice(0, 4).map(([k, v]) => `${(GEO.countries.find(x => x.id === k) || {}).n || k} ${fmt(v)}`).join(", ")}; the sales plan does not say which countries it covers.`);
+  }
   const bShare = T.src.B / Math.max(1, T.n);
   if(bShare > .45) out.push(`${pct(bShare)} percent of the comments are customer care logs (source B): an agent's paraphrase, often questions rather than complaints.`);
   if(T.ai) out.push(`${fmt(T.ai)} comments had no BMW category and were assigned by the AI classifier. Logged as AI assigned.`);
@@ -3797,11 +3800,20 @@ function aiErr(code){
     empty_completion:"No answer came back. Try a shorter question.", upstream_error:"The connection dropped. Try again."})[code] || "Something went wrong. Try again.";
 }
 const HIDE_CODES = ["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"];
+// Customer study scores of the current market for every model, by study item (lets Nordi compare models)
+function studyTable(){
+  const out = {};
+  for(const st of Object.values(BMW.study || {})) for(const [m, byMk] of Object.entries(st)){
+    const x = byMk[state.market]; if(!x || !MODELS[m]) continue;
+    for(const [item, v] of x.items){ (out[item] = out[item] || {})[MODELS[m].name] = `${v} of ${x.scale}`; }
+  }
+  return out;
+}
 function aiContext(){
   const all = ranked(), rk = all.slice(0, TOP), net = netEffects(), sim = simulate(specCfg());
   return JSON.stringify({
     vehicle:`${mName()} successor (${M().seg})`, horizon:"launch in 3 to 5 years", market:mkLabel(), soldInThisMarket:sold(state.market), otherMarkets:MKS.filter(k => k !== state.market && sold(k)).map(k => MK[k]), salesPlan2030:Object.fromEntries(MKS.map(k => [MK[k], plan(k)])), basePriceEUR:PRICE[state.model],
-    data:{commentsThisModel:M().meta.unique, commentsThisMarket:findingsNow(), allModels:BMW.issues.unique, recency:RECENCY, sources:"A owner reviews, B customer care logs, C quality survey, D appeal survey (inferred)", basisPerMarket:Object.fromEntries(MKS.map(k => [MK[k], BASIS[basisOf(k)]])),
+    data:{commentsThisModel:M().meta.unique, commentsThisMarket:findingsNow(), commentsByCountryThisModel:M().meta.countries, customerStudyScoresThisMarket:studyTable(),  allModels:BMW.issues.unique, recency:RECENCY, sources:"A owner reviews, B customer care logs, C quality survey, D appeal survey (inferred)", basisPerMarket:Object.fromEntries(MKS.map(k => [MK[k], BASIS[basisOf(k)]])),
       issuesHandled:{duplicateRows:BMW.issues.dupRows, untagged:BMW.issues.noclass, aiAssigned:BMW.issues.aiAssigned, personalDataMasked:BMW.issues.pii, sales:BMW.issues.sales},
       explicitPurchaseReasons:BMW.issues.purchase, conquestBuyers:BMW.issues.conquest, switchingThreats:BMW.issues.churn},
     weights:{mode:state.wmode === "derived" ? "learned from data" : "custom", ...Object.fromEntries(FACT.map(f => [f.n, getW()[f.k]]))},
