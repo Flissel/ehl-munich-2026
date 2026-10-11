@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01HqPUvaaJAouYmdkHsYkn7Z",
+  "agent_id": "a37f795ba277498e1",
+  "subagent_type": "general-purpose",
+  "task_description": "Map Rowboat fork changes",
+  "token_usage": {
+    "input_tokens": 32,
+    "cache_creation_tokens": 122817,
+    "cache_read_tokens": 1477963,
+    "output_tokens": 144,
+    "api_call_count": 16
+  },
+  "started_at": "2026-10-11T01:38:17.1413135+02:00",
+  "completed_at": "2026-10-11T01:41:41.5824145+02:00"
+}

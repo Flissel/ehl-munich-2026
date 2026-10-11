@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01RqFVFvaUwv3Ey4ZxPaoiE6",
+  "agent_id": "af8372c499a36615b",
+  "subagent_type": "Explore",
+  "task_description": "Map sales-claw repo",
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 85652,
+    "cache_read_tokens": 798411,
+    "output_tokens": 124,
+    "api_call_count": 12
+  },
+  "started_at": "2026-10-10T14:10:59.2736346+02:00",
+  "completed_at": "2026-10-10T14:12:23.1162199+02:00"
+}

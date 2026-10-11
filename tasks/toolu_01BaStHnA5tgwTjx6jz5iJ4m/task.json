@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01BaStHnA5tgwTjx6jz5iJ4m",
+  "agent_id": "af902e8ebede7faef",
+  "subagent_type": "Explore",
+  "task_description": "Map rowboat space",
+  "token_usage": {
+    "input_tokens": 22,
+    "cache_creation_tokens": 88860,
+    "cache_read_tokens": 749922,
+    "output_tokens": 499,
+    "api_call_count": 11
+  },
+  "started_at": "2026-10-10T14:10:59.2158347+02:00",
+  "completed_at": "2026-10-10T14:12:14.2730233+02:00"
+}
