@@ -531,6 +531,12 @@ table.bd{width:100%;border-collapse:collapse;font-size:12.5px}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
 .composer{display:flex;gap:8px;align-items:flex-end;padding:12px 14px;border-top:1px solid var(--line)}
+.composer .vbtn{width:42px;height:42px;padding:0;display:grid;place-items:center;flex:none}
+.composer .vbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.composer .vbtn.rec{background:#e5533d;color:#fff;border-color:#e5533d;animation:micpulse 1.2s ease-in-out infinite}
+.composer .vbtn.busy{opacity:.6}
+.composer .vbtn.on{background:var(--accent,#2b59ff);color:#fff;border-color:transparent}
+@keyframes micpulse{50%{box-shadow:0 0 0 6px rgba(229,83,61,.25)}}
 .composer textarea{flex:1;border:1px solid var(--line-2);background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:13.5px;resize:none;max-height:140px;min-height:42px;line-height:1.4}
 .cstat{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-3);padding:0 16px 12px}
 .cstat i{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
@@ -597,6 +603,7 @@ pre.spec{white-space:pre-wrap;word-break:break-word;font:12px/1.55 var(--mono);b
 .stage.visu .focus-card{z-index:6;max-height:calc(100% - 120px);overflow-y:auto}
 .stage.visu.showroom .show-head{z-index:97}
 .fc-why{font-size:12px}
+.na{color:var(--ink-3);font-weight:600}
 .fc-part{display:flex;flex-direction:column;gap:3px;margin:0 0 10px;padding:8px 10px;border-radius:10px;background:var(--surface-2,rgba(127,127,127,.08));font-size:12.5px}
 .fc-part b{display:inline;margin:0;font-size:13px}
 .fc-part .heat{font:600 12px var(--disp);margin-left:4px}
@@ -1280,7 +1287,7 @@ svg.world .mdot:hover,svg.world .mdot.pick{fill:color-mix(in oklab,var(--serious
   <div class="msgs" id="msgs"></div>
   <div class="cpsugs" id="cpsugs"></div>
   <form class="composer" id="cform"><textarea id="cin" rows="1" placeholder="Ask about purchase drivers, customers won and lost, or a driver like R-05" aria-label="Message to Nordi"></textarea>
-    <button type="submit" class="btn primary" id="csend" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button><button type="button" class="btn" id="cstop" hidden aria-label="Stop"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button></form>
+    <button type="button" class="btn vbtn" id="cmic" aria-label="Speak a question" title="Speak a question (click again to stop)"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><button type="button" class="btn vbtn" id="cspk" aria-pressed="false" aria-label="Read answers aloud" title="Read answers aloud"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button><button type="submit" class="btn primary" id="csend" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button><button type="button" class="btn" id="cstop" hidden aria-label="Stop"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button></form>
 </aside>
 <div class="coach" id="coach" hidden></div>
 <div class="pal-wrap" id="pal" hidden><div class="pal" role="dialog" aria-label="Search and commands"><input id="palIn" type="text" placeholder="Search drivers, views and actions" autocomplete="off"><ul id="palList" role="listbox"></ul></div></div>
@@ -1348,6 +1355,8 @@ const RESEARCH = ASM.research || [];
    cn: China is not in the comment data. Factors scale the model's real values by the China research (Continental 2024 and market studies); Kano and put-off share are modelled.
    Torque ranks all candidates per model and market and shows the top 10 purchase drivers. */
 const REQS = Object.entries(TX.requirements).map(([id, t]) => ({...t, id, ...(ASM.requirements[id] || {})}));
+// Agent texts cite example comments from any model; the comment IDs go, the text stays (quotes come only from the current model and market)
+REQS.forEach(r => ["cs", "conflict", "motive"].forEach(k => { if(typeof r[k] === "string") r[k] = r[k].replace(/,?\s*e\.g\.\s*(?:[FG]\d{2}-\d{4}(?:,\s*)?)+/g, "").replace(/\s*\((?:(?:[FG]\d{2}-\d{4}|R-\d{2})(?:,\s*)?)+\)/g, "").replace(/\(\s*\)/g, "").replace(/,?\s*[FG]\d{2}-\d{4}/g, ""); }));
 const RBY = Object.fromEntries(REQS.map(r => [r.id, r]));
 REQS.forEach(r => { r.says = BMW.says[r.id]; r.T = BMW.themes[r.id]; r.ev0 = BMW.evidence[r.id]; });
 
@@ -1430,7 +1439,8 @@ const NF = new Intl.NumberFormat("en-US");
 const fmt = n => NF.format(Math.round(n));
 const fmtK = n => { const a = Math.abs(n); return (n < 0 ? "-" : "") + (a >= 10000 ? (a / 1000).toFixed(0) + "k" : a >= 1000 ? (a / 1000).toFixed(1) + "k" : Math.round(a)); };
 const sgn = n => (n > 0 ? "+" : n < 0 ? "-" : "") + fmt(Math.abs(n));
-const sgnK = n => (n > 0 ? "+" : "") + fmtK(n);
+// Net buyers in a market where the model is not sold: no sales plan, so N/A instead of a misleading +0 (2026-10-11).
+const sgnK = n => (!n && typeof state !== "undefined" && typeof sold === "function" && !sold(state.market)) ? "N/A" : (n > 0 ? "+" : "") + fmtK(n);
 const eur = n => NF.format(Math.round(n)) + " EUR";
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -1690,7 +1700,10 @@ function uncertainties(r){
   if(b === "model") out.push("China: no comments in the BMW data. Values start from all comments of this model and are scaled by China research" + (BMW.study[r.id]?.[state.model]?.CN ? ", checked against the China customer study." : ". There is no China study item for this attribute."));
   if(b === "blend") out.push(`${MK[mk]}: only ${fmt(n)} comments for the ${M().name}, so they count ${pct(c.w)} percent and all ${M().code} comments ${100 - pct(c.w)} percent.`);
   if(b === "dv") out.push(`${MK[mk]}: only ${fmt(n)} comments for the ${M().name}, so the profile of all ${M().code} comments is used, mostly from the USA.`);
-  if(mk === "RoW") out.push(`${MK.RoW} in the comments is mainly ${Object.keys(M().meta.countries).filter(k => !["US","GB","SE","FR","DK","FI","NO","ES","LV"].includes(k)).slice(0, 4).join(", ")}; the sales plan does not say which countries it covers.`);
+  if(mk === "RoW"){
+    const rc = Object.entries(M().meta.countries).filter(([k]) => ((GEO.countries.find(x => x.id === k) || {}).mk || "RoW") === "RoW").sort((x, y) => y[1] - x[1]);
+    if(rc.length) out.push(`${MK.RoW} comments for the ${M().name} by country: ${rc.slice(0, 4).map(([k, v]) => `${(GEO.countries.find(x => x.id === k) || {}).n || k} ${fmt(v)}`).join(", ")}; the sales plan does not say which countries it covers.`);
+  }
   const bShare = T.src.B / Math.max(1, T.n);
   if(bShare > .45) out.push(`${pct(bShare)} percent of the comments are customer care logs (source B): an agent's paraphrase, often questions rather than complaints.`);
   if(T.ai) out.push(`${fmt(T.ai)} comments had no BMW category and were assigned by the AI classifier. Logged as AI assigned.`);
@@ -1759,6 +1772,24 @@ const rbName = p => p.split("/").pop().replace(/\.md$/, "");
 const rbOpen = p => window.open(p === "graph" ? "rowboat://open?type=graph" : "rowboat://open?type=file&path=" + encodeURIComponent(p), "_blank");
 const rbBtn = (p, label) => `<button type="button" class="rbl" data-rb="${esc(p)}" title="Open in Rowboat">${esc(label || rbName(p))}</button>`;
 const rbModelNotes = () => RB ? (RB.models[state.model] || []).filter(p => RB.notes[p]) : [];
+/* Everything the copilot takes from the brain: the model notes, the market note, the topics of the top 10, trends, and the notes the
+   Sales and Marketing agents wrote (Organizations, Content, Agent Notes); notes about this model first, a few facts each */
+const RB_AGENT = {Organizations:"salesAgent", Content:"marketingAgent", "Agent Notes":"rowboatAgent"};
+function rbBrain(){
+  if(!RB) return null;
+  const code = M().code, pick = (ps, n = 6) => [...new Set(ps)].filter(p => RB.notes[p]).map(p => ({note:rbName(p), facts:RB.notes[p].facts.slice(0, n)}));
+  const aboutModel = p => (RB.notes[p].links || []).some(l => l.includes(code) || l.includes(M().name)) || RB.notes[p].model === code;
+  const tops = topIds(state.market), market = `knowledge/Topics/Market ${{EU:"Europe", CN:"China", US:"USA", RoW:"Rest of World"}[state.market]}.md`;
+  const all = Object.keys(RB.notes), agents = {};
+  Object.entries(RB_AGENT).forEach(([g, k]) => { const ps = all.filter(p => RB.notes[p].group === g); if(ps.length) agents[k] = {notes:ps.length, thisModelFirst:pick(ps.filter(aboutModel).concat(ps).slice(0, 8), 4)}; });
+  return {models:pick(rbModelNotes()), market:pick([market]), topicsOfTheTop10:pick(tops.flatMap(id => RB.drivers[id]?.topics || []), 4),
+    trendsAndResearch:pick(all.filter(p => RB.notes[p].group === "Topics" && /Trend|Research|Data Quality/.test(p)), 3), dataset:pick(all.filter(p => RB.notes[p].group === "BMW" && aboutModel(p)).slice(0, 6), 4), ...agents};
+}
+function rbCounts(){
+  if(!RB) return null;
+  const g = k => Object.values(RB.notes).filter(n => n.group === k).length;
+  return {notes:Object.keys(RB.notes).length, sales:g("Organizations"), marketing:g("Content"), agent:g("Agent Notes")};
+}
 // Car part heat from the Vehicle Parts notes (demo/visu, the colours of Concept 3D): [heat, comments, likes, difficult to use,
 // defects, wants], heat 0 = most criticised part. A market with few comments on this model (China has none) shows all its markets.
 const HEAT = [[0,255,32,32],[25,255,122,26],[50,255,230,0],[75,155,226,45],[100,32,214,90]];
@@ -1822,19 +1853,36 @@ function renderNav(){
   document.body.classList.toggle("analyst", state.level === "analyst");
   $("#vTitle").textContent = VIEWS[state.view].n;
   $("#vSub").textContent = VIEWS[state.view].s();
-  $("#dataChip").innerHTML = `<i class="dot"></i>BMW data · ${studyOnly() ? `${mkLabel()} study` : `${fmt(findingsNow())} ${M().code} comments`}${RB ? ` · Rowboat ${fmt(RB.count.notes)} notes` : ""} · assumptions ${DATA_SRC.assumptions && DATA_SRC.assumptions.startsWith("visu/") ? "from Rowboat" : "seed"}`;
+  $("#dataChip").innerHTML = `<i class="dot"></i>BMW data · ${studyOnly() ? `${mkLabel()} study` : findingsNow() ? `${fmt(findingsNow())} ${M().code} comments` : `${M().code} in ${mkLabel()}: N/A`}${RB ? ` · Rowboat ${fmt(RB.count.notes)} notes` : ""} · assumptions ${DATA_SRC.assumptions && DATA_SRC.assumptions.startsWith("visu/") ? "from Rowboat" : "seed"}`;
   $("#miniPipe").innerHTML = `<div>Round ${roundNow()} · ${M().code} · ${MK[state.market]}</div><div class="row"><span style="color:var(--side-ink)">${c.done} of the top ${c.total} decided</span><span>${c.challenged ? `${c.challenged} waiting` : ""}</span></div><div class="bar"><i style="width:${c.done / c.total * 100}%"></i></div>`;
   $("#fab").hidden = panelOpen || tourStep >= 0 || !!openId;
   renderCtx();
 }
 const RENDER = {}, BIND = {};
+function naCard(why){
+  const alt = MKS.filter(k => sold(k) && k !== state.market).map(k => MK[k]);
+  return `<section class="card na-card"><div class="card-h"><div><h3>N/A · ${esc(VIEWS[state.view]?.n || state.view)}</h3>
+    <p class="sub">${esc(M().name)} (${M().code}) in ${MK[state.market]}: not available, ${why}.</p></div></div>
+    <p class="muted">${alt.length ? `Pick another market in the header, e.g. ${alt.join(", ")}.` : "Pick another model in the header."}</p></section>`;
+}
 function render(animate = true){
   destroy3D();
   renderNav();
   const v = $("#view");
   v.className = "view" + (animate ? " enter" : "");
-  v.innerHTML = RENDER[state.view]();
-  BIND[state.view]();
+  // The simulator needs a sales plan: a model not sold in this market gets N/A instead of +0 everywhere.
+  if(state.view === "sim" && !sold(state.market)){
+    v.innerHTML = naCard(`the ${mName()} is not in the ${MK[state.market]} sales plan, so there are no buyers to simulate`);
+    return;
+  }
+  // A view that has no data for this model and market shows N/A instead of breaking the page (2026-10-11).
+  try{
+    v.innerHTML = RENDER[state.view]();
+    BIND[state.view]();
+  }catch(e){
+    console.error("view", state.view, M().code, state.market, e);
+    v.innerHTML = naCard(sold(state.market) ? "the data for this combination is incomplete" : `the ${mName()} is not in the ${MK[state.market]} sales plan and has no owner comments there`);
+  }
 }
 function go(view){
   if(view === "copilot"){ openPanel(); return; }
@@ -1888,6 +1936,7 @@ function recommendations(){
 }
 function recoOf(r, rank = rankMap()[r.id], net = netEffects()){
   const n = net[r.id], wi = wishOf(r), bu = buyOf(r);
+  if(!sold(state.market)) return {cls:"check", l:"N/A", why:`Not in the ${mkLabel()} sales plan for the ${mName()}: no buyers to win or lose here.`};
   if(n.net < 0) return {cls:"drop", l:"Offer as option", why:`Loses ${fmtK(-n.loss)}, wins ${fmtK(n.gain)} buyers a year. Offer it as an option instead.`};
   if(wi - bu >= 12) return {cls:"think", l:"Rethink", why:`Asked for ${wi}, but the purchase signal is only ${bu}.`};
   if(revOf(r) >= 12) return {cls:"think", l:"Rethink", why:`${revOf(r)} percent of its comments are about switching it off or overload.`};
@@ -1939,7 +1988,7 @@ RENDER.overview = () => {
     <div class="g kp4 n3">
       ${tile(c.done === c.total ? "green" : "ink", SVGI.check, "Decided", `${c.done}<small> of ${c.total}</small>`, `<button type="button" class="tf" data-go="log" data-logf="approved">${c.approved} approved</button> · <button type="button" class="tf" data-go="log" data-logf="modified">${c.modified} edited</button> · <button type="button" class="tf" data-go="log" data-logf="rejected">${c.rejected} rejected</button>`, 'data-go="log" data-logf="all"', "Open the review log")}
       ${tile(c.challenged + c.recheck ? "amber" : "muted", SVGI.think, "Needs a second look", c.challenged + c.recheck, `<button type="button" class="tf" data-go="log" data-logf="challenged">${c.challenged} waiting for evidence</button> · ${c.recheck ? `<button type="button" class="tf" data-act="review" data-only="recheck">${c.recheck} to re-check</button>` : "0 to re-check"}`, c.recheck ? 'data-act="review" data-only="recheck"' : 'data-go="log" data-logf="challenged"', c.recheck ? "Review the re-checks" : "See what is waiting")}
-      ${tile("blue", ICONSVG("markets"), "Projected buyers per year", fmtK(sim.units), `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> with the proposed spec vs today's car in ${mkLabel()}`, 'data-go="markets"', "Open the market map")}
+      ${tile("blue", ICONSVG("markets"), "Projected buyers per year", sold(state.market) ? fmtK(sim.units) : "<span class=\"na\">N/A</span>", sold(state.market) ? `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> with the proposed spec vs today's car in ${mkLabel()}` : `The ${mName()} is not in the BMW sales plan for ${mkLabel()}`, 'data-go="markets"', "Open the market map")}
     </div>
     <div class="g">
       <section class="card c12" id="t-reco"><div class="card-h"><div><h3>Top ${TOP} purchase drivers in ${mkLabel()}</h3><p class="sub">Most important first. Click one to see it on the 3D car</p></div></div>
@@ -1949,10 +1998,10 @@ RENDER.overview = () => {
   return `
   ${banner}
   <div class="g">
-    ${kpi("Projected buyers per year", fmtK(sim.units), `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> vs today's spec · BMW plan 2030 ${fmtK(plan())} in ${mkLabel()}`)}
+    ${sold(state.market) ? kpi("Projected buyers per year", fmtK(sim.units), `<span class="delta-chip">${pc >= 0 ? "+" : ""}${pc.toFixed(1)} %</span> vs today's spec · BMW plan 2030 ${fmtK(plan())} in ${mkLabel()}`) : kpi("Projected buyers per year", "<span class=\"na\">N/A</span>", `The ${mName()} is not in the BMW sales plan for ${mkLabel()}`)}
     ${kpi("Decided", `${c.done}<small> of ${TOP}</small>`, `${c.approved} approved · ${c.modified} edited · ${c.rejected} rejected${c.challenged ? ` · ${c.challenged} challenged` : ""}`)}
-    ${kpi("Wishes that do not sell", traps, `Asked for more often than they drive a purchase in ${mkLabel()}`)}
-    ${kpi("Customer comments", studyOnly() ? "Study" : fmtK(findingsNow()), studyOnly() ? `No ${mkLabel()} comments in the BMW data, customer study only` : `${m.code} in ${mkLabel()} · ${BASIS[basisOf()].toLowerCase()}`)}
+    ${kpi("Wishes that do not sell", findingsNow() || studyOnly() ? traps : "<span class=\"na\">N/A</span>", findingsNow() || studyOnly() ? `Asked for more often than they drive a purchase in ${mkLabel()}` : `No ${m.code} owner comments in ${mkLabel()}`)}
+    ${kpi("Customer comments", studyOnly() ? "Study" : findingsNow() ? fmtK(findingsNow()) : "<span class=\"na\">N/A</span>", studyOnly() ? `No ${mkLabel()} comments in the BMW data, customer study only` : `${m.code} in ${mkLabel()} · ${BASIS[basisOf()].toLowerCase()}`)}
   </div>
   <div class="g">
     <section class="card c7" id="t-reco"><div class="card-h"><div><h3>Recommendation</h3><p class="sub">${mName()} · ${mkLabel()} · from purchase signals, customers won and lost, and confidence. You decide.</p></div></div>
@@ -2054,11 +2103,10 @@ function cutoffLine(id){
   return i < TOP ? `${d.toFixed(1)} points above #${TOP + 1} ${edge.r.short}. Biggest lead: ${parts.at(-1).n.toLowerCase()} (+${parts.at(-1).d.toFixed(1)}).`
     : `${(-d).toFixed(1)} points below #${TOP} ${edge.r.short}. Biggest gap: ${parts[0].n.toLowerCase()} (${parts[0].d.toFixed(1)}).`;
 }
-/* Quotes from this model first, then from this market */
-function quotesFor(r, n = 6){
-  const seen = new Set(), score = q => (q.dv === dv() ? 2 : 0) + (q.mk === state.market ? 1 : 0);
-  return [...(r.T.mq?.[state.market] || []), ...r.T.quotes].filter(q => !seen.has(q.id) && seen.add(q.id)).sort((a, b) => score(b) - score(a)).slice(0, n);
-}
+/* Quotes only from owners of this model in this market; no voice from elsewhere stands in for a market without comments */
+function quotesFor(r, n = 6){ return (r.T.dq?.[dv()]?.[state.market] || []).slice(0, n); }
+function saysFor(r){ const s = r.says; return s && s.dv === dv() && s.mk === state.market ? s : quotesFor(r, 1)[0] || null; }
+const noVoice = () => `No ${dv()} owner from ${mkLabel()} comments on this driver. ${studyOnly() ? `The values for ${mkLabel()} rest on the customer study and research.` : "The values rest on the comments of this model in all markets."}`;
 function rowHTML(x, i, net){
   const r = x.r, d = baseRanks && baseRanks[r.id] ? baseRanks[r.id] - (i + 1) : 0, wi = wishOf(r), bu = Math.round(x.s.f.buy), n = net[r.id], fl = flagOf(r, wi, bu), rc = recoOf(r, i + 1, net);
   const segs = x.s.parts.map(p => `<span class="f-${p.k}" style="flex:${Math.max(p.pts, .01)} 1 0" ${tipAttr(`<b>${p.n}</b><br>${Math.round(p.v)} of 100 × ${Math.round(p.w * 100)} percent = ${p.pts.toFixed(1)} points`)}></span>`).join("");
@@ -2290,10 +2338,10 @@ function renderDrawer(){
     return s && Math.abs(s.v) > 5 ? `${s.v > 0 ? "Most of the gain comes from" : "Most of the loss goes to"} ${s.k} (${fmt(Math.abs(s.v))}).` : ""; })();
   const srcMax = Math.max(1, ...Object.values(T.src));
   const rv = review ? `<div class="rvbar"><span>Review <b>${review.i + 1} of ${review.queue.length}</b> · ${queueTag(r.id) || "decided"}</span><span class="rvtrack"><i style="width:${(review.i) / review.queue.length * 100}%"></i></span><button type="button" class="link" id="rvSkip">Skip</button></div>` : "";
-  const essentialsEvidence = `<details class="ds"><summary>Evidence<em>${fmt(cd.n)} ${M().code} comments · evidence ${r.ev0.level.toLowerCase()}</em></summary><div class="in">
+  const essentialsEvidence = `<details class="ds"><summary>Evidence<em>${fmt(cd.n)} ${M().code} comments, ${evN(r) ? `${fmt(evN(r))} from ${mkLabel()}` : `none from ${mkLabel()}`} · evidence ${r.ev0.level.toLowerCase()}</em></summary><div class="in">
       ${typeBar(cd, true)}${TYPE_LEGEND}
-      <p class="note">${fmt(cd.P)} name it as purchase reason, ${fmt(cd.C)} threaten to leave or regret, ${fmt(cd.R)} want it off or find it too much.</p>
-      <div class="quotes">${quotesFor(r, 2).map(quoteHTML).join("")}</div>
+      <p class="note">All ${M().code} comments in every market${evN(r) ? `, ${fmt(evN(r))} of them from ${mkLabel()}` : `; ${mkLabel()} has none`}. ${fmt(cd.P)} name it as purchase reason, ${fmt(cd.C)} threaten to leave or regret, ${fmt(cd.R)} want it off or find it too much.</p>
+      ${quotesFor(r, 2).length ? `<div class="quotes">${quotesFor(r, 2).map(quoteHTML).join("")}</div>` : ""}
       <div class="fsub">Today's ${M().name}</div>${optionHTML(r)}
       <p class="note"><button type="button" class="link" data-level="analyst">Show all evidence, assumptions and the score in Analyst</button></p></div></details>`;
   $("#drawer").innerHTML = `
@@ -2307,7 +2355,7 @@ function renderDrawer(){
       <p class="mkranks adv"><span>Rank by market</span>${MKS.filter(k => sold(k)).map(k => { const n = rankMap(k)[r.id]; return `<button type="button" class="mkr${n <= TOP ? " in" : ""}${k === state.market ? " cur" : ""}" data-market="${k}" title="${n <= TOP ? `In the top ${TOP}` : `Below the top ${TOP}`} in ${MK[k]}">${MK[k]} #${n}</button>`; }).join("")}</p>
       ${rck ? `<div class="risk">${SVGI.warn}<span><b>Re-check:</b> ${esc(rck)}.</span></div>` : ""}
       <p class="motive"><b>Why customers buy it:</b> ${esc(r.motive)}</p>
-      <blockquote><span class="qt">“${esc(SRCQ(r.says))}”</span><footer>${esc(qMeta(r.says))} · real BMW comment</footer></blockquote>
+      ${(sy => sy ? `<blockquote><span class="qt">“${esc(SRCQ(sy))}”</span><footer>${esc(qMeta(sy))} · real BMW comment</footer></blockquote>` : `<p class="note novoice">${esc(noVoice())}</p>`)(saysFor(r))}
       <div class="stats3">
         <div class="stat" ${tipAttr("Share of all purchase signals in the BMW comments (praise after buying, purchase reasons, switching threats) vs share of all wishes, 0 to 100")}><small>Purchase signal</small><b>${bu}</b><span>Asked for ${wi} · ${bu - wi >= 0 ? "+" : ""}${bu - wi} gap</span></div>
         <div class="stat" ${tipAttr("Choice simulator: buyers won minus buyers lost per year, including the price increase")}><small>Net buyers a year</small><b>${sgnK(n.net)}</b><span>Won ${fmtK(n.gain)} · lost ${fmtK(-n.loss)}</span></div>
@@ -2328,8 +2376,8 @@ function renderDrawer(){
       <div class="mbars">${Object.keys(SRC).map(k => `<div class="hb" ${tipAttr(`<b>${k} ${SRC[k]}</b><br>${esc(SRC_D[k])}<br>Reliability weight ${SRC_W[k]}, inferred`)}><span class="l">${k} · ${SRC[k]}</span><span class="tr"><i style="width:${T.src[k] / srcMax * 100}%"></i></span><span class="v">${fmt(T.src[k])}</span></div>`).join("")}</div>
       <div class="fsub">BMW categories behind the cluster</div>
       <div class="chips">${T.comps.map(c => `<span class="chip">${esc(c[0])} <b class="mono">${c[1]}</b></span>`).join("")}</div>
-      <div class="fsub">Customer voices, ${M().code} owners first, then ${mkLabel()}</div>
-      <div class="quotes">${quotesFor(r).map(quoteHTML).join("")}</div>
+      <div class="fsub">Customer voices, ${M().code} owners in ${mkLabel()}</div>
+      ${quotesFor(r).length ? `<div class="quotes">${quotesFor(r).map(quoteHTML).join("")}</div>` : `<p class="note">${esc(noVoice())}</p>`}
       <div class="fsub">Customer study 2025</div>${studyHTML(r)}
       <div class="fsub">Today's ${M().name} (option list, July 2026)</div>${optionHTML(r)}
       <div class="fsub">Sales plan 2030</div><p class="note" style="margin-top:0">${MKS.map(k => `${MK[k]} ${fmtK(plan(k))}`).join(" · ")} units. Each market has its own top ${TOP}; the plan sets the volumes in the choice model.</p>
@@ -2588,7 +2636,7 @@ RENDER.voice = () => {
     <section class="card c6"><div class="card-h"><div><h3>Comments by type</h3><p class="sub">${mName()} · BMW feedback type</p></div></div>
       <div class="hbars">${["L","W","D","F"].map(k => `<div class="hb"><span class="l">${FTL[k]}</span><span class="tr"><i class="ft-${k}" style="width:${typesT[k] / Math.max(...Object.values(typesT)) * 100}%"></i></span><span class="v">${fmt(typesT[k])}</span></div>`).join("")}<div class="hb neutral"><span class="l">No type given</span><span class="tr"><i style="width:${M().meta.untyped / Math.max(...Object.values(typesT)) * 100}%"></i></span><span class="v">${fmt(M().meta.untyped)}</span></div></div></section>
   </div>
-  <section class="card"><div class="card-h"><div><h3>Customer comments</h3><p class="sub">Real BMW comments behind the purchase drivers, names masked · ${mkLabel()}${studyOnly() ? " has no comments in the BMW data" : ""}</p></div><button type="button" class="btn sm" id="feedTgl">${feedOpen || state.level === "analyst" ? "Hide" : "Show"} comments</button></div>
+  <section class="card"><div class="card-h"><div><h3>Customer comments</h3><p class="sub">Real BMW comments from ${M().code} owners in ${mkLabel()}, names masked${studyOnly() ? ` · ${mkLabel()} has no comments in the BMW data` : ""}</p></div><button type="button" class="btn sm" id="feedTgl">${feedOpen || state.level === "analyst" ? "Hide" : "Show"} comments</button></div>
     <div id="feedBox" ${feedOpen || state.level === "analyst" ? "" : "hidden"}><div class="filters">
       <label class="search">${SVGI.search}<input id="q" type="search" placeholder="Search comments" value="${esc(state.q)}"></label>
       <div class="seg" id="srcSeg"><button type="button" data-src="all" aria-pressed="${state.src === "all"}">All</button>${Object.keys(SRC).map(k => `<button type="button" data-src="${k}" aria-pressed="${state.src === k}" title="${SRC[k]}">${k}</button>`).join("")}</div>
@@ -2597,7 +2645,7 @@ RENDER.voice = () => {
 };
 function feedItems(){
   const out = [], seen = new Set();
-  THEME_KEYS().forEach(k => [...BMW.themes[k].quotes, ...(BMW.themes[k].mq?.[state.market] || [])].forEach(q => { if(!seen.has(q.id)){ seen.add(q.id); out.push({...q, k}); } }));
+  THEME_KEYS().forEach(k => (BMW.themes[k].dq?.[dv()]?.[state.market] || []).forEach(q => { if(!seen.has(q.id)){ seen.add(q.id); out.push({...q, k}); } }));
   return out.filter(f => f.mk === state.market && (state.src === "all" || f.s === state.src) && (state.ft === "all" || f.ft === state.ft)
     && (!state.q || (f.t + " " + TNAME(f.k) + " " + f.k + " " + f.id).toLowerCase().includes(state.q.toLowerCase())));
 }
@@ -2641,7 +2689,7 @@ function renderMap(){
   const c0 = FMAP.centers[sel];
   const lines = nn.map(([k, s]) => { const c = FMAP.centers[k]; return `<line x1="${X(c0[0])}" y1="${Y(c0[1])}" x2="${X(c[0])}" y2="${Y(c[1])}" stroke="var(--accent)" stroke-width="${1 + s * 6}" stroke-opacity=".5"/><text class="dl" x="${(X(c0[0]) + X(c[0])) / 2 + 4}" y="${(Y(c0[1]) + Y(c[1])) / 2 - 4}">${s.toFixed(2)}</text>`; }).join("");
   const near = new Set(nn.map(([k]) => k));
-  const pts = FMAP.points.map(p => `<circle class="pt" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="${p.o === sel ? 5.5 : near.has(p.o) ? 4 : 3}" fill="${p.o === sel ? "var(--accent)" : RBY[p.o] ? "var(--ink-3)" : "var(--s7)"}" fill-opacity="${p.o === sel ? .9 : near.has(p.o) ? .55 : .25}" ${tipAttr(`<b>${esc(FM_NAME(p.o))}</b> · ${MKN(p.m)} · ${p.dv} · ${SRC[p.s]}<br>“${esc(SRCQ(p))}”`)}/>`).join("");
+  const pts = FMAP.points.map(p => `<circle class="pt" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="${p.o === sel ? 5.5 : near.has(p.o) ? 4 : 3}" fill="${p.o === sel ? "var(--accent)" : RBY[p.o] ? "var(--ink-3)" : "var(--s7)"}" fill-opacity="${p.o === sel ? .9 : near.has(p.o) ? .55 : .25}" ${tipAttr(`<b>${esc(FM_NAME(p.o))}</b> · ${MKN(p.m)} · ${p.dv} · ${SRC[p.s]}${p.dv === dv() && p.m === state.market ? `<br>“${esc(SRCQ(p))}”` : `<br><i>Text shown only for ${dv()} owners in ${mkLabel()}</i>`}`)}/>`).join("");
   const placed = [];
   const order = Object.entries(FMAP.centers).sort((a, b) => (b[0] === sel) - (a[0] === sel));
   const labs = order.map(([k, c]) => {
@@ -2686,14 +2734,14 @@ RENDER.comp = () => {
   const thl = ts => ts.slice(0, 3).map(t => `${esc(TNAME(t[0]))} ${t[1]}`).join(", ") || "none";
   const ownerRows = comp.map(([b, v]) => `<tr><td><b>${esc(b)}</b></td><td class="num">${v.n}</td><td class="num">${v.dv[dv()]}</td><td class="num">${v.bmw}</td><td class="num">${v.rival}</td>
     <td style="font-size:12px"><div><b>BMW:</b> ${thl(v.bmwThemes)}</div><div class="muted"><b>Rival:</b> ${thl(v.rivalThemes)}</div></td></tr>`).join("");
-  const quotes = comp.flatMap(([b, v]) => [...v.qBmw.map(q => ({...q, b, w:1})), ...v.qRival.map(q => ({...q, b, w:0}))]).filter(q => q.dv === dv() || state.model !== "1").slice(0, 6);
+  const quotes = comp.flatMap(([b, v]) => [...v.qBmw.map(q => ({...q, b, w:1})), ...v.qRival.map(q => ({...q, b, w:0}))]).filter(q => q.dv === dv() && q.mk === state.market).slice(0, 6);
   const vm = BMW.value.cneu, vus = BMW.value.us["Overall value for money"] || {};
   const vName = k => { const [mk, code] = k.split("_"), mo = Object.values(MODELS).find(x => x.meta.study.includes(k)); return `${mo ? mo.name : ""} ${code}, ${MK[mk]}`; };
   const vRows = Object.entries(vm).map(([k, v]) => [vName(k), v]);
   return `<div class="g">
-    <section class="card c7"><div class="card-h"><div><h3>What owners say about rivals</h3><p class="sub">BMW comments that name a competitor · ${fmt(comp.reduce((a, [, v]) => a + v.n, 0))} mentions · rule based classification, check the quotes</p></div></div>
+    <section class="card c7"><div class="card-h"><div><h3>What owners say about rivals</h3><p class="sub">BMW comments that name a competitor · ${fmt(comp.reduce((a, [, v]) => a + v.n, 0))} mentions · rule based classification · quotes from ${M().code} owners in ${mkLabel()}</p></div></div>
       <div class="tbl-wrap"><table class="tbl" style="min-width:520px"><thead><tr><th>Brand</th><th class="num">Mentions</th><th class="num">${M().code}</th><th class="num">BMW better</th><th class="num">Rival better</th><th>On which attribute</th></tr></thead><tbody>${ownerRows}</tbody></table></div>
-      <div class="quotes" style="margin-top:14px">${quotes.map(q => `<blockquote>“${esc(q.t)}”<footer>${q.id} · ${esc(q.b)} · ${q.w ? "BMW better" : "rival better"}</footer></blockquote>`).join("")}</div></section>
+      <div class="quotes" style="margin-top:14px">${quotes.map(q => `<blockquote>“${esc(q.t)}”<footer>${q.id} · ${esc(q.c)} · ${esc(q.b)} · ${q.w ? "BMW better" : "rival better"}</footer></blockquote>`).join("") || `<p class="note">No ${dv()} owner from ${mkLabel()} names a rival in a comment.</p>`}</div></section>
     <section class="card c5"><div class="card-h"><div><h3>Value for money</h3><p class="sub">BMW customer study 2025 · the price pressure behind every feature</p></div></div>
       <div class="hbars">${vRows.map(([l, v]) => `<div class="hb ${v < 7.5 ? "" : "neutral"}"><span class="l">${l}</span><span class="tr"><i style="width:${(v - 5) / 5 * 100}%;${v < 7.5 ? "background:var(--neg)" : ""}"></i></span><span class="v">${v.toFixed(1)}</span></div>`).join("")}</div>
       <p class="note">Mean of 10. In Europe value for money is the weakest attribute for the 7 Series and among the weakest for the 5 Series. USA, overall value for money rated top box: ${Object.entries(vus).map(([k, v]) => `${MODELS[k]?.code || k} ${Math.round(v.top)}%`).join(", ")}.</p></section>
@@ -2717,7 +2765,7 @@ function specMarkdown(){
   lines.splice(4, 0, `Review round: ${roundNow()}  `);
   chosen.forEach((x, i) => { const r = x.r, d = decOf(r.id), T = r.T, rank = rk.indexOf(x) + 1;
     lines.push(`## ${i + 1}. ${r.id} ${r.title} [${STATUS[d.status].l}]`, "", `- Rank in ${mkLabel()}: #${rank}${rank <= TOP ? ` (top ${TOP})` : ` (below the top ${TOP})`}`,
-      `- Customer says: “${SRCQ(r.says)}” (${r.says.id})`, `- Why they buy: ${r.motive}`, `- Target: ${effTarget(r)}`, `- Acceptance: ${effAccept(r)}`,
+      ...(saysFor(r) ? [`- Customer says: “${SRCQ(saysFor(r))}” (${saysFor(r).id}, ${saysFor(r).c})`] : []), `- Why they buy: ${r.motive}`, `- Target: ${effTarget(r)}`, `- Acceptance: ${effAccept(r)}`,
       `- Purchase signal ${Math.round(x.s.f.buy)} vs asked for ${wishOf(r)}; net buyers per year ${sgn(net[r.id].net)} (won ${fmt(net[r.id].gain)}, lost ${fmt(-net[r.id].loss)})`,
       `- Findings: ${fmt(T.n)} comments (${T.L} likes, ${T.W} wants, ${T.D} difficult to use, ${T.F} defects), sources A ${T.src.A}, B ${T.src.B}, C ${T.src.C}, D ${T.src.D}; evidence level ${r.ev0.level}`,
       `- Kano: ${MKS.filter(k => sold(k)).map(k => `${MK[k]} ${KANO[kanoOf(r, k)]}`).join(", ")}`,
@@ -2932,7 +2980,8 @@ function mapXY(lon, lat){
 }
 /* Sales upside per market: today's spec against the spec with the decided and open top 10 of that market (choice simulator, real 2030 volumes) */
 function marketUpside(mk){
-  if(!sold(mk)) return {mk, sold:false};
+  // Not in the sales plan (e.g. 1 Series in China/USA): same shape, empty values, so every view can show N/A.
+  if(!sold(mk)) return {mk, sold:false, plan:0, up:0, pct:0, drivers:[]};
   const base = simulate(baseCfg(), {mks:[mk]}), spec = simulate(specCfg(mk), {mks:[mk]}), net = netEffects(mk);
   const drivers = topIds(mk).filter(id => statusOf(id) !== "rejected" && net[id].net > 0).sort((a, b) => net[b].net - net[a].net).slice(0, 3).map(id => ({id, net:net[id].net}));
   return {mk, sold:true, plan:plan(mk), up:spec.units - base.units, pct:base.units ? (spec.units / base.units - 1) * 100 : 0, drivers};
@@ -2962,7 +3011,7 @@ function focusPanel(ups, pains){
       ${cu !== null ? kv("Extra buyers a year", `<span class="netv ${cu < 0 ? "neg" : "pos"}">${fmtK(cu)}</span>`) + kv(`Share of the ${MK[cm]} plan`, `${Math.round(sh * 100)}%`) : cmu?.sold ? kv("Extra buyers a year", `<span class="muted">no deliveries listed</span>`) : kv("Sales plan", `<span class="muted">not sold here</span>`)}
       ${p ? kv("Owner comments", `${fmt(p.n)}`) + kv("Difficult or defect", `${Math.round(p.share * 100)}%${p.n < MAP_MIN_N ? ` <small class="muted">(under ${MAP_MIN_N})</small>` : ""}`) : kv("Owner comments", `<span class="muted">${modelled(cm) ? "none, study only" : "none in the data"}</span>`)}
       ${p?.top.length ? `<p class="mf-l">Behind the pain</p><div class="mdrv">${themeChips(p.top)}</div>` : ""}
-      ${cmu?.drivers.length ? `<p class="mf-l">Strongest drivers in ${MK[cm]}</p><div class="mdrv">${cmu.drivers.map(d => `<button type="button" class="rid" data-open="${d.id}" title="${esc(RBY[d.id].short)}: ${sgnK(d.net)} buyers">${d.id}</button><span>${esc(RBY[d.id].short)}</span>`).join("")}</div>` : ""}
+      ${cmu?.drivers?.length ? `<p class="mf-l">Strongest drivers in ${MK[cm]}</p><div class="mdrv">${cmu.drivers.map(d => `<button type="button" class="rid" data-open="${d.id}" title="${esc(RBY[d.id].short)}: ${sgnK(d.net)} buyers">${d.id}</button><span>${esc(RBY[d.id].short)}</span>`).join("")}</div>` : ""}
       <p class="mf-note">${cu !== null ? "Country split by BMW deliveries, placeholder until the plan is known by country." : "Click another country or a market label to compare."}</p>`;
   }
   const list = mapLayer === "upside"
@@ -2974,7 +3023,7 @@ function focusPanel(ups, pains){
   return `<div class="mf-h"><div><h4>${MK[mk]}</h4><span class="chip" ${u?.sold ? tipAttr(BASIS[basisOf(mk)]) : ""}>${u?.sold ? BASIS_S[basisOf(mk)] : "not in the sales plan"}</span></div></div>
     ${u?.sold ? kv("Sales plan 2030", fmtK(u.plan)) + kv("Extra buyers a year", `<span class="netv ${u.up < 0 ? "neg" : "pos"}">${fmtK(u.up)}</span> <small class="muted">${u.pct >= 0 ? "+" : ""}${u.pct.toFixed(1)}%</small>`) : ""}
     ${mp ? kv("Owner comments", `${fmt(mp.n)} <small class="muted">${Math.round(mp.share * 100)}% difficult or defect</small>`) : kv("Owner comments", `<span class="muted">${modelled(mk) ? "none, study only" : "none in the data"}</span>`)}
-    ${u?.drivers.length ? `<p class="mf-l">Strongest drivers</p><div class="mdrv">${u.drivers.map(d => `<button type="button" class="rid" data-open="${d.id}" title="${esc(RBY[d.id].short)}: ${sgnK(d.net)} buyers">${d.id}</button><span>${esc(RBY[d.id].short)}</span>`).join("")}</div>` : ""}
+    ${u?.drivers?.length ? `<p class="mf-l">Strongest drivers</p><div class="mdrv">${u.drivers.map(d => `<button type="button" class="rid" data-open="${d.id}" title="${esc(RBY[d.id].short)}: ${sgnK(d.net)} buyers">${d.id}</button><span>${esc(RBY[d.id].short)}</span>`).join("")}</div>` : ""}
     <p class="mf-l">${mapLayer === "upside" ? "Countries by extra buyers" : "Countries by pain share"}</p><div class="mcts">${rows}</div>`;
 }
 
@@ -3506,7 +3555,8 @@ function partHtml(d){
   if(!d) return "";
   const x = d.detail, FT = {"Likes":"likes", "Defect":"defects", "Difficult to Use":"difficult to use", "Wants":"wants"};
   const counts = x ? Object.entries(x.counts).map(([k, v]) => `${fmt(v)} ${FT[k] || k}`).join(" · ") : "";
-  const q = x && x.quotes && x.quotes[0];
+  // Only a voice from an owner of this model in this market; the vault carries quotes from every market
+  const q = x && x.quotes && x.quotes.find(o => String(o.series || "").toUpperCase().includes(dv()) && gmk(String(o.country || "").toUpperCase()) === state.market);
   return `<div class="fc-part"><div><span class="muted">On the car</span> <b>${esc(d.name)}</b> <span class="heat">${d.score}/100</span></div>
     ${x ? `<small>${fmt(x.comments ?? x.n)} comments (${fmt(x.n)} classified mentions)${x.basis === "specific" ? "" : " (" + esc(x.basis) + " feedback)"} · ${counts} · ${x.positive_share}% positive</small>` : ""}
     ${q ? `<q>${esc(q.text.slice(0, 180))}${q.text.length > 180 ? "…" : ""}</q><small class="muted">${esc(q.type)} · ${esc(q.series)} · ${esc(q.country)}</small>` : ""}
@@ -3613,7 +3663,7 @@ function exportData(){
   const sim = simulate(specCfg()), today = simulate(baseCfg()), pc = today.units ? (sim.units / today.units - 1) * 100 : 0;
   const rows = rk.map((x, i) => { const r = x.r, d = decOf(r.id), rc = recoOf(r, i + 1, net);
     return {rank:i + 1, id:r.id, title:r.title, reco:rc.l, why:rc.why, status:STATUS[statusOf(r.id)].l, by:d?.by, at:d?.at, reason:d?.reason, net:net[r.id].net,
-      buy:Math.round(x.s.f.buy), wish:wishOf(r), ev:r.ev0.level, n:r.T.n, quote:r.says ? SRCQ(r.says) : "", quoteId:r.says?.id, motive:r.motive,
+      buy:Math.round(x.s.f.buy), wish:wishOf(r), ev:r.ev0.level, n:evN(r), quote:saysFor(r) ? SRCQ(saysFor(r)) : "", quoteId:saysFor(r)?.id, motive:r.motive,
       target:effTarget(r), accept:effAccept(r), edited:!!(d && (d.target || d.accept)), ask:d?.ask, owner:d?.owner, due:d?.due, overdue:isOverdue(d)}; });
   const open = REQS.filter(r => statusOf(r.id) === "challenged").map(r => { const d = decOf(r.id); return {id:r.id, title:r.title, ask:d.ask, owner:d.owner, due:d.due, overdue:isOverdue(d), reason:d.reason}; });
   const markets = MKS.filter(mk => sold(mk)).map(mk => { const u = marketUpside(mk); return {mk, name:MK[mk], up:u.up, pct:u.pct, plan:u.plan, modelled:basisOf(mk) === "model", drivers:u.drivers.map(x => `${x.id} ${RBY[x.id].short}`)}; });
@@ -3632,7 +3682,7 @@ function briefHTML(d, mode, secs){
   const sec = [];
   if(secs.has("decisions")) sec.push(`<h2>Decisions on the top 10 in ${h(d.market)}</h2><div class="tw"><table><thead><tr><th>#</th><th>Purchase driver</th><th>Recommendation</th><th>Decision</th><th class="num">Net buyers a year</th></tr></thead><tbody>${rowsT}</tbody></table></div>
     <p class="fine">Recommendation from purchase signals, customers won and lost and confidence. Decided rows are shaded. Net buyers: choice model on the BMW sales plan 2030 (customer types modelled).</p>`);
-  if(secs.has("evidence")) sec.push(`<h2>Why customers buy it</h2><div class="cards">${d.rows.map(r => `<div class="ev"><b>${r.rank}. ${h(r.title)}</b><div class="kv"><span>Purchase signal <b>${r.buy}</b></span><span>Asked for <b>${r.wish}</b></span><span>Evidence <b>${h(r.ev)}</b></span><span>${fmt(r.n)} comments</span></div><p>${h(r.motive)}</p>${r.quote ? `<q>${h(r.quote)}</q><small>${h(r.quoteId)} · real BMW comment, names masked</small>` : ""}</div>`).join("")}</div>`);
+  if(secs.has("evidence")) sec.push(`<h2>Why customers buy it</h2><div class="cards">${d.rows.map(r => `<div class="ev"><b>${r.rank}. ${h(r.title)}</b><div class="kv"><span>Purchase signal <b>${r.buy}</b></span><span>Asked for <b>${r.wish}</b></span><span>Evidence <b>${h(r.ev)}</b></span><span>${r.n ? `${fmt(r.n)} comments from ${h(d.market)}` : `no comments from ${h(d.market)}`}</span></div><p>${h(r.motive)}</p>${r.quote ? `<q>${h(r.quote)}</q><small>${h(r.quoteId)} · real BMW comment, names masked</small>` : ""}</div>`).join("")}</div>`);
   if(secs.has("spec")){ const sp = d.rows.filter(r => ["Approved", "Edited"].includes(r.status));
     sec.push(`<h2>Target and acceptance criterion</h2>${sp.length ? sp.map(r => `<div class="spec"><b>${r.rank}. ${h(r.title)}</b> <em>${h(r.status)}</em><dl><dt>Target</dt><dd>${h(r.target)}</dd><dt>Acceptance</dt><dd>${h(r.accept)}</dd></dl></div>`).join("") : `<p class="fine">Nothing approved yet.</p>`}`); }
   if(secs.has("open")) sec.push(`<h2>Open evidence requests</h2>${d.openReq.length ? `<ul class="open">${d.openReq.map(o => `<li class="${o.overdue ? "late" : ""}"><b>${h(o.title)}</b> <span>${h(o.ask || "evidence")}${o.owner ? ", " + h(o.owner) : ""}${o.due ? ", due " + h(o.due) : ""}${o.overdue ? " (overdue)" : ""}</span><p>${h(o.reason)}</p></li>`).join("")}</ul>` : `<p class="fine">Nothing is waiting for evidence.</p>`}`);
@@ -3676,7 +3726,7 @@ function briefMarkdown(d, mode, secs){
   if(secs.has("decisions")){ L.push(`## Decisions on the top 10 in ${d.market}`, "", "| # | Purchase driver | Recommendation | Decision | Net buyers a year |", "|---|---|---|---|---|");
     d.rows.forEach(r => L.push(`| ${r.rank} | ${r.title} (${r.id}) | ${r.reco} | ${r.status}${r.ask ? ` (${r.ask}${r.owner ? ", " + r.owner : ""}${r.due ? ", due " + r.due : ""})` : ""} | ${expMoney(r.net)} |`));
     if(detailed) d.rows.filter(r => r.reason).forEach(r => L.push("", `- **${r.rank}. ${r.title}**: ${r.reason} (${r.by}, ${expWhen(r.at)})`)); L.push(""); }
-  if(secs.has("evidence")){ L.push("## Why customers buy it", ""); d.rows.forEach(r => L.push(`- **${r.rank}. ${r.title}**: purchase signal ${r.buy}, asked for ${r.wish}, evidence ${r.ev}, ${fmt(r.n)} comments. ${r.motive}${r.quote ? ` "${r.quote}" (${r.quoteId})` : ""}`)); L.push(""); }
+  if(secs.has("evidence")){ L.push("## Why customers buy it", ""); d.rows.forEach(r => L.push(`- **${r.rank}. ${r.title}**: purchase signal ${r.buy}, asked for ${r.wish}, evidence ${r.ev}, ${r.n ? `${fmt(r.n)} comments from ${d.market}` : `no comments from ${d.market}`}. ${r.motive}${r.quote ? ` "${r.quote}" (${r.quoteId})` : ""}`)); L.push(""); }
   if(secs.has("spec")){ L.push("## Target and acceptance criterion", ""); const sp = d.rows.filter(r => ["Approved", "Edited"].includes(r.status)); sp.length ? sp.forEach(r => L.push(`- **${r.rank}. ${r.title}** [${r.status}]`, `  - Target: ${r.target}`, `  - Acceptance: ${r.accept}`)) : L.push("_Nothing approved yet._"); L.push(""); }
   if(secs.has("open")){ L.push("## Open evidence requests", ""); d.openReq.length ? d.openReq.forEach(o => L.push(`- **${o.title}**: ${o.ask || "evidence"}${o.owner ? ", " + o.owner : ""}${o.due ? ", due " + o.due : ""}${o.overdue ? " (overdue)" : ""}. ${o.reason}`)) : L.push("_Nothing is waiting for evidence._"); L.push(""); }
   if(secs.has("markets")){ L.push("## Sales upside by market", "", "| Market | Extra buyers a year | vs today | Plan 2030 | Strongest drivers |", "|---|---|---|---|---|"); d.markets.forEach(m => L.push(`| ${m.name}${m.modelled ? " (modelled)" : ""} | ${expMoney(m.up)} | ${m.pct >= 0 ? "+" : ""}${m.pct.toFixed(1)} % | ${fmtK(m.plan)} | ${m.drivers.join(", ")} |`)); L.push(""); }
@@ -3744,7 +3794,7 @@ function updateAIStatus(){
   const el = $("#cstat"); if(!el) return;
   if(!aiReady){ el.className = "cstat"; el.innerHTML = `<i></i>Connecting to ${AI_NAME}`; return; }
   el.className = "cstat" + (sampleFn ? " live" : "");
-  el.innerHTML = sampleFn ? `<i></i>Live · ${IN_ROWBOAT ? "the model set in Rowboat" : "Claude on your account"}` : "<i></i>Offline demo · computed from the data";
+  el.innerHTML = sampleFn ? `<i></i>Live · ${IN_ROWBOAT ? `the model set in Rowboat${RB ? ` · brain ${fmt(Object.keys(RB.notes).length)} notes` : ""}` : "Claude on your account"}` : "<i></i>Offline demo · computed from the data";
   el.title = sampleFn ? `Answers come from ${IN_ROWBOAT ? "the model set in Rowboat" : "Claude on your account"}, grounded in the data on screen` : "Answers are computed from the data on screen";
 }
 function disableAI(){ sampleFn = null; updateAIStatus(); }
@@ -3753,21 +3803,30 @@ function aiErr(code){
     empty_completion:"No answer came back. Try a shorter question.", upstream_error:"The connection dropped. Try again."})[code] || "Something went wrong. Try again.";
 }
 const HIDE_CODES = ["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"];
+// Customer study scores of the current market for every model, by study item (lets Nordi compare models)
+function studyTable(){
+  const out = {};
+  for(const st of Object.values(BMW.study || {})) for(const [m, byMk] of Object.entries(st)){
+    const x = byMk[state.market]; if(!x || !MODELS[m]) continue;
+    for(const [item, v] of x.items){ (out[item] = out[item] || {})[MODELS[m].name] = `${v} of ${x.scale}`; }
+  }
+  return out;
+}
 function aiContext(){
   const all = ranked(), rk = all.slice(0, TOP), net = netEffects(), sim = simulate(specCfg());
   return JSON.stringify({
-    vehicle:`${mName()} successor (${M().seg})`, horizon:"launch in 3 to 5 years", market:mkLabel(), otherMarkets:MKS.filter(k => k !== state.market && sold(k)).map(k => MK[k]), salesPlan2030:Object.fromEntries(MKS.map(k => [MK[k], plan(k)])), basePriceEUR:PRICE[state.model],
-    data:{commentsThisModel:M().meta.unique, commentsThisMarket:findingsNow(), allModels:BMW.issues.unique, recency:RECENCY, sources:"A owner reviews, B customer care logs, C quality survey, D appeal survey (inferred)", basisPerMarket:Object.fromEntries(MKS.map(k => [MK[k], BASIS[basisOf(k)]])),
+    vehicle:`${mName()} successor (${M().seg})`, horizon:"launch in 3 to 5 years", market:mkLabel(), soldInThisMarket:sold(state.market), otherMarkets:MKS.filter(k => k !== state.market && sold(k)).map(k => MK[k]), salesPlan2030:Object.fromEntries(MKS.map(k => [MK[k], plan(k)])), basePriceEUR:PRICE[state.model],
+    data:{commentsThisModel:M().meta.unique, commentsThisMarket:findingsNow(), commentsByCountryThisModel:M().meta.countries, customerStudyScoresThisMarket:studyTable(),  allModels:BMW.issues.unique, recency:RECENCY, sources:"A owner reviews, B customer care logs, C quality survey, D appeal survey (inferred)", basisPerMarket:Object.fromEntries(MKS.map(k => [MK[k], BASIS[basisOf(k)]])),
       issuesHandled:{duplicateRows:BMW.issues.dupRows, untagged:BMW.issues.noclass, aiAssigned:BMW.issues.aiAssigned, personalDataMasked:BMW.issues.pii, sales:BMW.issues.sales},
       explicitPurchaseReasons:BMW.issues.purchase, conquestBuyers:BMW.issues.conquest, switchingThreats:BMW.issues.churn},
     weights:{mode:state.wmode === "derived" ? "learned from data" : "custom", ...Object.fromEntries(FACT.map(f => [f.n, getW()[f.k]]))},
-    projection:{buyersPerYear:Math.round(sim.units), averagePriceEUR:Math.round(sim.price)},
+    projection:sold(state.market) ? {buyersPerYear:Math.round(sim.units), averagePriceEUR:Math.round(sim.price)} : "N/A: the model is not sold in this market, so there is no buyer projection",
     topPurchaseDrivers:rk.map((x, i) => { const r = x.r, T = r.T, c = T.dv[dv()]; return {rank:i + 1, id:r.id, title:r.title, score:r1(x.s.total), status:STATUS[statusOf(r.id)].l,
       purchaseSignal:Math.round(x.s.f.buy), askedFor:wishOf(r), kano:Object.fromEntries(MKS.filter(k => sold(k)).map(k => [MK[k], KANO[kanoOf(r, k)]])), rankInOtherMarkets:Object.fromEntries(MKS.filter(k => k !== state.market && sold(k)).map(k => [MK[k], rankMap(k)[r.id]])), putsOffPercent:revOf(r),
       netBuyersPerYear:Math.round(net[r.id].net), wonPerYear:Math.round(net[r.id].gain), lostPerYear:Math.round(-net[r.id].loss), satisfactionGap:Math.round(x.s.f.gap),
       lostOrWonBySegment:Object.fromEntries(SEGS.map((s, j) => [s.n, Math.round(net[r.id].seg[j])])), priceIncreaseEUR:SIMF[r.id].range ? fcost(r.id) * (targetKm() - 520) / 100 : fcost(r.id),
       comments:{thisModel:c.n, thisMarket:evN(r), allModels:T.n, likes:T.L, wants:T.W, difficultToUse:T.D, defects:T.F, purchaseReasons:T.P, switchingThreats:T.C, bySource:T.src, byDrivetrain:T.eng},
-      evidenceLevel:r.ev0.level, confidence:confOf(r), quotes:quotesFor(r, 3).map(q => `${q.id} (${q.dv}, ${q.c}): ${SRCQ(q).slice(0, 160)}`), inTop10UnderWeightings:`${robustness()[r.id]} of ${N_PRESETS}`, cutoff:cutoffLine(r.id), option:BMW.options[r.id]?.[dv()] || null,
+      evidenceLevel:r.ev0.level, confidence:confOf(r), quotes:quotesFor(r, 3).map(q => `${q.id} (${q.dv}, ${q.c}, market ${q.mk}): ${SRCQ(q).slice(0, 160)}`), inTop10UnderWeightings:`${robustness()[r.id]} of ${N_PRESETS}`, cutoff:cutoffLine(r.id), option:BMW.options[r.id]?.[dv()] || null,
       motive:r.motive, target:effTarget(r), assumptions:r.assume, uncertainties:uncertainties(r), conflict:r.conflict,
       decision:decOf(r.id) ? {status:decOf(r.id).status, reason:decOf(r.id).reason, round:decOf(r.id).round || 1, ...(decOf(r.id).ask ? {evidenceAskedFrom:decOf(r.id).ask} : {})} : "proposed", recheck:recheckOf(r.id) || undefined}; }),
     otherCandidates:all.slice(TOP).map((x, i) => ({rank:TOP + i + 1, id:x.r.id, title:x.r.title, score:r1(x.s.total), purchaseSignal:Math.round(x.s.f.buy), askedFor:wishOf(x.r)})),
@@ -3775,7 +3834,7 @@ function aiContext(){
     ownerComparisonsWithRivals:Object.fromEntries(Object.entries(BMW.comp).map(([b, v]) => [b, {mentions:v.n, bmwBetter:v.bmw, rivalBetter:v.rival}])),
     valueForMoneyStudy:BMW.value.cneu,
     research:RESEARCH.map(x => `${x.t}: ${x.s} (${x.src})`),
-    ...(RB ? {rowboatKnowledgeGraph:rbModelNotes().map(n => ({note:rbName(n), facts:RB.notes[n].facts})),
+    ...(RB ? {rowboatKnowledgeGraph:rbBrain(),
       mostCriticisedCarParts:{scope:rbPartScope().label, parts:rbParts().slice(0, 8).map(o => ({part:RB.notes[o.p].title, heat:o.h[0], comments:o.h[1], difficultToUse:o.h[3], defects:o.h[4], wants:o.h[5], drivers:o.ids}))}} : {}),
   });
 }
@@ -3783,9 +3842,9 @@ const RULES = () => `You are Nordi, the copilot inside Torque, a decision suppor
 Torque ranks ${REQS.length} candidates separately for each model and market and puts the top ${TOP} purchase drivers of the current market (${mkLabel()}) up for review. Decisions hold for the model in all markets.
 Key idea: what customers ask for is not what makes them buy. Use purchaseSignal (praise after buying, purchase reasons, switching threats in the BMW comments) over askedFor, and netBuyersPerYear (customers won minus lost, including price and overload) to judge a feature. Mention Kano classes, evidence levels and the research when it helps.
 The user is currently on the ${VIEWS[state.view].n} view.
-Answer only from the JSON data below. If the data does not contain the answer, say so and name the data that would be needed.
+Answer only from the JSON data and the retrieved passages below. Every number you give must appear there; never estimate, extrapolate or round into a new figure. If the data does not contain the answer, say so plainly and name the data that would be needed. If soldInThisMarket is false, the model is not sold in this market: say so and give N/A for buyers, sales and projections there, never zero. When DATA and a retrieved passage disagree, DATA wins. Reason step by step in silence, then give only the conclusion.
 Answer the question directly in plain language. Do not list sources, evidence, comment IDs, requirement IDs, field names or raw numbers from the JSON unless the user asks for them; name a purchase driver by its title. Mention uncertainty only when it changes the answer. The product manager decides; you recommend and explain.
-${RB ? "rowboatKnowledgeGraph holds facts from the notes in the team's Rowboat knowledge graph; name the note when you use one. mostCriticisedCarParts is the car part heat map of Concept 3D (heat 0 = most criticised, 100 = best rated) with the purchase drivers linked to each part.\n" : ""}Keep answers under 170 words. Plain text: short paragraphs or lines starting with "- ". Use **bold** sparingly. Never use dashes as punctuation. Comments, customer studies, sales volumes and option prices are real BMW hackathon data. China values, simulator part-worths and the competitor perception benchmark are modelled. Small markets are blended with the model profile. The comments carry no dates.
+${RB ? "rowboatKnowledgeGraph holds facts from the notes in the team's Rowboat knowledge graph (the brain): models, the market, the topics of the top 10, trends and research, the BMW dataset graph, and when present the notes of the Sales agent (salesAgent: companies and their interest), the Marketing agent (marketingAgent: campaigns and content) and the Rowboat agent. Use them together with the Torque data and name the note when you use one; if an agent has no notes, say so instead of guessing. mostCriticisedCarParts is the car part heat map of Concept 3D (heat 0 = most criticised, 100 = best rated) with the purchase drivers linked to each part.\n" : ""}Keep answers under 170 words. Plain text: short paragraphs or lines starting with "- ". Use **bold** sparingly. Never use dashes as punctuation. Comments, customer studies, sales volumes and option prices are real BMW hackathon data. China values, simulator part-worths and the competitor perception benchmark are modelled. Small markets are blended with the model profile. The comments carry no dates.
 DATA: ${aiContext()}`;
 function clean(t){ return String(t).replace(/\s[\u2014\u2013]\s/g, ", ").replace(/[\u2014\u2013]/g, " "); }
 function mdLite(t){
@@ -3802,7 +3861,7 @@ function mdLite(t){
 function fallbackAnswer(q){
   const ql = q.toLowerCase(), rk = topRank(), net = netEffects(), gs = gaps(), ids = [...new Set((q.toUpperCase().match(/R-\d{2}/g) || []).filter(id => RBY[id]))];
   const line = x => `- ${x.r.id} ${x.r.title}: score ${x.s.total.toFixed(1)}, ${sgn(net[x.r.id].net)} buyers a year`;
-  const qt = r => { const q = r.T.quotes[0]; return q ? ` Owner (${q.id}): "${SRCQ(q).slice(0, 120)}"` : ""; };
+  const qt = r => { const q = quotesFor(r, 1)[0]; return q ? ` Owner (${q.id}, ${q.c}): "${SRCQ(q).slice(0, 120)}"` : ""; };
   if(ids.length >= 2){
     const [a, b] = ids.map(id => ranked().find(x => x.r.id === id)), [hiX, loX] = a.s.total >= b.s.total ? [a, b] : [b, a];
     const diffs = hiX.s.parts.map((p, i) => ({n:p.n, d:p.pts - loX.s.parts[i].pts})).sort((x, y) => y.d - x.d), lw = diffs[diffs.length - 1];
@@ -3865,7 +3924,7 @@ async function runChallenge(r){
     chalCtl?.abort(); chalCtl = new AbortController();
     const n = netEffects()[r.id], rr = rankRange(r.id);
     const prompt = `You are the Challenger agent inside Torque, a tool that helps a BMW product manager decide on customer requirements for the ${M().name} successor. Play devil's advocate against the requirement below. Give the 3 strongest counter arguments based only on the data: separate what customers ask for from what makes them buy, question the sources (B are agent paraphrases, AI assigned comments, modelled China), and name customers lost through price or overload. Then one sharp question the product manager should answer before approving. Under 110 words. Plain text, 3 lines starting with "- ", then a line starting with "**Question:**". Never use dashes as punctuation. Comments, studies, sales and prices are real BMW data; China and part-worths are modelled.
-REQUIREMENT: ${JSON.stringify({id:r.id, title:r.title, says:SRCQ(r.says), motive:r.motive, target:effTarget(r), askedFor:wishOf(r), purchaseSignal:buyOf(r), rank:rankMap()[r.id], topN:TOP, kano:Object.fromEntries(MKS.filter(k => sold(k)).map(k => [MK[k], KANO[kanoOf(r, k)]])), putsOffPercent:revOf(r), netBuyersPerYear:Math.round(n.net), won:Math.round(n.gain), lost:Math.round(-n.loss), bySegment:Object.fromEntries(SEGS.map((s, j) => [s.n, Math.round(n.seg[j])])), comments:{all:r.T.n, likes:r.T.L, wants:r.T.W, difficultToUse:r.T.D, defects:r.T.F, bySource:r.T.src, aiAssigned:r.T.ai}, evidenceLevel:r.ev0.level, confidence:confOf(r), assumptions:r.assume, uncertainties:uncertainties(r), conflict:r.conflict, rankRange:[rr.best, rr.worst], marketView:mkLabel()})}`;
+REQUIREMENT: ${JSON.stringify({id:r.id, title:r.title, says:saysFor(r) ? SRCQ(saysFor(r)) : `no ${dv()} owner comment from ${mkLabel()}`, saysFrom:saysFor(r) ? qMeta(saysFor(r)) : "", motive:r.motive, target:effTarget(r), askedFor:wishOf(r), purchaseSignal:buyOf(r), rank:rankMap()[r.id], topN:TOP, kano:Object.fromEntries(MKS.filter(k => sold(k)).map(k => [MK[k], KANO[kanoOf(r, k)]])), putsOffPercent:revOf(r), netBuyersPerYear:Math.round(n.net), won:Math.round(n.gain), lost:Math.round(-n.loss), bySegment:Object.fromEntries(SEGS.map((s, j) => [s.n, Math.round(n.seg[j])])), comments:{all:r.T.n, likes:r.T.L, wants:r.T.W, difficultToUse:r.T.D, defects:r.T.F, bySource:r.T.src, aiAssigned:r.T.ai}, evidenceLevel:r.ev0.level, confidence:confOf(r), assumptions:r.assume, uncertainties:uncertainties(r), conflict:r.conflict, rankRange:[rr.best, rr.worst], marketView:mkLabel()})}`;
     try{
       await sampleFn(prompt, {modelTier:"quick", signal:chalCtl.signal, onText:({text}) => { if(openId === r.id) box.innerHTML = mdLite(text); }});
       if(openId === r.id) box.insertAdjacentHTML("beforeend", `<div class="bub"><div class="meta">Live · ${AI_NAME}</div></div>`);
@@ -3911,7 +3970,7 @@ function renderCtx(){
   el.innerHTML = `<summary><span>Sees ${VIEWS[state.view].n} · ${mName()} · ${mkLabel()}</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary>
     <dl><dt>Vehicle</dt><dd>${mName()} successor</dd><dt>Market</dt><dd>${mkLabel()}, ${BASIS[basisOf()].toLowerCase()}</dd>
     <dt>BMW data</dt><dd>${fmt(M().meta.unique)} comments, studies, sales, prices</dd><dt>Purchase drivers</dt><dd>Top ${TOP} of ${REQS.length} candidates</dd><dt>Top now</dt><dd>${rk[0].r.id} ${esc(rk[0].r.short)}</dd><dt>Simulator</dt><dd>4 customer types, ${per(RIVALS, state.model).filter(x => x.m.includes(state.market)).length} rivals here</dd><dt>Decisions</dt><dd>${c.done} of ${TOP}</dd>
-    <dt>Research</dt><dd>${RESEARCH.length} linked studies</dd></dl><p>Every answer is grounded in this context, nothing else. China and the simulator part-worths are modelled.</p>`;
+    <dt>Research</dt><dd>${RESEARCH.length} linked studies</dd>${(c => c ? `<dt>Knowledge graph</dt><dd>${fmt(c.notes)} notes in the brain</dd><dt>Agents</dt><dd>${[c.sales ? `Sales ${c.sales} companies` : "", c.marketing ? `Marketing ${c.marketing} campaigns` : "", c.agent ? `Rowboat ${c.agent} notes` : ""].filter(Boolean).join(", ") || "no agent notes in this vault yet"}</dd>` : "")(rbCounts())}</dl><p>Every answer is grounded in this context, nothing else. China and the simulator part-worths are modelled.</p>`;
   el.open = ctxOpen;
   if(panelOpen && !chat.length) renderMsgs();
 }
@@ -3934,6 +3993,62 @@ function closePanel(){
   chatCtl?.abort(); renderNav();
 }
 let chatCtl = null, busy = false;
+/* ---------- Voice for Nordi ---------- */
+// Speech to text and text to speech: Rowboat's voice API first (ElevenLabs/Deepgram or a Rowboat account), then the
+// RAG backend's /voice endpoints (OpenAI, src/rag_backend/voice.py); reading aloud falls back to the browser's voice.
+const VOICE = {rec:null, chunks:[], timer:0, audio:null, speak:(() => { try{ return localStorage.getItem("torque.voice") === "1"; }catch(e){ return false; } })()};
+async function voicePost(path, body){
+  for(const url of ["/_rowboat/voice/" + path, RAG_URL + "/voice/" + path]){
+    try{
+      const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json", ...(url.startsWith("/_rowboat") ? {"X-Rowboat-App":"1"} : {})}, body:JSON.stringify(body)});
+      if(r.ok) return await r.json();
+    }catch(e){}
+  }
+  return null;
+}
+const blobB64 = b => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(",")[1] || ""); fr.onerror = no; fr.readAsDataURL(b); });
+function micUI(state){
+  const b = $("#cmic"); if(!b) return;
+  b.classList.toggle("rec", state === "rec"); b.classList.toggle("busy", state === "busy");
+  b.setAttribute("aria-pressed", state === "rec"); b.title = state === "rec" ? "Listening, click to stop" : state === "busy" ? "Transcribing" : "Speak a question (click again to stop)";
+  const inp = $("#cin"); if(inp) inp.placeholder = state === "rec" ? "Listening… click the mic again when you are done" : state === "busy" ? "Transcribing…" : "Ask about purchase drivers, customers won and lost, or a driver like R-05";
+}
+async function micToggle(){
+  if(VOICE.rec){ VOICE.rec.stop(); return; }
+  if(busy) return;
+  let stream;
+  try{ stream = await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch(e){ toast("No microphone access. Allow the microphone for Torque and try again."); return; }
+  const type = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"].find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t));
+  const rec = new MediaRecorder(stream, type ? {mimeType:type} : undefined);
+  VOICE.rec = rec; VOICE.chunks = [];
+  rec.ondataavailable = e => { if(e.data && e.data.size) VOICE.chunks.push(e.data); };
+  rec.onstop = async () => {
+    clearTimeout(VOICE.timer); stream.getTracks().forEach(t => t.stop()); VOICE.rec = null;
+    const blob = new Blob(VOICE.chunks, {type:rec.mimeType || "audio/webm"});
+    if(blob.size < 2000){ micUI("idle"); toast("Nothing recorded. Hold on a moment longer and try again."); return; }
+    micUI("busy");
+    const r = await voicePost("transcribe", {audioBase64:await blobB64(blob), mimeType:blob.type});
+    micUI("idle");
+    const text = (r && r.transcript || "").trim();
+    if(!r){ toast("The voice service is not reachable (Rowboat voice or the RAG backend on :8100)."); return; }
+    if(!text){ toast("Could not understand the recording. Please try again."); return; }
+    ask(text);
+  };
+  rec.start(); micUI("rec");
+  VOICE.timer = setTimeout(() => { if(rec.state === "recording") rec.stop(); }, 45000);
+}
+const speechText = t => String(t).replace(/\*\*/g, "").replace(/^\s*([-*•]|\d+\.)\s+/gm, "").replace(/\bR-(\d{2})\b/g, "R $1").replace(/\s+/g, " ").trim();
+function stopSpeaking(){ if(VOICE.audio){ VOICE.audio.pause(); VOICE.audio = null; } if("speechSynthesis" in window) speechSynthesis.cancel(); }
+async function speakText(t){
+  stopSpeaking();
+  const text = speechText(t); if(!text) return;
+  const r = await voicePost("tts", {text});
+  if(r && r.audioBase64){ VOICE.audio = new Audio(`data:${r.mimeType || "audio/mpeg"};base64,${r.audioBase64}`); VOICE.audio.play().catch(() => {}); return; }
+  if("speechSynthesis" in window){ const u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; speechSynthesis.speak(u); }
+}
+function speakerUI(){ const b = $("#cspk"); if(b){ b.setAttribute("aria-pressed", VOICE.speak); b.classList.toggle("on", VOICE.speak); b.title = VOICE.speak ? "Reading answers aloud (click to turn off)" : "Read answers aloud"; } }
+
 /* ---------- RAG for Nordi ---------- */
 // The RAG backend (src/rag_backend, feat/ehl-search) indexes the whole Dataset as Markdown chunks in Qdrant.
 // Nordi retrieves for every question: chunks of the current model plus the best chunks overall.
@@ -3980,7 +4095,7 @@ async function ask(text){
         ;
     }catch(e){
       const code = e && e.code;
-      if(code === "cancelled"){ ai.content = e.text || ai.content || ""; ai.meta = "Stopped"; }
+      if(code === "cancelled"){ ai.content = e.text || ai.content || ""; ai.meta = "Stopped"; ai.stopped = true; }
       else if(HIDE_CODES.includes(code)){ disableAI(); ai.content = fallbackAnswer(text); ai.meta = "Offline demo answer, computed from the data"; ai.offline = true; }
       else { ai.content = (e && e.text) ? e.text : fallbackAnswer(text); ai.meta = aiErr(code) + (e && e.text ? "" : " Showing the offline answer."); ai.offline = !(e && e.text); }
       if(!ai.content) ai.content = "Stopped before an answer came back.";
@@ -3990,6 +4105,8 @@ async function ask(text){
     ai.content = fallbackAnswer(text); ai.meta = "Offline demo answer, computed from the data"; ai.offline = true;
   }
   ai.pending = false; busy = false; renderMsgs();
+  // A stopped answer stays silent: Stop means stop, not "read the half answer aloud"
+  if(VOICE.speak && ai.content && !ai.offline && !ai.stopped) speakText(ai.content);
   if(stop) stop.hidden = true; if(send) send.disabled = false;
 }
 function initCopilot(){
@@ -3999,7 +4116,10 @@ function initCopilot(){
   inp.addEventListener("input", grow);
   inp.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); $("#cform").requestSubmit(); } });
   $("#cform").onsubmit = e => { e.preventDefault(); const t = inp.value; inp.value = ""; grow(); ask(t); };
-  $("#cstop").onclick = () => chatCtl?.abort();
+  $("#cstop").onclick = () => { chatCtl?.abort(); stopSpeaking(); };
+  $("#cmic").onclick = micToggle;
+  $("#cspk").onclick = () => { VOICE.speak = !VOICE.speak; try{ localStorage.setItem("torque.voice", VOICE.speak ? "1" : "0"); }catch(e){} if(!VOICE.speak) stopSpeaking(); speakerUI(); };
+  speakerUI();
   $("#cpClose").onclick = closePanel;
   $("#cpNew").onclick = () => { if(busy) chatCtl?.abort(); chat = []; renderMsgs(); inp.focus(); };
   $("#cpctx").addEventListener("toggle", e => { ctxOpen = e.target.open; });

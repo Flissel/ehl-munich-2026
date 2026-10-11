@@ -106,6 +106,12 @@ Team members setting up a development PC (forks, work-package branches) use [SET
 | `outputs/` | Preprocessed Markdown, chunks and embeddings for the RAG |
 | `docs/` | Deliverables, data pipeline, RAG backend, design specs, and the pages below |
 
+### Nordi voice (mic and read aloud)
+
+In Torque's chat, the **mic** button records a question. Click it again to stop; the question is transcribed and sent to Nordi. The **speaker** button reads answers aloud and stays on until you turn it off. Speech uses Rowboat's voice API if it is configured. Otherwise it uses the RAG backend (`/voice/transcribe`, `/voice/tts`, OpenAI key from `search/.env`), so keep the backend running on :8100. Allow microphone access when asked.
+
+Nordi answers from Torque's dataset numbers plus RAG passages. When the two disagree, the dataset numbers win. Markets where a model is not sold show N/A, and Nordi says when the answer is not in the data.
+
 ## Docs
 
 - [Why Rowboat, and how we integrated it](docs/why-rowboat.md)

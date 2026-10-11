@@ -43,7 +43,9 @@ MARKET_NOTES = {"EU": "Market Europe", "CN": "Market China", "US": "Market USA",
 STATUS = {"approved": "Approved", "modified": "Edited", "challenged": "Challenged", "rejected": "Rejected"}
 
 
-GROUPS = ("Projects", "Topics", "BMW", "Vehicle Parts")   # WP1 notes, Yunes' dataset graph and car parts (demo/visu)
+# WP1 notes, Yunes' dataset graph and car parts (demo/visu), plus what the agents write into the brain: companies from the
+# Sales agent (Organizations, via the bridge), campaigns and results from the Marketing and Rowboat agents (Content, Agent Notes)
+GROUPS = ("Projects", "Topics", "BMW", "Vehicle Parts", "Organizations", "Content", "Agent Notes")
 
 
 def parse_note(path: Path, rel: str) -> dict:
