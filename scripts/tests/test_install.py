@@ -48,6 +48,19 @@ def test_no_openai_key(tmp_path):
     assert install.find_openai_key(tmp_path, {}) is None
 
 
+def test_example_notes_are_copied_without_overwriting(tmp_path):
+    src, vault = tmp_path / "example-data", tmp_path / "knowledge"
+    (src / "Projects").mkdir(parents=True)
+    (src / "Projects" / "G60.md").write_text("# G60 from repo", encoding="utf-8")
+    (src / "Topics").mkdir()
+    (src / "Topics" / "Email.md").write_text("# Email from repo", encoding="utf-8")
+    (vault / "Projects").mkdir(parents=True)
+    (vault / "Projects" / "G60.md").write_text("# G60 edited in Rowboat", encoding="utf-8")
+    assert install.copy_example_notes(src, vault) == 1
+    assert (vault / "Projects" / "G60.md").read_text(encoding="utf-8") == "# G60 edited in Rowboat"
+    assert (vault / "Topics" / "Email.md").read_text(encoding="utf-8") == "# Email from repo"
+
+
 def test_car_zips_match_prepare_local():
     sys.path.insert(0, str(SCRIPTS.parent / "demo" / "visu"))
     import prepare_local

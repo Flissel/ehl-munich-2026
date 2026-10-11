@@ -11,7 +11,8 @@ What it does, idempotently (safe to re-run):
      next to this repo and installs its packages (pnpm)
   3. market/.venv: the market MCP server, the research pipeline (research/data/processed) and the
      demo scripts; demo/torque/data/quotes.json (customer comment texts) from Dataset/
-  4. the Rowboat knowledge vault: product, part, assumption and requirement notes
+  4. the Rowboat knowledge vault: product and topic notes (demo/example-data), brand, model, part,
+     assumption and requirement notes; existing notes are never overwritten
   5. Torque as a Rowboat app (<workdir>/apps/torque) and `ehl-market` in <workdir>/config/mcp.json
   6. heat map data and, with --cars, the three Sketchfab cars for the Concept 3D view
   7. RAG: Qdrant (Docker), search/.venv, OPENAI_API_KEY into search/.env, the Qdrant index
@@ -90,6 +91,19 @@ def find_openai_key(root: Path, env: Mapping[str, str]) -> str | None:
     return None
 
 
+def copy_example_notes(src: Path, vault: Path) -> int:
+    """Copy the product and topic notes (demo/example-data) into the vault; never overwrite a note."""
+    copied = 0
+    for note in sorted(src.rglob("*.md")):
+        dest = vault / note.relative_to(src)
+        if dest.exists():
+            continue
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(note, dest)
+        copied += 1
+    return copied
+
+
 def missing_cars(models: Path) -> list[str]:
     return [car for car in CARS if not (models / car / "scene.gltf").is_file()]
 
@@ -160,7 +174,9 @@ def setup_market(refresh: bool) -> Path:
 def setup_vault(py: Path, workdir: Path, refresh: bool) -> None:
     vault = workdir / "knowledge"
     vault.mkdir(parents=True, exist_ok=True)
-    cmd = [str(py), str(ROOT / "demo" / "visu" / "vault.py"), "notes", "--vault", str(vault)]
+    copied = copy_example_notes(ROOT / "demo" / "example-data", vault)
+    log.info("%d product and topic notes copied to %s (Projects/, Topics/)", copied, vault)
+    cmd =[str(py), str(ROOT / "demo" / "visu" / "vault.py"), "notes", "--vault", str(vault)]
     setup_pc.run(cmd + (["--refresh"] if refresh else []))
     if not (workdir / "config" / "notes.json").exists():
         log.warning("Rowboat has not created %s yet: start Rowboat once, then run "
