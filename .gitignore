@@ -7,9 +7,9 @@
 *.env
 !*.env.example
 
-# Torque 3D view (demo/visu): local data (customer quotes) and the CC-BY-NC car model
+# Torque 3D view (demo/visu): generated local data. The three cars in dist/visu/models/ are committed
+# (CC BY-NC-SA 4.0, Ddiaz Design, license.txt in each folder).
 demo/torque/dist/visu/data/
-demo/torque/dist/visu/models/
 demo/visu/node_modules/
 __pycache__/
 *.tsbuildinfo

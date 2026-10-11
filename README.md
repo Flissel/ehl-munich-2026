@@ -1,58 +1,131 @@
-# ehl-munich-2026
-EHL Munich 2026 Grand Finale hackathon project
+# Torque in Rowboat: an AI product requirements cockpit
 
-## Team & Setup
+EHL Munich 2026 Grand Finale (10–11 Oct 2026, Garching).
 
-**Event:** EHL Munich 2026 Grand Finale (10–11 Oct 2026, Garching)  
-**Agent Sessions:** Tracked with [Entire](https://github.com/anthropics/entire)
+Product managers choose what the successor of a car should have. Their inputs are thousands of customer
+comments, survey studies, option price lists, sales figures and market research. **Torque** turns these
+inputs into a ranked list of purchase drivers and requirements. Every requirement carries its evidence, an
+explicit human decision and an append-only audit trail. On a 3D model of the car you can see which parts
+customers criticise. Torque runs as an app inside **[Rowboat](https://github.com/rowboatlabs/rowboat)**, the
+open-source AI coworker. Rowboat's knowledge graph and agent work on the same data as the cockpit.
 
-## Run the demo on your PC (Torque in Rowboat)
+## What the challenge asks for, and where to see it
 
-Torque (`demo/torque`) is the decision cockpit, shown as an app inside Rowboat. Its content comes from the
-Dataset, the Rowboat knowledge graph, the agent and the RAG; nothing is hardcoded in the page. Steps, Windows
-(PowerShell) and macOS:
+| Deliverable | In the prototype |
+| --- | --- |
+| 1. Prototype that processes heterogeneous inputs, derives and prioritises requirements, with human review | **Torque**: *Overview*, *Purchase drivers*, *Simulator*. Inputs: feedback workbooks, customer studies, option lists and sales volumes in `Dataset/`, plus outside market data via the `ehl-market` MCP server |
+| 2. Structured list of requirements: ID, description, findings and sources, priority or score, rationale, evidence level, assumptions, decision status | **Rowboat vault** `Requirements/` (one note per requirement, e.g. `R-01 Fast charging`: target, acceptance criterion, assumptions) and **Torque** *Purchase drivers* (score, evidence, quotes with comment IDs). The *Brief* export compiles all of it |
+| 3. End-to-end workflow: what the AI does autonomously, where a human must decide | **Torque** *Data and workflow*: every step from ingest to decision, marked "autonomous, logged" or "human". Spec: [docs/deliverables.md](docs/deliverables.md) |
+| 4. Audit trail from findings through scoring to the human decision | **Torque** *Audit trail* (append-only: content, score, priority, evidence and status changes with actor, time and reason) and *Review log*. Decisions are written back to Rowboat notes (`Purchase Drivers/`) |
 
-1. **Rowboat in dev mode** and the tools (Git, Python 3.12, Node 22/24, pnpm 10, Docker Desktop): follow
-   [SETUP.md](SETUP.md). Set a model provider in Rowboat with your own key (Nordi and the design prompt use it).
-2. **This branch:** `git fetch origin && git switch feat/ehl-demo-visu` (or `main` once PR #7 is merged).
-3. **Download the three 3D cars** (free Sketchfab account, format **glTF**) into one folder, e.g. `car models/`,
-   keep the zip names:
-   - 1 Series (F70) → [2020 BMW X1 xDrive18d](https://sketchfab.com/3d-models/2020-bmw-x1-xdrive-18d-4ca3a2247af44e51919074565ed93486#download) → `2020_bmw_x1_xdrive_18d.zip`
-   - 5 Series (G60) → [2019 BMW X5 xDrive30d](https://sketchfab.com/3d-models/2019-bmw-x5-xdrive30d-850fb32f984c4630969840fc61f44902#download) → `2019_bmw_x5_xdrive30d.zip`
-   - 7 Series (G70) → [2019 BMW X7 xDrive40i](https://sketchfab.com/3d-models/2019-bmw-x7-xdrive40i-a4b1edf1ec614f06b5d4db7208fe9650#download) → `2019_bmw_x7_xdrive40i.zip`
+## How it fits together
 
-   All by Ddiaz Design, CC-BY-NC-SA-4.0 (credit the author, no commercial use). They never go into git.
-4. **Install the cars and the local data** (feedback scores per part, option lists):
-   ```bash
-   pip install openpyxl
-   python demo/visu/prepare_local.py --cars "<path>/car models"
-   ```
-5. **Fill your Rowboat knowledge** (Brands, Models, Components, Feature Classes, Assumptions, Requirements and
-   `Data/BMW Dataset.xlsx`, all from the Dataset and the committed agent output; registers the note types):
-   ```bash
-   python demo/visu/vault.py notes
-   python demo/visu/vault.py sync --watch          # keep running: Rowboat notes -> Torque
-   ```
-6. **RAG for Nordi** (optional; without it Nordi answers from Torque's data only). Docker must be running:
-   ```bash
-   docker compose -f docker-compose.qdrant.yml up -d
-   python -m venv search/.venv
-   search/.venv/Scripts/python -m pip install -r requirements.txt     # macOS: search/.venv/bin/python
-   # put OPENAI_API_KEY=... into search/.env (copy search/.env.example; never commit it)
-   search/.venv/Scripts/python scripts/ingest_qdrant.py --chunks-path outputs/chunks/chunks.jsonl
-   search/.venv/Scripts/python -m uvicorn app:app --port 8100       # keep running
-   ```
-7. **Add Torque to Rowboat** (once), then open Rowboat → Apps → Torque:
-   ```bash
-   # Windows (cmd):  mklink /J %USERPROFILE%\.rowboat\apps\torque demo\torque
-   # macOS:          ln -s "$PWD/demo/torque" ~/.rowboat/apps/torque
-   ```
+```mermaid
+flowchart LR
+  D[Dataset/<br/>feedback, studies,<br/>option lists, sales] --> P[research pipeline<br/>clean, mask PII, merge]
+  D --> V[demo/visu<br/>heat map scores]
+  P --> M[ehl-market<br/>MCP server]
+  D --> N[vault notes<br/>products, parts,<br/>assumptions, requirements]
+  O[outputs/chunks] --> Q[(Qdrant)] --> R[RAG backend :8100]
+  subgraph Rowboat Desktop
+    K[knowledge vault<br/>+ graph] --- A[Rowboat agent]
+    T[Torque app<br/>apps/torque] --- C3[Concept 3D<br/>three.js engine]
+  end
+  N --> K
+  M --> A
+  R --> T
+  V --> C3
+  T <-->|sync.py / vault.py| K
+```
 
-Optional: regenerate the agent's driver texts (needs RAG and the key): `search/.venv/Scripts/python
-demo/visu/generate_texts.py`. Market MCP for Rowboat's agent: see [market/README.md](market/README.md).
-Details: [demo/visu/README.md](demo/visu/README.md) (3D concept, data, agent, RAG).
+- **Rowboat** (unmodified, upstream commit `72e9d8c`) hosts Torque as an app, provides the model the user
+  configured (`llm` capability) and keeps the knowledge vault: Markdown notes linked into a graph.
+  [Why Rowboat](docs/why-rowboat.md)
+- **Torque** (`demo/torque/`) is the decision cockpit. It is a single-file web app; its source is
+  `demo/torque/dist/index.html`. Two syncs keep it and the vault in step: decisions go to notes, and
+  notes go to the cockpit.
+- **Concept 3D** (`demo/visu/`, React Three Fiber + three.js) colours the parts of the successor car by
+  customer sentiment and takes design prompts. [The 3D engine](docs/3d-engine.md)
+- **Nordi**, Torque's copilot, answers from the data on screen and, with the RAG backend, from the indexed
+  source documents (`app.py`, `src/rag_backend/`, Qdrant).
+- **ehl-market** (`market/`) is an MCP server for Rowboat's agent: sources, live World Bank, Eurostat and
+  NHTSA data, correlation tools.
+
+## Run it
+
+You need Git, Python 3.12, Node.js 22 (or 24.15+), pnpm 10 and, for the RAG, Docker Desktop. The installer
+checks these and tells you how to install what is missing (winget on Windows, Homebrew on macOS).
+
+```bash
+python scripts/install.py --check
+```
+
+```bash
+python scripts/install.py
+```
+
+The installer does all of this and is safe to re-run:
+
+- clones Rowboat (`Flissel/rowboat`, branch `ehl`) next to this repo and installs its packages;
+- sets up the market MCP server and the research pipeline;
+- writes Torque's customer quotes from `Dataset/`;
+- fills Rowboat's knowledge vault and registers Torque as a Rowboat app;
+- adds `ehl-market` to Rowboat's `mcp.json`;
+- starts Qdrant, asks for `OPENAI_API_KEY` (written to `search/.env`, gitignored) and builds the search index.
+
+Use `--skip-rag` to run without Docker and OpenAI. Nordi then answers from Torque's data only.
+
+The three 3D cars ship with the repo (`demo/torque/dist/visu/models/`), so nothing has to be downloaded.
+**One manual step:** start the demo, then add your own model API key in Rowboat → Settings.
+
+```bash
+python scripts/install.py --start
+```
+
+`--start` launches Rowboat (dev mode), the RAG backend and both syncs. The first build takes a few minutes.
+Then open **Apps → Torque**. If you already use Rowboat, the demo keeps its data in `~/.rowboat-ehl`, so
+your own `~/.rowboat` stays untouched.
+
+Team members setting up a development PC (forks, work-package branches) use [SETUP.md](SETUP.md) and
+`scripts/setup_pc.py` instead.
+
+## Repository
+
+| Path | What |
+| --- | --- |
+| `demo/torque/` | Torque app: `dist/index.html` (the cockpit), `rowboat-app.json` (app manifest), `sync.py` (cockpit ↔ vault), `make_quotes.py` |
+| `demo/visu/` | Concept 3D engine (React Three Fiber, built into `demo/torque/dist/visu/`), heat map scoring (`feedback.py`), vault notes and sync (`vault.py`, `brand.py`, `assumptions.py`, `generate_texts.py`) |
+| `research/` | Data pipeline: cleaning, PII masking, clustering, findings |
+| `market/` | `ehl-market` MCP server for Rowboat's agent |
+| `app.py`, `src/rag_backend/`, `scripts/` | RAG backend (FastAPI, Qdrant, OpenAI embeddings) and its ingest scripts; `scripts/install.py` |
+| `Dataset/` | Challenge data (F70, G60, G68, G70), test data |
+| `outputs/` | Preprocessed Markdown, chunks and embeddings for the RAG |
+| `docs/` | Deliverables, data pipeline, RAG backend, design specs, and the pages below |
 
 ## Docs
 
-- [Deliverables](docs/deliverables.md): what the challenge expects, the requirement and audit-log schemas, and the AI vs. human workflow split
-- [Data pipeline plan](docs/data-pipeline-plan.md): data sources, the provided datasets, the recommended G60 US demo, and the clustering approach
+- [Why Rowboat, and how we integrated it](docs/why-rowboat.md)
+- [The 3D engine](docs/3d-engine.md)
+- [Walkthrough: the app step by step](docs/walkthrough.md)
+- [Deliverables](docs/deliverables.md): the challenge brief, requirement and audit-log schemas, and the split between AI and human work
+- [Data pipeline plan](docs/data-pipeline-plan.md) · [RAG backend](docs/rag-backend.md) · [Market MCP](market/README.md)
+
+## Team
+
+GitHub: [Flissel](https://github.com/Flissel) (orchestrator) ·
+[PedroLemonade](https://github.com/PedroLemonade) · [yunes-mahan](https://github.com/yunes-mahan) ·
+[syed-rayyanadil](https://github.com/syed-rayyanadil) · [Paolabeiia](https://github.com/Paolabeiia).
+Agent sessions were tracked with [Entire](https://github.com/anthropics/entire).
+
+## Licence
+
+Apache License 2.0, the same licence as Rowboat. See [LICENSE](LICENSE). Third-party material keeps its own
+terms; [NOTICE](NOTICE) lists it:
+
+- Rowboat: Apache-2.0, used unmodified.
+- three.js, React Three Fiber, drei and React: MIT.
+- The 3D car models by Ddiaz Design: CC BY-NC-SA 4.0 (attribution, non-commercial, share alike), included
+  unmodified with their `license.txt` in `demo/torque/dist/visu/models/`.
+- `Dataset/`: challenge data.
+
+This is a hackathon prototype. It is not affiliated with BMW AG or RowBoat Labs.

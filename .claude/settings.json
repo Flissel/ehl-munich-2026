@@ -1,4 +1,7 @@
 {
+  "env": {
+    "ENTIRE_TEST_TTY": "0"
+  },
   "hooks": {
     "PostToolUse": [
       {
