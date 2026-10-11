@@ -4,18 +4,30 @@ from typing import Any
 
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from .config import Settings
 from .service import RagService
+from .voice import VoiceService
 
 
 class SearchRequest(BaseModel):
     question: str
     top_k: int | None = Field(default=None, ge=1, le=25)
     filters: dict[str, str] | None = None
+
+
+class TtsRequest(BaseModel):
+    text: str = Field(max_length=8000)
+    voice: str | None = None
+
+
+class TranscribeRequest(BaseModel):
+    audioBase64: str
+    mimeType: str | None = None
+    language: str | None = None
 
 
 class ChatRequest(BaseModel):
@@ -44,6 +56,23 @@ def create_app() -> FastAPI:
             filters=request.filters,
         )
         return {"results": [service._source_from_hit(hit) | {"text": hit["payload"].get("text", "")} for hit in hits]}
+
+    voice = VoiceService(service.settings)
+
+    # Voice for Nordi (Torque): Rowboat's voice API first, these with the backend's OpenAI key as fallback.
+    @app.post("/voice/tts")
+    def tts(request: TtsRequest) -> dict[str, str]:
+        try:
+            return voice.speak(request.text, request.voice)
+        except ValueError as err:
+            raise HTTPException(400, str(err)) from err
+
+    @app.post("/voice/transcribe")
+    def transcribe(request: TranscribeRequest) -> dict[str, str]:
+        try:
+            return voice.transcribe(request.audioBase64, request.mimeType, request.language)
+        except ValueError as err:
+            raise HTTPException(400, str(err)) from err
 
     @app.post("/chat")
     def chat(request: ChatRequest) -> dict[str, Any]:

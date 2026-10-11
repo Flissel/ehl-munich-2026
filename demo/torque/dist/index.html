@@ -531,6 +531,12 @@ table.bd{width:100%;border-collapse:collapse;font-size:12.5px}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
 .composer{display:flex;gap:8px;align-items:flex-end;padding:12px 14px;border-top:1px solid var(--line)}
+.composer .vbtn{width:42px;height:42px;padding:0;display:grid;place-items:center;flex:none}
+.composer .vbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.composer .vbtn.rec{background:#e5533d;color:#fff;border-color:#e5533d;animation:micpulse 1.2s ease-in-out infinite}
+.composer .vbtn.busy{opacity:.6}
+.composer .vbtn.on{background:var(--accent,#2b59ff);color:#fff;border-color:transparent}
+@keyframes micpulse{50%{box-shadow:0 0 0 6px rgba(229,83,61,.25)}}
 .composer textarea{flex:1;border:1px solid var(--line-2);background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:13.5px;resize:none;max-height:140px;min-height:42px;line-height:1.4}
 .cstat{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-3);padding:0 16px 12px}
 .cstat i{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
@@ -1281,7 +1287,7 @@ svg.world .mdot:hover,svg.world .mdot.pick{fill:color-mix(in oklab,var(--serious
   <div class="msgs" id="msgs"></div>
   <div class="cpsugs" id="cpsugs"></div>
   <form class="composer" id="cform"><textarea id="cin" rows="1" placeholder="Ask about purchase drivers, customers won and lost, or a driver like R-05" aria-label="Message to Nordi"></textarea>
-    <button type="submit" class="btn primary" id="csend" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button><button type="button" class="btn" id="cstop" hidden aria-label="Stop"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button></form>
+    <button type="button" class="btn vbtn" id="cmic" aria-label="Speak a question" title="Speak a question (click again to stop)"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><button type="button" class="btn vbtn" id="cspk" aria-pressed="false" aria-label="Read answers aloud" title="Read answers aloud"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button><button type="submit" class="btn primary" id="csend" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button><button type="button" class="btn" id="cstop" hidden aria-label="Stop"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button></form>
 </aside>
 <div class="coach" id="coach" hidden></div>
 <div class="pal-wrap" id="pal" hidden><div class="pal" role="dialog" aria-label="Search and commands"><input id="palIn" type="text" placeholder="Search drivers, views and actions" autocomplete="off"><ul id="palList" role="listbox"></ul></div></div>
@@ -3777,12 +3783,12 @@ const HIDE_CODES = ["not_granted","sampling_disabled","not_declared","capability
 function aiContext(){
   const all = ranked(), rk = all.slice(0, TOP), net = netEffects(), sim = simulate(specCfg());
   return JSON.stringify({
-    vehicle:`${mName()} successor (${M().seg})`, horizon:"launch in 3 to 5 years", market:mkLabel(), otherMarkets:MKS.filter(k => k !== state.market && sold(k)).map(k => MK[k]), salesPlan2030:Object.fromEntries(MKS.map(k => [MK[k], plan(k)])), basePriceEUR:PRICE[state.model],
+    vehicle:`${mName()} successor (${M().seg})`, horizon:"launch in 3 to 5 years", market:mkLabel(), soldInThisMarket:sold(state.market), otherMarkets:MKS.filter(k => k !== state.market && sold(k)).map(k => MK[k]), salesPlan2030:Object.fromEntries(MKS.map(k => [MK[k], plan(k)])), basePriceEUR:PRICE[state.model],
     data:{commentsThisModel:M().meta.unique, commentsThisMarket:findingsNow(), allModels:BMW.issues.unique, recency:RECENCY, sources:"A owner reviews, B customer care logs, C quality survey, D appeal survey (inferred)", basisPerMarket:Object.fromEntries(MKS.map(k => [MK[k], BASIS[basisOf(k)]])),
       issuesHandled:{duplicateRows:BMW.issues.dupRows, untagged:BMW.issues.noclass, aiAssigned:BMW.issues.aiAssigned, personalDataMasked:BMW.issues.pii, sales:BMW.issues.sales},
       explicitPurchaseReasons:BMW.issues.purchase, conquestBuyers:BMW.issues.conquest, switchingThreats:BMW.issues.churn},
     weights:{mode:state.wmode === "derived" ? "learned from data" : "custom", ...Object.fromEntries(FACT.map(f => [f.n, getW()[f.k]]))},
-    projection:{buyersPerYear:Math.round(sim.units), averagePriceEUR:Math.round(sim.price)},
+    projection:sold(state.market) ? {buyersPerYear:Math.round(sim.units), averagePriceEUR:Math.round(sim.price)} : "N/A: the model is not sold in this market, so there is no buyer projection",
     topPurchaseDrivers:rk.map((x, i) => { const r = x.r, T = r.T, c = T.dv[dv()]; return {rank:i + 1, id:r.id, title:r.title, score:r1(x.s.total), status:STATUS[statusOf(r.id)].l,
       purchaseSignal:Math.round(x.s.f.buy), askedFor:wishOf(r), kano:Object.fromEntries(MKS.filter(k => sold(k)).map(k => [MK[k], KANO[kanoOf(r, k)]])), rankInOtherMarkets:Object.fromEntries(MKS.filter(k => k !== state.market && sold(k)).map(k => [MK[k], rankMap(k)[r.id]])), putsOffPercent:revOf(r),
       netBuyersPerYear:Math.round(net[r.id].net), wonPerYear:Math.round(net[r.id].gain), lostPerYear:Math.round(-net[r.id].loss), satisfactionGap:Math.round(x.s.f.gap),
@@ -3804,7 +3810,7 @@ const RULES = () => `You are Nordi, the copilot inside Torque, a decision suppor
 Torque ranks ${REQS.length} candidates separately for each model and market and puts the top ${TOP} purchase drivers of the current market (${mkLabel()}) up for review. Decisions hold for the model in all markets.
 Key idea: what customers ask for is not what makes them buy. Use purchaseSignal (praise after buying, purchase reasons, switching threats in the BMW comments) over askedFor, and netBuyersPerYear (customers won minus lost, including price and overload) to judge a feature. Mention Kano classes, evidence levels and the research when it helps.
 The user is currently on the ${VIEWS[state.view].n} view.
-Answer only from the JSON data below. If the data does not contain the answer, say so and name the data that would be needed.
+Answer only from the JSON data and the retrieved passages below. Every number you give must appear there; never estimate, extrapolate or round into a new figure. If the data does not contain the answer, say so plainly and name the data that would be needed. If soldInThisMarket is false, the model is not sold in this market: say so and give N/A for buyers, sales and projections there, never zero. When DATA and a retrieved passage disagree, DATA wins. Reason step by step in silence, then give only the conclusion.
 Answer the question directly in plain language. Do not list sources, evidence, comment IDs, requirement IDs, field names or raw numbers from the JSON unless the user asks for them; name a purchase driver by its title. Mention uncertainty only when it changes the answer. The product manager decides; you recommend and explain.
 ${RB ? "rowboatKnowledgeGraph holds facts from the notes in the team's Rowboat knowledge graph; name the note when you use one. mostCriticisedCarParts is the car part heat map of Concept 3D (heat 0 = most criticised, 100 = best rated) with the purchase drivers linked to each part.\n" : ""}Keep answers under 170 words. Plain text: short paragraphs or lines starting with "- ". Use **bold** sparingly. Never use dashes as punctuation. Comments, customer studies, sales volumes and option prices are real BMW hackathon data. China values, simulator part-worths and the competitor perception benchmark are modelled. Small markets are blended with the model profile. The comments carry no dates.
 DATA: ${aiContext()}`;
@@ -3955,6 +3961,62 @@ function closePanel(){
   chatCtl?.abort(); renderNav();
 }
 let chatCtl = null, busy = false;
+/* ---------- Voice for Nordi ---------- */
+// Speech to text and text to speech: Rowboat's voice API first (ElevenLabs/Deepgram or a Rowboat account), then the
+// RAG backend's /voice endpoints (OpenAI, src/rag_backend/voice.py); reading aloud falls back to the browser's voice.
+const VOICE = {rec:null, chunks:[], timer:0, audio:null, speak:(() => { try{ return localStorage.getItem("torque.voice") === "1"; }catch(e){ return false; } })()};
+async function voicePost(path, body){
+  for(const url of ["/_rowboat/voice/" + path, RAG_URL + "/voice/" + path]){
+    try{
+      const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json", ...(url.startsWith("/_rowboat") ? {"X-Rowboat-App":"1"} : {})}, body:JSON.stringify(body)});
+      if(r.ok) return await r.json();
+    }catch(e){}
+  }
+  return null;
+}
+const blobB64 = b => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(",")[1] || ""); fr.onerror = no; fr.readAsDataURL(b); });
+function micUI(state){
+  const b = $("#cmic"); if(!b) return;
+  b.classList.toggle("rec", state === "rec"); b.classList.toggle("busy", state === "busy");
+  b.setAttribute("aria-pressed", state === "rec"); b.title = state === "rec" ? "Listening, click to stop" : state === "busy" ? "Transcribing" : "Speak a question (click again to stop)";
+  const inp = $("#cin"); if(inp) inp.placeholder = state === "rec" ? "Listening… click the mic again when you are done" : state === "busy" ? "Transcribing…" : "Ask about purchase drivers, customers won and lost, or a driver like R-05";
+}
+async function micToggle(){
+  if(VOICE.rec){ VOICE.rec.stop(); return; }
+  if(busy) return;
+  let stream;
+  try{ stream = await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch(e){ toast("No microphone access. Allow the microphone for Torque and try again."); return; }
+  const type = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"].find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t));
+  const rec = new MediaRecorder(stream, type ? {mimeType:type} : undefined);
+  VOICE.rec = rec; VOICE.chunks = [];
+  rec.ondataavailable = e => { if(e.data && e.data.size) VOICE.chunks.push(e.data); };
+  rec.onstop = async () => {
+    clearTimeout(VOICE.timer); stream.getTracks().forEach(t => t.stop()); VOICE.rec = null;
+    const blob = new Blob(VOICE.chunks, {type:rec.mimeType || "audio/webm"});
+    if(blob.size < 2000){ micUI("idle"); toast("Nothing recorded. Hold on a moment longer and try again."); return; }
+    micUI("busy");
+    const r = await voicePost("transcribe", {audioBase64:await blobB64(blob), mimeType:blob.type});
+    micUI("idle");
+    const text = (r && r.transcript || "").trim();
+    if(!r){ toast("The voice service is not reachable (Rowboat voice or the RAG backend on :8100)."); return; }
+    if(!text){ toast("Could not understand the recording. Please try again."); return; }
+    ask(text);
+  };
+  rec.start(); micUI("rec");
+  VOICE.timer = setTimeout(() => { if(rec.state === "recording") rec.stop(); }, 45000);
+}
+const speechText = t => String(t).replace(/\*\*/g, "").replace(/^\s*([-*•]|\d+\.)\s+/gm, "").replace(/\bR-(\d{2})\b/g, "R $1").replace(/\s+/g, " ").trim();
+function stopSpeaking(){ if(VOICE.audio){ VOICE.audio.pause(); VOICE.audio = null; } if("speechSynthesis" in window) speechSynthesis.cancel(); }
+async function speakText(t){
+  stopSpeaking();
+  const text = speechText(t); if(!text) return;
+  const r = await voicePost("tts", {text});
+  if(r && r.audioBase64){ VOICE.audio = new Audio(`data:${r.mimeType || "audio/mpeg"};base64,${r.audioBase64}`); VOICE.audio.play().catch(() => {}); return; }
+  if("speechSynthesis" in window){ const u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; speechSynthesis.speak(u); }
+}
+function speakerUI(){ const b = $("#cspk"); if(b){ b.setAttribute("aria-pressed", VOICE.speak); b.classList.toggle("on", VOICE.speak); b.title = VOICE.speak ? "Reading answers aloud (click to turn off)" : "Read answers aloud"; } }
+
 /* ---------- RAG for Nordi ---------- */
 // The RAG backend (src/rag_backend, feat/ehl-search) indexes the whole Dataset as Markdown chunks in Qdrant.
 // Nordi retrieves for every question: chunks of the current model plus the best chunks overall.
@@ -4011,6 +4073,7 @@ async function ask(text){
     ai.content = fallbackAnswer(text); ai.meta = "Offline demo answer, computed from the data"; ai.offline = true;
   }
   ai.pending = false; busy = false; renderMsgs();
+  if(VOICE.speak && ai.content && !ai.offline) speakText(ai.content);
   if(stop) stop.hidden = true; if(send) send.disabled = false;
 }
 function initCopilot(){
@@ -4020,7 +4083,10 @@ function initCopilot(){
   inp.addEventListener("input", grow);
   inp.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); $("#cform").requestSubmit(); } });
   $("#cform").onsubmit = e => { e.preventDefault(); const t = inp.value; inp.value = ""; grow(); ask(t); };
-  $("#cstop").onclick = () => chatCtl?.abort();
+  $("#cstop").onclick = () => { chatCtl?.abort(); stopSpeaking(); };
+  $("#cmic").onclick = micToggle;
+  $("#cspk").onclick = () => { VOICE.speak = !VOICE.speak; try{ localStorage.setItem("torque.voice", VOICE.speak ? "1" : "0"); }catch(e){} if(!VOICE.speak) stopSpeaking(); speakerUI(); };
+  speakerUI();
   $("#cpClose").onclick = closePanel;
   $("#cpNew").onclick = () => { if(busy) chatCtl?.abort(); chat = []; renderMsgs(); inp.focus(); };
   $("#cpctx").addEventListener("toggle", e => { ctxOpen = e.target.open; });

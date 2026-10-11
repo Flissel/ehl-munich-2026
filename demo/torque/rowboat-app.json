@@ -6,6 +6,7 @@
   "icon": "icon.svg",
   "description": "Torque Decision Cockpit: the top 10 purchase drivers per BMW model and market, with evidence, review and audit trail.",
   "capabilities": [
-    "llm"
+    "llm",
+    "voice"
   ]
 }

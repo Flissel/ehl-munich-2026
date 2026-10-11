@@ -52,6 +52,12 @@ Optional: regenerate the agent's driver texts (needs RAG and the key): `search/.
 demo/visu/generate_texts.py`. Market MCP for Rowboat's agent: see [market/README.md](market/README.md).
 Details: [demo/visu/README.md](demo/visu/README.md) (3D concept, data, agent, RAG).
 
+### Nordi voice (mic and read aloud)
+
+In Torque's chat, the **mic** button records a question. Click it again to stop; the question is transcribed and sent to Nordi. The **speaker** button reads answers aloud and stays on until you turn it off. Speech uses Rowboat's voice API if it is configured. Otherwise it uses the RAG backend (`/voice/transcribe`, `/voice/tts`, OpenAI key from `search/.env`), so keep the backend running on :8100. Allow microphone access when asked.
+
+Nordi answers from Torque's dataset numbers plus RAG passages. When the two disagree, the dataset numbers win. Markets where a model is not sold show N/A, and Nordi says when the answer is not in the data.
+
 ## Docs
 
 - [Deliverables](docs/deliverables.md): what the challenge expects, the requirement and audit-log schemas, and the AI vs. human workflow split
