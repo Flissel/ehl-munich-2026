@@ -23,13 +23,14 @@ reload the car.
 
 ## Set up on a PC (once)
 
-1. **Download the three cars** (free Sketchfab account, format **glTF**) into one folder, e.g. `car models/`:
+1. **The three cars are in the repo** (`../torque/dist/visu/models/`, with their `license.txt`). Only to replace
+   them: download them from Sketchfab (free account, format **glTF**) into one folder, e.g. `car models/`:
    - 1 Series (F70) → [2020 BMW X1 xDrive18d](https://sketchfab.com/3d-models/2020-bmw-x1-xdrive-18d-4ca3a2247af44e51919074565ed93486#download) → `2020_bmw_x1_xdrive_18d.zip`
    - 5 Series (G60) → [2019 BMW X5 xDrive30d](https://sketchfab.com/3d-models/2019-bmw-x5-xdrive30d-850fb32f984c4630969840fc61f44902#download) → `2019_bmw_x5_xdrive30d.zip`
    - 7 Series (G70) → [2019 BMW X7 xDrive40i](https://sketchfab.com/3d-models/2019-bmw-x7-xdrive40i-a4b1edf1ec614f06b5d4db7208fe9650#download) → `2019_bmw_x7_xdrive40i.zip`
 
    All by Ddiaz Design (sketchfab.com/ddiaz-design), **CC-BY-NC-SA-4.0**: credit the author, no commercial use,
-   share alike. Keep the zips outside the repo.
+   share alike. Keep the zips outside the repo; commit only the unzipped folders with their `license.txt`.
 2. Generate the data and install the cars:
 
 ```bash

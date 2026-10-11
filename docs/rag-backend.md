@@ -32,7 +32,7 @@ python3 scripts/ingest_qdrant.py \
 ```
 
 ```bash
-uvicorn app:app --reload --port 8000
+uvicorn app:app --reload --port 8100
 ```
 
 ## API
@@ -44,7 +44,7 @@ uvicorn app:app --reload --port 8000
 Example:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/chat \
+curl -X POST http://127.0.0.1:8100/chat \
   -H "Content-Type: application/json" \
   -d '{"question":"What are common G60 US complaints?","top_k":8,"filters":{"vehicle_model":"G60","market":"US"}}'
 ```

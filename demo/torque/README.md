@@ -25,7 +25,7 @@ Essentials (black) is for deciding: the top 10 with a recommendation, the decisi
 
 ## Not in git
 
-`data/` stays local: `quotes.json` (customer comment texts), `logo.png` (brand mark), `torque.json` (decisions) and `rowboat.json` (vault snapshot). For the demo PC copy `data/` from Peter's machine. The build itself comes from `docs/prototype/rowboat/deploy.py` in Peter's prototype repo.
+`data/` stays local: `quotes.json` (customer comment texts), `logo.png` (brand mark), `torque.json` (decisions) and `rowboat.json` (vault snapshot). `python demo/torque/make_quotes.py` writes `quotes.json` from `Dataset/` (masked with the research pipeline's PII masking); `scripts/install.py` runs it. `dist/index.html` is the cockpit's source: a single hand-written HTML/JS file, not a minified build.
 
 ## Concept 3D
 
