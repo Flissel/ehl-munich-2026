@@ -9,6 +9,10 @@ explicit human decision and an append-only audit trail. On a 3D model of the car
 customers criticise. Torque runs as an app inside **[Rowboat](https://github.com/rowboatlabs/rowboat)**, the
 open-source AI coworker. Rowboat's knowledge graph and agent work on the same data as the cockpit.
 
+**Demo video (83 s):** [docs/media/demo.mp4](docs/media/demo.mp4). It shows Torque in Rowboat, the Concept 3D
+heat map, the market MCP in Rowboat's chat, the market map and the Nordi copilot. The voice-over is
+AI-generated.
+
 ## What the challenge asks for, and where to see it
 
 | Deliverable | In the prototype |
