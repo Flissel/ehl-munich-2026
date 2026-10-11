@@ -769,3 +769,8 @@ alles abgabe bereit?
 ---
 
 ne war nur für den text zum aufnehmen
+
+---
+
+@"C:\Users\User\Desktop\Vibemind_V1\vibemind-os\spaces\video\laura\services\local-api\workspace\project-06fd099e3812493f8bf6626a546c090a\exports\44caf84eaa3c4483a499729d53746e6d.mp4"
+kannst du das noch in den git mit pushen
