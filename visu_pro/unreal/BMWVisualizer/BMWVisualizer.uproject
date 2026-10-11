@@ -1,0 +1,30 @@
+﻿{
+    "FileVersion":  3,
+    "EngineAssociation":  "5.8",
+    "Category":  "",
+    "Description":  "BMW Studio showroom viewer (Blueprint-only, Python-driven).",
+    "Modules":  [
+
+                ],
+    "Plugins":  [
+                    {
+                        "Name":  "PythonScriptPlugin",
+                        "Enabled":  true
+                    },
+                    {
+                        "Name":  "EditorScriptingUtilities",
+                        "Enabled":  true
+                    },
+                    {
+                        "Name":  "ModelingToolsEditorMode",
+                        "Enabled":  true,
+                        "TargetAllowList":  [
+                                                "Editor"
+                                            ]
+                    },
+                    {
+                        "Name":  "GeometryScripting",
+                        "Enabled":  true
+                    }
+                ]
+}
