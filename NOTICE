@@ -1,0 +1,48 @@
+ehl-munich-2026
+Copyright 2026 The ehl-munich-2026 contributors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+The licence covers the code and documentation written for this project. It does not cover the
+third-party material listed below, which keeps its own terms.
+
+------------------------------------------------------------------------------------------------
+Software this project runs with (not included in this repository)
+------------------------------------------------------------------------------------------------
+
+Rowboat - https://github.com/rowboatlabs/rowboat
+  Copyright RowBoat Labs. Apache License 2.0.
+  Used unmodified at upstream commit 72e9d8c (team fork Flissel/rowboat, branch `ehl`). This project
+  integrates with Rowboat only through its documented extension points (apps folder, knowledge
+  vault, note types in config/notes.json, MCP servers in config/mcp.json, app host API).
+
+Qdrant - https://github.com/qdrant/qdrant
+  Apache License 2.0. Pulled as the Docker image qdrant/qdrant:v1.12.6.
+
+Python and Node packages are installed from PyPI and npm by scripts/install.py and keep their own
+licences (among others: openpyxl MIT, pandas BSD-3-Clause, scipy BSD-3-Clause, scikit-learn
+BSD-3-Clause, FastAPI MIT, qdrant-client Apache-2.0, openai Apache-2.0, mcp MIT).
+
+------------------------------------------------------------------------------------------------
+Bundled third-party code
+------------------------------------------------------------------------------------------------
+
+demo/torque/dist/three.min.js - three.js, Copyright 2010-2021 Three.js Authors, MIT License.
+
+demo/torque/dist/visu/assets/ - production build of demo/visu, which bundles:
+  three.js (MIT), @react-three/fiber (MIT), @react-three/drei (MIT), React and React DOM (MIT).
+  Built with Vite (MIT). Exact versions: demo/visu/package-lock.json.
+
+------------------------------------------------------------------------------------------------
+Content not covered by this project's licence
+------------------------------------------------------------------------------------------------
+
+Dataset/ - feedback, customer study, option list and sales files provided for the EHL Munich 2026
+  hackathon challenge. Test data; all rights remain with the provider.
+
+3D car models (downloaded by each user from Sketchfab, never committed; see README):
+  "2020 BMW X1 xDrive18d", "2019 BMW X5 xDrive30d", "2019 BMW X7 xDrive40i" by Ddiaz Design,
+  licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
+  Non-commercial use only, with attribution.
+
+BMW and the model names are trademarks of their owners. This is a hackathon prototype and is not
+affiliated with or endorsed by BMW AG or RowBoat Labs.
