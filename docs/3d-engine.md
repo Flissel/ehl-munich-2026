@@ -44,8 +44,9 @@ Torque ◄── postMessage (visu:context / visu:ready / visu:select) ──►
 
 The Dataset covers the 1, 5 and 7 Series (F70, G60, G70). The viewer uses one free Sketchfab model from each
 family as a stand-in: a 2020 BMW X1, a 2019 BMW X5 and a 2019 BMW X7, all by Ddiaz Design under
-CC BY-NC-SA 4.0. The models are not in git. Each user downloads them, and `prepare_local.py --cars` unzips
-them into `dist/visu/models/<car>/` (run through `scripts/install.py`).
+CC BY-NC-SA 4.0. They are committed unmodified, with their `license.txt`, in `dist/visu/models/<car>/`.
+To replace them, `prepare_local.py --cars <folder with the glTF zips>` unzips new ones there
+(also through `scripts/install.py --cars`).
 
 There is no offline conversion. In the browser the car is scaled to its real length (4.447 m, 4.922 m or
 5.151 m) and placed on the ground.
@@ -140,7 +141,7 @@ the three Dataset cars replaced the M4. The "Visualize in Unreal" button stays d
 ## Licences
 
 - three.js, React Three Fiber, drei, React and Vite: MIT.
-- Car models: Ddiaz Design, CC BY-NC-SA 4.0 (attribution, non-commercial, never committed). The credit is
-  shown in the viewer (`cars.ts`).
+- Car models: Ddiaz Design, CC BY-NC-SA 4.0 (attribution, non-commercial, share alike), committed unmodified
+  with their `license.txt`. The credit is shown in the viewer (`cars.ts`).
 
 See [NOTICE](../NOTICE).

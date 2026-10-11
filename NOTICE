@@ -39,10 +39,13 @@ Content not covered by this project's licence
 Dataset/ - feedback, customer study, option list and sales files provided for the EHL Munich 2026
   hackathon challenge. Test data; all rights remain with the provider.
 
-3D car models (downloaded by each user from Sketchfab, never committed; see README):
-  "2020 BMW X1 xDrive18d", "2019 BMW X5 xDrive30d", "2019 BMW X7 xDrive40i" by Ddiaz Design,
+demo/torque/dist/visu/models/ - 3D car models from Sketchfab, included unmodified:
+  "2020 BMW X1 xDrive18d" (bmw-x1-2020), "2019 BMW X5 xDrive30d" (bmw-x5-2019) and
+  "2019 BMW X7 xDrive40i" (bmw-x7-2019) by Ddiaz Design (https://sketchfab.com/ddiaz-design),
   licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
-  Non-commercial use only, with attribution.
+  Attribution required, non-commercial use only, adaptations under the same licence.
+  The licence text from Sketchfab is in each model folder (license.txt). The Apache-2.0 licence of
+  this project does not apply to them.
 
 BMW and the model names are trademarks of their owners. This is a hackathon prototype and is not
 affiliated with or endorsed by BMW AG or RowBoat Labs.

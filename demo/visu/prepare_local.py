@@ -7,7 +7,7 @@
    (they contain customer comment quotes, so like Torque's quotes.json they stay local).
    data/options-<series>.json: option list features linked to car parts (outputs/markdown/options).
 2. models/<car>/: the three glTF cars, one per model family of the Dataset (Sketchfab, Ddiaz Design,
-   CC-BY-NC-SA-4.0, not redistributed via git): X1 for the 1 Series, X5 for the 5 Series, X7 for the 7 Series.
+   CC-BY-NC-SA-4.0, committed with their license.txt): X1 for the 1 Series, X5 for the 5 Series, X7 for the 7 Series.
    Without --cars only the data is refreshed.
 """
 from __future__ import annotations

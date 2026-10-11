@@ -75,16 +75,8 @@ The installer does all of this and is safe to re-run:
 
 Use `--skip-rag` to run without Docker and OpenAI. Nordi then answers from Torque's data only.
 
-**Two manual steps:**
-
-1. **3D cars.** Download the three models from Sketchfab (free account, glTF format). The installer prints the
-   links and file names. Install them with:
-
-   ```bash
-   python scripts/install.py --no-build --skip-rag --cars "<folder with the zips>"
-   ```
-
-2. **Model provider.** Start the demo, then add your own API key in Rowboat → Settings.
+The three 3D cars ship with the repo (`demo/torque/dist/visu/models/`), so nothing has to be downloaded.
+**One manual step:** start the demo, then add your own model API key in Rowboat → Settings.
 
 ```bash
 python scripts/install.py --start
@@ -132,7 +124,8 @@ terms; [NOTICE](NOTICE) lists it:
 
 - Rowboat: Apache-2.0, used unmodified.
 - three.js, React Three Fiber, drei and React: MIT.
-- The 3D car models by Ddiaz Design: CC BY-NC-SA 4.0, never committed.
+- The 3D car models by Ddiaz Design: CC BY-NC-SA 4.0 (attribution, non-commercial, share alike), included
+  unmodified with their `license.txt` in `demo/torque/dist/visu/models/`.
 - `Dataset/`: challenge data.
 
 This is a hackathon prototype. It is not affiliated with BMW AG or RowBoat Labs.

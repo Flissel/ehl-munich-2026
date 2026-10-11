@@ -14,11 +14,11 @@ What it does, idempotently (safe to re-run):
   4. the Rowboat knowledge vault: product and topic notes (demo/example-data), brand, model, part,
      assumption and requirement notes; existing notes are never overwritten
   5. Torque as a Rowboat app (<workdir>/apps/torque) and `ehl-market` in <workdir>/config/mcp.json
-  6. heat map data and, with --cars, the three Sketchfab cars for the Concept 3D view
+  6. heat map data for the Concept 3D view (--cars replaces the committed cars with new zips)
   7. RAG: Qdrant (Docker), search/.venv, OPENAI_API_KEY into search/.env, the Qdrant index
 
-Manual: download the three cars from Sketchfab (free account, licence click; links are printed) and
-set a model provider with your own key in Rowboat (Settings). For a team member's dev PC with forks
+The three 3D cars ship with the repo (demo/torque/dist/visu/models/, CC BY-NC-SA 4.0); --cars only
+replaces them. Manual: set a model provider with your own key in Rowboat (Settings). For a team member's dev PC with forks
 and work-package branches use scripts/setup_pc.py instead (SETUP.md).
 
 Only the standard library is used, so it runs before anything is installed.
