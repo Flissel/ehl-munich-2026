@@ -4095,7 +4095,7 @@ async function ask(text){
         ;
     }catch(e){
       const code = e && e.code;
-      if(code === "cancelled"){ ai.content = e.text || ai.content || ""; ai.meta = "Stopped"; }
+      if(code === "cancelled"){ ai.content = e.text || ai.content || ""; ai.meta = "Stopped"; ai.stopped = true; }
       else if(HIDE_CODES.includes(code)){ disableAI(); ai.content = fallbackAnswer(text); ai.meta = "Offline demo answer, computed from the data"; ai.offline = true; }
       else { ai.content = (e && e.text) ? e.text : fallbackAnswer(text); ai.meta = aiErr(code) + (e && e.text ? "" : " Showing the offline answer."); ai.offline = !(e && e.text); }
       if(!ai.content) ai.content = "Stopped before an answer came back.";
@@ -4105,7 +4105,8 @@ async function ask(text){
     ai.content = fallbackAnswer(text); ai.meta = "Offline demo answer, computed from the data"; ai.offline = true;
   }
   ai.pending = false; busy = false; renderMsgs();
-  if(VOICE.speak && ai.content && !ai.offline) speakText(ai.content);
+  // A stopped answer stays silent: Stop means stop, not "read the half answer aloud"
+  if(VOICE.speak && ai.content && !ai.offline && !ai.stopped) speakText(ai.content);
   if(stop) stop.hidden = true; if(send) send.disabled = false;
 }
 function initCopilot(){
