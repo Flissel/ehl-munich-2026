@@ -15,6 +15,7 @@ shared branch); update it as described in `CLAUDE.md` on `main`. Fresh PC: `SETU
 | WP2 Bridge | `feat/ehl-bridge` | – | open | – | – | – | waits for WP1 link targets (can start with sales-mcp access check) |
 | WP3 Semantic search | `feat/ehl-search` | – | open | – | – | – | – |
 | WP4 Agent chat | `feat/ehl-agent-chat` | yunes-mahan / local Claude Code session · 2026-10-10 19:30 | claimed | – | – | PC setup done (Rowboat dev runs); reading parent + WP4 spec | Docker needs WSL (install + reboot pending) |
+| Submission (README, install, docs, licence) | `feat/ehl-submission` | Flissel / local Claude Code session · 2026-10-11 | in progress | – | – | `scripts/install.py`, README, why-rowboat, 3D engine doc, walkthrough, Apache-2.0 LICENSE/NOTICE | – |
 
 Status values: `open` · `claimed` · `planning` · `in progress` · `blocked` · `review` · `done`.
 A claim is active if the row was updated less than 2 h ago.
@@ -65,6 +66,7 @@ A claim is active if the row was updated less than 2 h ago.
 | C1 | New vault type folders `Brands/`, `Models/`, `Components/`, `Feature Classes/` (registered in config/notes.json) + `Data/BMW Dataset.xlsx`, managed_by: ehl-visu; on yunes-mahan PC they replace Projects/, Topics/, Purchase Drivers/; WP1 + Torque sync still write the old folders. Note: `Projects/` overlaps with Models/: hub, sides, areas and 56 car-part notes linked to Purchase Drivers, Topics, Projects; data tables editable in Rowboat, read by Torque Concept 3D (PR #7) | yunes-mahan | – | proposed |
 
 ## Log (newest first)
+- 2026-10-11 – Flissel: claimed the submission package on `feat/ehl-submission` (install script, README, docs, Apache-2.0 LICENSE/NOTICE).
 - 2026-10-11 – PR #7 (yunes-mahan) merged (d1fe4f4): Torque on data, RAG backend, 3D heat map, `outputs/` chunks + embeddings. **Orchestrator decisions:** `Dataset/` is dummy data (customer comments incl. names may be committed); OpenAI embeddings are allowed (spec D5 'local only' relaxed); removal of `demo/torque/dist/car.html` and the M4 model confirmed.
 - 2026-10-11 01:10: yunes-mahan: PR #7 ready for review (base main, Flissel). Branch feat/ehl-demo-visu = new Torque UI from main filled with our data, Rowboat notes, agent texts, Nordi RAG and Concept 3D on X1/X5/X7. Run it yourself: top-level README (3 car downloads + setup).
 - 2026-10-10 – PR #4 (WP1, Peter) merged into `main` (d7f48ee): demo notes from `Dataset/`, Torque cockpit, showcase. Orchestrator merged `main` into `feat/ehl-demo-content` to resolve a `.gitignore` add/add conflict and untracked `__pycache__` – **Peter: `git pull` before your next push.**
