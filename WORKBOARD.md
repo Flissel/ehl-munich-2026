@@ -66,6 +66,7 @@ A claim is active if the row was updated less than 2 h ago.
 | C1 | New vault type folders `Brands/`, `Models/`, `Components/`, `Feature Classes/` (registered in config/notes.json) + `Data/BMW Dataset.xlsx`, managed_by: ehl-visu; on yunes-mahan PC they replace Projects/, Topics/, Purchase Drivers/; WP1 + Torque sync still write the old folders. Note: `Projects/` overlaps with Models/: hub, sides, areas and 56 car-part notes linked to Purchase Drivers, Topics, Projects; data tables editable in Rowboat, read by Torque Concept 3D (PR #7) | yunes-mahan | – | proposed |
 
 ## Log (newest first)
+- 2026-10-11 – WP1 (yunes-mahan): PR #14 into main: Nordi voice (mic + read aloud), stricter data grounding, quotes per model/market, 20-question truth check passed. Needs Flissel review.
 - 2026-10-11 – PR #11 merged (47582ed): `scripts/install.py`, README, why-rowboat, 3D engine, walkthrough, Apache-2.0 LICENSE/NOTICE, the three 3D cars in the repo (CC BY-NC-SA 4.0), `ENTIRE_TEST_TTY=0` in `.claude/settings.json`. **All PCs: `git pull` on main; Concept 3D now works without a Sketchfab download.**
 - 2026-10-11 – Flissel: PR #11 (draft) submission package. **All PCs:** Entire's commit hook hangs in agent shells (waits for a console prompt) – `ENTIRE_TEST_TTY=0` fixes it; in `.claude/settings.json` once #11 is merged, until then prefix `git commit` with it.
 - 2026-10-11 – Flissel: claimed the submission package on `feat/ehl-submission` (install script, README, docs, Apache-2.0 LICENSE/NOTICE).
