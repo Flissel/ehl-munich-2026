@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01WpU3WTw5jcbAJNNjWN9hTr",
+  "agent_id": "accaf7db39de43543",
+  "subagent_type": "general-purpose",
+  "task_description": "Critique vault FS: business view",
+  "token_usage": {
+    "input_tokens": 8,
+    "cache_creation_tokens": 87569,
+    "cache_read_tokens": 233863,
+    "output_tokens": 46,
+    "api_call_count": 4
+  },
+  "started_at": "2026-10-12T15:34:38.3744637+02:00",
+  "completed_at": "2026-10-12T15:35:59.0355444+02:00"
+}
