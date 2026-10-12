@@ -85,9 +85,34 @@ def safe_name(title: str) -> str:
     return re.sub(r'[\\/:*?"<>|]', " ", title).strip()
 
 
+def _front_lines(text: str) -> tuple[list[str], str] | None:
+    t = text.replace("\r\n", "\n")
+    if not t.startswith("---\n"):
+        return None
+    end = t.find("\n---\n", 3)
+    if end == -1:
+        return None
+    return [line for line in t[4:end].split("\n") if line.strip()], t[end + 5:]
+
+
+def keep_foreign_keys(old: str, new: str) -> str:
+    """Carry over front matter keys the old note has and the new text lacks (e.g. the vault schema's id and
+    parent), so a rewrite never drops what other tools added. Only simple 'key: value' lines are carried."""
+    o, n = _front_lines(old), _front_lines(new)
+    if o is None or n is None:
+        return new
+    new_keys = {line.split(":", 1)[0].strip() for line in n[0] if ":" in line}
+    extra = [line for line in o[0] if ":" in line and not line.startswith((" ", "-"))
+             and line.split(":", 1)[0].strip() not in new_keys]
+    if not extra:
+        return new
+    return "---\n" + "\n".join(n[0] + extra) + "\n---\n" + n[1]
+
+
 def write_if_changed(path: Path, text: str, managed_only: bool = True) -> bool:
     if path.exists():
         old = path.read_text(encoding="utf-8")
+        text = keep_foreign_keys(old, text)
         if old == text or (managed_only and "managed_by: torque" not in old[:300]):
             return False
     path.parent.mkdir(parents=True, exist_ok=True)
