@@ -101,6 +101,7 @@ Team members setting up a development PC (forks, work-package branches) use [SET
 | `demo/visu/` | Concept 3D engine (React Three Fiber, built into `demo/torque/dist/visu/`), heat map scoring (`feedback.py`), vault notes and sync (`vault.py`, `brand.py`, `assumptions.py`, `generate_texts.py`) |
 | `research/` | Data pipeline: cleaning, PII masking, clustering, findings |
 | `market/` | `ehl-market` MCP server for Rowboat's agent |
+| `schema/` | Vault schema: one hierarchy for all business data (`vault-schema.yaml`), and `ehl-schema build \| lint \| migrate` ([spec](docs/superpowers/specs/2026-10-12-vault-schema-design.md)) |
 | `app.py`, `src/rag_backend/`, `scripts/` | RAG backend (FastAPI, Qdrant, OpenAI embeddings) and its ingest scripts; `scripts/install.py` |
 | `Dataset/` | Challenge data (F70, G60, G68, G70), test data |
 | `outputs/` | Preprocessed Markdown, chunks and embeddings for the RAG |

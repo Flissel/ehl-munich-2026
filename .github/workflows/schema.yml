@@ -1,0 +1,17 @@
+name: schema
+on:
+  pull_request:
+    paths: ["schema/**", "demo/torque/sync.py", "demo/tests/**", ".github/workflows/schema.yml"]
+  push:
+    branches: [main]
+    paths: ["schema/**", "demo/torque/sync.py"]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e "schema[dev]"
+      - run: pytest schema/tests demo/tests/test_sync_frontmatter.py -q

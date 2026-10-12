@@ -278,3 +278,10 @@ Parents:
 2. **Finance may hold amounts** as flat fields, `amount` (number) and `currency` (ISO code), on `Budgets`,
    `Invoices`, `Funding` and `Deals`. The accounting system stays the source of truth: each such note links
    to it in its body. Bank details, payroll and salaries never go into a vault.
+3. **Parent level:** a parent may be on the same level as the note (`parent level ≤ note level`). This allows
+   types to nest in themselves (a roadmap under its project, a driver under its top 10 note); the linter
+   still rejects cycles. Migration takes a same-type parent only if it has more neighbours (hub rule).
+4. **Sources are grouped by channel**, not by date: `Areas/Meetings`, `Areas/Mails`, `Areas/Chats`,
+   `Areas/Voice memos`, `Areas/Agent notes`. Date buckets would create a new area every month.
+5. **Body links that do not resolve are warnings**, not errors. Links in `parent` and in relations must
+   resolve (errors).
