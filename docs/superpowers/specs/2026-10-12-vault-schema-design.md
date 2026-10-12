@@ -270,8 +270,11 @@ Parents:
   - Agents writing the fields.
   - Bridges for Sales-Claw and Marketing.
 
-## 10. Open questions
+## 10. Decisions on the former open questions (2026-10-12)
 
-1. Is `Company.md` + `Domains/` + `Areas/` as real notes acceptable, or should L0–L2 be virtual (computed
-   from the schema only)? Real notes are visible and linkable; virtual ones keep the vault smaller.
-2. Should finance hold amounts (budget, invoices) or only references to the accounting system?
+1. **L0–L2 are real notes** (`Company.md`, `Domains/`, `Areas/`). The 3D graph needs them as nodes, and
+   people and agents can link to them. `schema/build.py` generates them from the schema; nobody edits them
+   by hand. A generated note carries `managed_by: schema`.
+2. **Finance may hold amounts** as flat fields, `amount` (number) and `currency` (ISO code), on `Budgets`,
+   `Invoices`, `Funding` and `Deals`. The accounting system stays the source of truth: each such note links
+   to it in its body. Bank details, payroll and salaries never go into a vault.
