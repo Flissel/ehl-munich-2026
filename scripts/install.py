@@ -13,6 +13,7 @@ What it does, idempotently (safe to re-run):
      demo scripts; demo/torque/data/quotes.json (customer comment texts) from Dataset/
   4. the Rowboat knowledge vault: product and topic notes (demo/example-data), brand, model, part,
      assumption and requirement notes; existing notes are never overwritten
+  4b. the vault schema (schema/): Company, Domains and Areas notes, notes.json rules, front matter on every note
   5. Torque as a Rowboat app (<workdir>/apps/torque) and `ehl-market` in <workdir>/config/mcp.json
   6. heat map data for the Concept 3D view (--cars replaces the committed cars with new zips)
   7. RAG: Qdrant (Docker), search/.venv, OPENAI_API_KEY into search/.env, the Qdrant index
@@ -184,6 +185,16 @@ def setup_vault(py: Path, workdir: Path, refresh: bool) -> None:
                     workdir / "config" / "notes.json")
 
 
+def setup_schema(py: Path, workdir: Path, company: str) -> None:
+    """Vault schema (schema/): one hierarchy for every note. Spec: docs/superpowers/specs/2026-10-12-vault-schema-design.md."""
+    setup_pc.run([str(py), "-m", "pip", "install", "-q", "-e", str(ROOT / "schema")])
+    cli = [str(py), "-m", "ehl_schema.cli"]
+    setup_pc.run(cli + ["build", "--workdir", str(workdir), "--company", company])
+    setup_pc.run(cli + ["migrate", "--workdir", str(workdir), "--write"])
+    if setup_pc.run(cli + ["lint", "--workdir", str(workdir)], check=False).returncode != 0:
+        log.warning("The vault does not follow the schema yet; see the lint output above")
+
+
 def link_torque(workdir: Path) -> None:
     target, link = ROOT / "demo" / "torque", workdir / "apps" / "torque"
     link.parent.mkdir(parents=True, exist_ok=True)
@@ -285,6 +296,7 @@ def main() -> int:
     ap.add_argument("--no-build", action="store_true", help="skip pnpm install of Rowboat")
     ap.add_argument("--skip-rag", action="store_true", help="no Docker/Qdrant/OpenAI (Nordi without RAG)")
     ap.add_argument("--refresh", action="store_true", help="rewrite generated data and managed notes")
+    ap.add_argument("--company", default="EHL", help="name of the company note at the top of the vault hierarchy")
     args = ap.parse_args()
     workdir = (args.workdir or setup_pc.rowboat_workdir()).expanduser()
 
@@ -303,6 +315,7 @@ def main() -> int:
         setup_rowboat(args.rowboat, build=not args.no_build)
         py = setup_market(args.refresh)
         setup_vault(py, workdir, args.refresh)
+        setup_schema(py, workdir, args.company)
         link_torque(workdir)
         register_market(py, workdir)
         setup_3d(py, args.cars)
