@@ -18,7 +18,8 @@ GENERIC_BODY = ("# {Title}\n\n## Summary\n{2-3 sentences.}\n\n## Key facts\n{Sub
 
 
 def _front(schema: Schema, **fields) -> dict:
-    return {**fields, "managed_by": MANAGED, "schema_version": schema.version}
+    # the same keys migrate adds to every note, so build and migrate agree and re-runs settle
+    return {**fields, "visibility": "team", "env": "prod", "managed_by": MANAGED, "schema_version": schema.version}
 
 
 def structure_notes(schema: Schema, company: str) -> dict[str, str]:

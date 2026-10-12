@@ -14,6 +14,9 @@ LINK = re.compile(r"\[\[([^\]\n]+)\]\]")
 PLAIN = re.compile(r"[A-Za-z][A-Za-z0-9_.-]*")
 DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 RESERVED = {"true", "false", "yes", "no", "on", "off", "null", "none", "y", "n"}
+# Rowboat's own memory files: it reads them line by line (inbox) or puts them verbatim into every chat
+# prompt (user, preferences), so they must never get front matter.
+ROWBOAT_OWNED = {"Agent Notes/inbox.md", "Agent Notes/user.md", "Agent Notes/preferences.md"}
 
 
 class FrontMatterError(ValueError):
@@ -56,7 +59,7 @@ def split(text: str) -> tuple[dict | None, str, str]:
     body = t[end + 5:]
     try:
         data = yaml.safe_load(raw) or {}
-    except yaml.YAMLError as err:
+    except (yaml.YAMLError, ValueError) as err:  # ValueError: e.g. an impossible date like 2026-02-30
         raise FrontMatterError(f"front matter is not valid YAML: {err}") from err
     if not isinstance(data, dict):
         raise FrontMatterError("front matter is not a mapping")
@@ -114,18 +117,28 @@ def parent_target(note: Note) -> str | None:
 
 
 def read_vault(vault: Path) -> tuple[dict[str, Note], set[str]]:
-    """All notes (path without .md -> Note) and all file paths; skips hidden folders such as .git."""
+    """All notes (path without .md -> Note) and all file paths. Skips hidden folders such as .git, symlinks
+    (a write must never leave the vault) and Rowboat's own memory files (ROWBOAT_OWNED)."""
     notes: dict[str, Note] = {}
     files: set[str] = set()
     for file in sorted(vault.rglob("*")):
         rel = file.relative_to(vault)
-        if not file.is_file() or any(part.startswith(".") for part in rel.parts):
+        if file.is_symlink() or not file.is_file() or any(part.startswith(".") for part in rel.parts):
             continue
         key = rel.as_posix()
+        if key in ROWBOAT_OWNED:
+            continue
         files.add(key)
         if file.suffix != ".md":
             continue
-        raw = file.read_bytes().decode("utf-8")
+        data = file.read_bytes()
+        try:
+            raw = data.decode("utf-8")
+        except UnicodeDecodeError as err:
+            raw = data.decode("utf-8", errors="replace")
+            notes[key[:-3]] = Note(key[:-3], raw, None, "", raw.replace("\r\n", "\n"),
+                                   "\r\n" if "\r\n" in raw else "\n", f"not UTF-8: {err}")
+            continue
         newline = "\r\n" if "\r\n" in raw else "\n"
         try:
             front, front_text, body = split(raw)

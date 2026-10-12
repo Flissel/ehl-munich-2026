@@ -94,3 +94,32 @@ def test_add_keys_to_note_without_front_matter(tmp_path):
 def test_slug():
     assert slug("Feature Classes-Hood, open / close") == "feature-classes-hood-open-close"
     assert slug("Ümlaut Ärger") == "umlaut-arger"
+
+
+def test_invalid_date_is_a_front_matter_error():
+    with pytest.raises(FrontMatterError):
+        split("---\nwhen: 2026-02-30\n---\nBody\n")
+
+
+def test_read_vault_survives_bad_notes(tmp_path):
+    (tmp_path / "Topics").mkdir()
+    (tmp_path / "Topics" / "Latin1.md").write_bytes(b"---\nid: x\n---\n\xe4\xf6\xfc\n")
+    (tmp_path / "Topics" / "Date.md").write_text("---\nwhen: 2026-02-30\n---\n", encoding="utf-8")
+    notes, _ = read_vault(tmp_path)
+    assert notes["Topics/Latin1"].error and notes["Topics/Date"].error
+
+
+def test_read_vault_skips_symlinks_and_rowboat_owned_files(tmp_path):
+    outside = tmp_path / "outside.md"
+    outside.write_text("secret\n", encoding="utf-8")
+    vault = tmp_path / "knowledge"
+    (vault / "Topics").mkdir(parents=True)
+    (vault / "Agent Notes").mkdir()
+    for name in ("inbox", "user", "preferences"):
+        (vault / "Agent Notes" / f"{name}.md").write_text("- a memory line\n", encoding="utf-8")
+    try:
+        (vault / "Topics" / "Link.md").symlink_to(outside)
+    except OSError:
+        pytest.skip("symlinks not available")
+    notes, files = read_vault(vault)
+    assert notes == {} and files == set()

@@ -107,3 +107,19 @@ types:
     write_note(vault, "People/Alone", None, "")
     assert plan(schema, vault).unresolved == ["People/Alone"]
     assert read_vault(vault)[0]["People/Alone"].front is None
+
+
+def test_build_then_migrate_settles(schema, tmp_path):
+    build(schema, tmp_path, "EHL")
+    vault = tmp_path / "knowledge"
+    assert plan(schema, vault).changes == {}
+    assert build(schema, tmp_path, "EHL")["notes"] == 0
+
+
+def test_rowboat_owned_agent_notes_are_left_alone(schema, vault):
+    write_note(vault, "Agent Notes/inbox", None, "")
+    write_note(vault, "Agent Notes/preferences", None, "- prefers short answers\n")
+    report = plan(schema, vault)
+    assert not any(p.startswith("Agent Notes/") and p != "Agent Notes/Vault Schema" for p in report.changes)
+    apply(report, vault)
+    assert errors(lint(schema, vault)) == []
