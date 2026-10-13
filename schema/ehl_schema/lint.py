@@ -2,22 +2,14 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 from pathlib import Path
 
+from .issues import Issue
 from .model import Schema, TypeDef
 from .notes import DATE, Note, link_value, links, parent_target, read_vault
 
 FIELD = re.compile(r"^\*\*(Email|Domain):\*\*\s*(\S+)", re.M)
 BASE_KEYS = ("id", "type", "domain", "level")
-
-
-@dataclass(frozen=True)
-class Issue:
-    severity: str   # "error" | "warning"
-    path: str
-    code: str
-    message: str
 
 
 def errors(issues: list[Issue]) -> list[Issue]:
