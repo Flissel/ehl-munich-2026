@@ -74,3 +74,44 @@ def test_missing_cars_lists_only_absent_models(tmp_path):
     missing = install.missing_cars(models)
     assert "bmw-x1-2020" not in missing
     assert set(missing) == {"bmw-x5-2019", "bmw-x7-2019"}
+
+
+def test_profile_company_reads_the_profile():
+    assert install.profile_company("vibemind") == "VibeMind"
+
+
+def test_profile_company_unknown_profile():
+    import pytest
+    with pytest.raises(install.InstallError):
+        install.profile_company("nope")
+
+
+def test_profile_commands_never_migrate(tmp_path):
+    cmds = install.schema_commands(Path("py"), tmp_path, "VibeMind", "vibemind")
+    assert [c[3] for c in cmds] == ["build", "map"]
+    for c in cmds:
+        assert c[c.index("--profile") + 1] == "vibemind"
+    assert not any("migrate" in c for c in cmds)
+
+
+def test_ehl_commands_keep_migrate_and_the_company(tmp_path):
+    cmds = install.schema_commands(Path("py"), tmp_path, "EHL", None)
+    assert [c[3] for c in cmds] == ["build", "migrate", "map"]
+    for c in cmds:
+        if c[3] in ("build", "map"):
+            assert c[c.index("--company") + 1] == "EHL"
+    watch = install.map_watch_command(Path("py"), tmp_path, "EHL", None)
+    assert watch[watch.index("--company") + 1] == "EHL" and "--watch" in watch
+
+
+def test_backup_copies_notes_but_not_git(tmp_path):
+    vault = tmp_path / "knowledge"
+    (vault / ".git").mkdir(parents=True)
+    (vault / ".git" / "HEAD").write_text("x", encoding="utf-8")
+    (vault / "Agents").mkdir()
+    (vault / "Agents" / "a.md").write_text("# a\n", encoding="utf-8")
+    dest = install.backup_vault(vault, "20261013-1200")
+    assert dest == tmp_path / "knowledge.bak-20261013-1200"
+    assert (dest / "Agents" / "a.md").read_text(encoding="utf-8") == "# a\n"
+    assert not (dest / ".git").exists()
+    assert install.backup_vault(tmp_path / "missing", "x") is None

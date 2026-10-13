@@ -4,6 +4,8 @@
     python scripts/install.py                    # set everything up (except the 3D cars, see below)
     python scripts/install.py --cars "<folder>"  # ... and install the three 3D cars from their zips
     python scripts/install.py --start            # start Rowboat, the RAG backend and both syncs
+    python scripts/install.py --profile vibemind [--start]   # another company's vault (~/.rowboat): schema,
+                                                               # map and graph only - no BMW demo parts
 
 What it does, idempotently (safe to re-run):
   1. checks Git, Python 3.12, Node 22 / 24.15+, pnpm 10 and Docker (Docker only for the RAG)
@@ -34,6 +36,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 from collections.abc import Mapping
 from pathlib import Path
 
@@ -58,6 +61,8 @@ CARS = {
                     "https://sketchfab.com/3d-models/2019-bmw-x7-xdrive40i-a4b1edf1ec614f06b5d4db7208fe9650"),
 }
 MODELS = ROOT / "demo" / "torque" / "dist" / "visu" / "models"
+PROFILES = ROOT / "schema" / "profiles"
+MAP_REFRESH_SECONDS = 60
 
 
 class InstallError(Exception):
@@ -107,6 +112,49 @@ def copy_example_notes(src: Path, vault: Path) -> int:
 
 def missing_cars(models: Path) -> list[str]:
     return [car for car in CARS if not (models / car / "scene.gltf").is_file()]
+
+
+def profile_company(name: str) -> str:
+    """The company name of a vault profile (schema/profiles/<name>.yaml); stdlib only, so no YAML parser."""
+    path = PROFILES / f"{name}.yaml"
+    if not path.is_file():
+        raise InstallError(f"no profile {name!r} in {PROFILES}")
+    for line in path.read_text(encoding="utf-8").splitlines():
+        key, sep, value = line.partition(":")
+        if sep and key.strip() == "company" and value.split("#")[0].strip():
+            return value.split("#")[0].strip().strip("'\"")
+    raise InstallError(f"{path} has no company")
+
+
+def _schema_cli(py: Path) -> list[str]:
+    return [str(py), "-m", "ehl_schema.cli"]
+
+
+def schema_commands(py: Path, workdir: Path, company: str, profile: str | None) -> list[list[str]]:
+    """build (+ migrate for the EHL vault only) + map. A profile vault is never migrated: its notes belong to
+    live writers and must not be edited."""
+    w = ["--workdir", str(workdir)]
+    prof = ["--profile", profile] if profile else []
+    cmds = [_schema_cli(py) + ["build", *w, "--company", company, *prof]]
+    if profile is None:
+        cmds.append(_schema_cli(py) + ["migrate", *w, "--write"])
+    cmds.append(_schema_cli(py) + ["map", *w, "--company", company, *prof])
+    return cmds
+
+
+def map_watch_command(py: Path, workdir: Path, company: str, profile: str | None,
+                      seconds: int = MAP_REFRESH_SECONDS) -> list[str]:
+    prof = ["--profile", profile] if profile else []
+    return _schema_cli(py) + ["map", "--workdir", str(workdir), "--company", company, *prof, "--watch", str(seconds)]
+
+
+def backup_vault(vault: Path, stamp: str) -> Path | None:
+    """Copy the vault next to itself (knowledge.bak-<stamp>), without its .git folder."""
+    if not vault.is_dir():
+        return None
+    dest = vault.with_name(f"{vault.name}.bak-{stamp}")
+    shutil.copytree(vault, dest, ignore=shutil.ignore_patterns(".git"), dirs_exist_ok=True)
+    return dest
 
 
 # --- steps ----------------------------------------------------------------------------------------
@@ -185,13 +233,14 @@ def setup_vault(py: Path, workdir: Path, refresh: bool) -> None:
                     workdir / "config" / "notes.json")
 
 
-def setup_schema(py: Path, workdir: Path, company: str) -> None:
-    """Vault schema (schema/): one hierarchy for every note. Spec: docs/superpowers/specs/2026-10-12-vault-schema-design.md."""
+def setup_schema(py: Path, workdir: Path, company: str, profile: str | None = None) -> None:
+    """Vault schema (schema/): one hierarchy for every note. Specs: docs/superpowers/specs/2026-10-12-vault-schema-design.md,
+    2026-10-13-vault-folder-rules-design.md (profiles)."""
     setup_pc.run([str(py), "-m", "pip", "install", "-q", "-e", str(ROOT / "schema")])
-    cli = [str(py), "-m", "ehl_schema.cli"]
-    setup_pc.run(cli + ["build", "--workdir", str(workdir), "--company", company])
-    setup_pc.run(cli + ["migrate", "--workdir", str(workdir), "--write"])
-    if setup_pc.run(cli + ["lint", "--workdir", str(workdir)], check=False).returncode != 0:
+    for cmd in schema_commands(py, workdir, company, profile):
+        setup_pc.run(cmd)
+    lint = _schema_cli(py) + ["lint", "--workdir", str(workdir)] + (["--profile", profile] if profile else [])
+    if setup_pc.run(lint, check=False).returncode != 0:
         log.warning("The vault does not follow the schema yet; see the lint output above")
 
 
@@ -247,23 +296,29 @@ def setup_rag(interactive: bool) -> None:
                   "--chunks-path", str(ROOT / "outputs" / "chunks" / "chunks.jsonl")], cwd=ROOT)
 
 
-def start(rowboat: Path, workdir: Path) -> int:
-    """Start Rowboat, the RAG backend and both syncs; Ctrl+C stops all of them."""
-    market_py, search_py = venv_python(ROOT / "market" / ".venv"), venv_python(ROOT / "search" / ".venv")
+def start(rowboat: Path, workdir: Path, company: str = "EHL", profile: str | None = None) -> int:
+    """Start Rowboat and its helpers; Ctrl+C stops all of them. With a profile only Rowboat and the
+    vault-map refresh run (no BMW demo syncs, no RAG)."""
     vault = str(workdir / "knowledge")
     env = {**os.environ, "ROWBOAT_WORKDIR": str(workdir), "EHL_VAULT": vault}
-    jobs = [("Rowboat", ["npm", "run", "dev"], rowboat / "apps" / "x"),
-            ("vault sync", [str(market_py), str(ROOT / "demo" / "visu" / "vault.py"), "sync", "--watch",
-                            "--vault", vault], ROOT),
-            ("Torque sync", [str(market_py), str(ROOT / "demo" / "torque" / "sync.py"), "--watch",
-                             "--vault", vault], ROOT)]
-    if search_py.exists():
-        jobs.append(("RAG", [str(search_py), "-m", "uvicorn", "app:app", "--port", str(RAG_PORT)], ROOT))
+    jobs = [("Rowboat", ["npm", "run", "dev"], rowboat / "apps" / "x")]
+    if profile:
+        schema_py = venv_python(ROOT / "schema" / ".venv")
+        jobs.append(("vault map", map_watch_command(schema_py, workdir, company, profile), ROOT))
+    else:
+        market_py, search_py = venv_python(ROOT / "market" / ".venv"), venv_python(ROOT / "search" / ".venv")
+        jobs += [("vault sync", [str(market_py), str(ROOT / "demo" / "visu" / "vault.py"), "sync", "--watch",
+                                 "--vault", vault], ROOT),
+                 ("Torque sync", [str(market_py), str(ROOT / "demo" / "torque" / "sync.py"), "--watch",
+                                  "--vault", vault], ROOT),
+                 ("vault map", map_watch_command(market_py, workdir, company, None), ROOT)]
+        if search_py.exists():
+            jobs.append(("RAG", [str(search_py), "-m", "uvicorn", "app:app", "--port", str(RAG_PORT)], ROOT))
     procs = []
     for name, cmd, cwd in jobs:
         log.info("starting %s: %s", name, " ".join(cmd))
         procs.append(subprocess.Popen(cmd, cwd=cwd, env=env, shell=IS_WINDOWS and cmd[0] == "npm"))
-    log.info("Rowboat opens after its first build (a few minutes): Apps -> Torque. Ctrl+C stops everything.")
+    log.info("Rowboat opens after its first build (a few minutes). Ctrl+C stops everything.")
     try:
         procs[0].wait()
     except KeyboardInterrupt:
@@ -297,10 +352,22 @@ def main() -> int:
     ap.add_argument("--skip-rag", action="store_true", help="no Docker/Qdrant/OpenAI (Nordi without RAG)")
     ap.add_argument("--refresh", action="store_true", help="rewrite generated data and managed notes")
     ap.add_argument("--company", default="EHL", help="name of the company note at the top of the vault hierarchy")
+    ap.add_argument("--profile", help="vault profile from schema/profiles (e.g. vibemind): set up and start Rowboat "
+                    "on that vault only - no market data, Torque, 3D cars or RAG; workdir default ~/.rowboat")
     args = ap.parse_args()
-    workdir = (args.workdir or setup_pc.rowboat_workdir()).expanduser()
+    if args.profile:
+        try:
+            company = profile_company(args.profile)
+        except InstallError as err:
+            log.error("%s", err)
+            return 2
+        workdir = (args.workdir or Path.home() / ".rowboat").expanduser()
+    else:
+        company = args.company
+        workdir = (args.workdir or setup_pc.rowboat_workdir()).expanduser()
 
-    problems = check_tools(need_docker=not args.skip_rag and not args.start,
+    profile_mode = bool(args.profile)
+    problems = check_tools(need_docker=not profile_mode and not args.skip_rag and not args.start,
                            need_build=not args.no_build and not args.start)
     if problems:
         log.error("Missing prerequisites:\n- %s", "\n- ".join(problems))
@@ -309,23 +376,32 @@ def main() -> int:
     if args.check:
         return 0
     if args.start:
-        return start(args.rowboat, workdir)
+        return start(args.rowboat, workdir, company, args.profile)
 
     try:
         setup_rowboat(args.rowboat, build=not args.no_build)
-        py = setup_market(args.refresh)
-        setup_vault(py, workdir, args.refresh)
-        setup_schema(py, workdir, args.company)
-        link_torque(workdir)
-        register_market(py, workdir)
-        setup_3d(py, args.cars)
-        if not args.skip_rag:
-            setup_rag(interactive=sys.stdin.isatty())
+        if profile_mode:
+            py = make_venv(ROOT / "schema" / ".venv")
+            backup = backup_vault(workdir / "knowledge", time.strftime("%Y%m%d-%H%M%S"))
+            log.info("Vault backup: %s", backup or "none (no vault yet)")
+            setup_schema(py, workdir, company, args.profile)
+        else:
+            py = setup_market(args.refresh)
+            setup_vault(py, workdir, args.refresh)
+            setup_schema(py, workdir, company)
+            link_torque(workdir)
+            register_market(py, workdir)
+            setup_3d(py, args.cars)
+            if not args.skip_rag:
+                setup_rag(interactive=sys.stdin.isatty())
     except (InstallError, setup_pc.SetupError) as err:
         log.error("Install stopped: %s", err)
         return 1
-    log.info("Done. Next: python scripts/install.py --start, then in Rowboat set a model provider "
-             "(Settings) and open Apps -> Torque.")
+    if profile_mode:
+        log.info("Done. Next: python scripts/install.py --profile %s --start", args.profile)
+    else:
+        log.info("Done. Next: python scripts/install.py --start, then in Rowboat set a model provider "
+                 "(Settings) and open Apps -> Torque.")
     return 0
 
 
