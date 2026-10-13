@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4VCA8KDG8CWMTZ502MQYN3B",
+  "strategy": "manual-commit",
+  "branch": "feat/vibemind-desktop-update",
+  "checkpoints_count": 7,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 1168,
+    "cache_creation_tokens": 14280860,
+    "cache_read_tokens": 234415897,
+    "output_tokens": 616404,
+    "api_call_count": 576,
+    "subagent_tokens": {
+      "input_tokens": 24,
+      "cache_creation_tokens": 24864,
+      "cache_read_tokens": 1706032,
+      "output_tokens": 572,
+      "api_call_count": 12
+    }
+  }
+}
