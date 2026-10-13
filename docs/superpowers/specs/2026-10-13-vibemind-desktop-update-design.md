@@ -54,7 +54,7 @@ Base `ehl-schema-graph`. One commit per item; every new or changed file gets a f
 |---|---|
 | Plugin settings | Add the four source files and two tests unchanged, same paths. Add tab `plugins` ("Plugins", icon `Plug`) to `settings-dialog.tsx` and render `ConnectedPluginSettings` for it. Add script `test:plugins` to the renderer `package.json` |
 | Plugin session | `acquire()` reads `account:getRowboat` (`{signedIn, accessToken}`) and `rowboat:getConfig` (service URLs incl. `appUrl`); the strict shape checks stay, per channel. Signed out → `null` as before; anything malformed → `plugin_session_unavailable` |
-| Video links | Add `extensions/video-link.tsx`; register `VideoLinkExtension` in `markdown-editor.tsx` next to the other block extensions |
+| Video links | Add `extensions/video-link.tsx`; register `VideoLinkExtension` in `markdown-editor.tsx` next to the other block extensions; add `case 'videoLink'` to `blockToMarkdown` (writes `[title](src)`), because the editor at `72e9d8c` serializes unknown nodes to an empty string and a saved note would lose its video link |
 | Tolerant read | In `App.tsx` `buildGraph`, `data: typeof result?.data === 'string' ? result.data : ''` |
 | Settings dialog a11y | `DialogTitle` / `DialogDescription` only if the dialog at `72e9d8c` lacks them |
 
