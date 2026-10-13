@@ -8,6 +8,7 @@ exclude:                     # never in the map, no warning
   - "Welcome"                # Rowboat's own welcome note
 rules:
   - {match: "Projects/VibeMind - TODO */_overview", type: Tasks}
+  - {match: "Projects/VibeMind - TODO */**",        type: Tasks}
   - {match: "Projects/{p}/_overview",               type: Projects}
   - {match: "Projects/{p}/**",                      type: Requirements, parent: "Projects/{p}/_overview"}
   - {match: "Projects/*",                           type: Projects}

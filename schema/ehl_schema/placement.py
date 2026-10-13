@@ -36,7 +36,10 @@ def _from_front(schema: Schema, note: Note) -> Placement | None:
     td = schema.types[tname]
     level = front.get("level") if isinstance(front.get("level"), int) else td.level
     domain = str(front.get("domain") or td.domain)
-    return Placement(tname, level, domain, parent_target(note), "front")
+    parent = parent_target(note)
+    if parent is None and tname != "Company":  # front matter without parent: the type's default area
+        parent = schema.area_note(td.default_parent or FALLBACK_TYPE)
+    return Placement(tname, level, domain, parent, "front")
 
 
 def _area_domain(schema: Schema, parent: str) -> str:

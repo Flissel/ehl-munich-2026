@@ -131,15 +131,15 @@ def _schema_cli(py: Path) -> list[str]:
 
 
 def schema_commands(py: Path, workdir: Path, company: str, profile: str | None) -> list[list[str]]:
-    """build (+ migrate for the EHL vault only) + map. A profile vault is never migrated: its notes belong to
-    live writers and must not be edited."""
+    """EHL vault: build + migrate + map. A profile vault gets map only: its notes belong to live writers and
+    must not be edited (no migrate), and its config/notes.json belongs to that installation (no build); map
+    writes the structure notes and the rules note itself."""
     w = ["--workdir", str(workdir)]
-    prof = ["--profile", profile] if profile else []
-    cmds = [_schema_cli(py) + ["build", *w, "--company", company, *prof]]
-    if profile is None:
-        cmds.append(_schema_cli(py) + ["migrate", *w, "--write"])
-    cmds.append(_schema_cli(py) + ["map", *w, "--company", company, *prof])
-    return cmds
+    if profile:
+        return [_schema_cli(py) + ["map", *w, "--company", company, "--profile", profile]]
+    return [_schema_cli(py) + ["build", *w, "--company", company],
+            _schema_cli(py) + ["migrate", *w, "--write"],
+            _schema_cli(py) + ["map", *w, "--company", company]]
 
 
 def map_watch_command(py: Path, workdir: Path, company: str, profile: str | None,

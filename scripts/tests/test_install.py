@@ -88,7 +88,7 @@ def test_profile_company_unknown_profile():
 
 def test_profile_commands_never_migrate(tmp_path):
     cmds = install.schema_commands(Path("py"), tmp_path, "VibeMind", "vibemind")
-    assert [c[3] for c in cmds] == ["build", "map"]
+    assert [c[3] for c in cmds] == ["map"]          # build would rewrite the installation's config/notes.json
     for c in cmds:
         assert c[c.index("--profile") + 1] == "vibemind"
     assert not any("migrate" in c for c in cmds)

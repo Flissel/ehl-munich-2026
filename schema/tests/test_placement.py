@@ -29,6 +29,7 @@ EXPECTED = {
     "Projects/TestCo - Shop/_overview": ("Projects", 3, "delivery", "Areas/Client projects", "rule"),
     "Projects/TestCo - Shop/Payment Flow": ("Requirements", 3, "product", "Projects/TestCo - Shop/_overview", "rule"),
     "Projects/VibeMind - TODO Write tests (z. B. unit)/_overview": ("Tasks", 4, "delivery", "Areas/Milestones", "rule"),
+    "Projects/VibeMind - TODO Write tests (z. B. unit)/Detail": ("Tasks", 4, "delivery", "Areas/Milestones", "rule"),
     "Projects/TestCo - Orphan/Lonely": ("Requirements", 3, "product", "Areas/Requirements", "rule"),
     "companys/Acme Brand/Marke": ("Brands", 3, "marketing", "Areas/Brand", "rule"),
     "companys/Acme Brand/Markenhandbuch": ("Content", 4, "marketing", "companys/Acme Brand/Marke", "rule"),
@@ -78,3 +79,12 @@ def test_ehl_vault_with_default_profile_uses_front_matter_only(tmp_path, schema)
     assert {p.source for p in res.placements.values()} == {"front"}
     assert res.placements["Deals/Acme deal"] == Placement("Deals", 3, "sales", "Areas/Pipeline", "front")
     assert res.issues == [] and res.excluded == []
+
+
+def test_front_matter_without_parent_gets_the_default_area(tmp_path, schema):
+    from helpers import write_raw
+    vault = vibemind_like_vault(tmp_path, schema)
+    write_raw(vault, "Topics/Only type", "---\ntype: Topics\n---\n# x\n")
+    notes, _ = read_vault(vault)
+    res = resolve(schema, load_profile("vibemind", schema), notes)
+    assert res.placements["Topics/Only type"] == Placement("Topics", 3, "knowledge", "Areas/Topics", "front")

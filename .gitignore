@@ -19,4 +19,6 @@ __pycache__/
 
 # RAG backend (feat/ehl-search) venv
 search/.venv/
+# vault schema venv (install.py --profile)
+schema/.venv/
 # macOS

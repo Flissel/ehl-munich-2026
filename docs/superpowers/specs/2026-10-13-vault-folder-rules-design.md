@@ -96,6 +96,7 @@ exclude:                     # never in the map, no warning
   - "Welcome"                # Rowboat's own welcome note
 rules:                       # first match wins; paths are vault-relative, without ".md"
   - {match: "Projects/VibeMind - TODO */_overview", type: Tasks}
+  - {match: "Projects/VibeMind - TODO */**",        type: Tasks}
   - {match: "Projects/{p}/_overview",               type: Projects}
   - {match: "Projects/{p}/**",                      type: Requirements, parent: "Projects/{p}/_overview"}
   - {match: "Projects/*",                           type: Projects}
@@ -165,7 +166,8 @@ writes **only** these files (each only if its content changed):
 Keys and `parent` are vault-relative paths without `.md`. Structure notes are in the map too, so the
 graph needs nothing else.
 
-`build` keeps working as today and calls `map` at the end. `install.py` and the vault sync loop run `map`
+`build` keeps working as today and is used for the EHL vault only (it also rewrites the installation's
+`config/notes.json`, which a profile vault's installation owns). `install.py` and the vault sync loop run `map`
 after every sync, so new notes from the writers appear within one sync interval.
 
 ## 7. Graph (fork branch `ehl-schema-graph`)
@@ -197,7 +199,7 @@ after every sync, so new notes from the writers appear within one sync interval.
 - Workdir `~/.rowboat` (overridable with `--workdir`), company from the profile.
 - Skips everything BMW/EHL-demo: market venv and data, quotes, Torque app link, `ehl-market` MCP entry, 3D
   car data, demo example data, EHL notes.
-- Keeps: tool check, Rowboat clone of our fork, schema install, backup, `build` + `map` + `lint`, start of
+- Keeps: tool check, Rowboat clone of our fork, schema install, backup, `map` + `lint` (no `build`: it would rewrite `config/notes.json`), start of
   Rowboat in dev mode with `ROWBOAT_WORKDIR=~/.rowboat`, vault-map refresh loop.
 - **Backup before the first write:** a copy of `~/.rowboat/knowledge` to
   `~/.rowboat/knowledge.bak-<timestamp>` (once per install run).

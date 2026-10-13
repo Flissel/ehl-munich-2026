@@ -67,6 +67,7 @@ def vibemind_like_vault(tmp_path: Path, schema) -> Path:
     write_raw(vault, "Projects/TestCo - Shop/_overview", "---\nidea_id: x1\ntitle: null\ntags: []\n---\n# Shop\n")
     write_raw(vault, "Projects/TestCo - Shop/Payment Flow", "# Payment Flow\n")
     write_raw(vault, "Projects/VibeMind - TODO Write tests (z. B. unit)/_overview", "# TODO\n")
+    write_raw(vault, "Projects/VibeMind - TODO Write tests (z. B. unit)/Detail", "# detail\n")
     write_raw(vault, "Projects/TestCo - Orphan/Lonely", "# Lonely\n")   # project folder without _overview
     write_raw(vault, "companys/Acme Brand/Marke", "# Marke\n")
     write_raw(vault, "companys/Acme Brand/Markenhandbuch", "# Handbuch\n")
