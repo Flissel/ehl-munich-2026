@@ -1,7 +1,7 @@
 """Checks for ehl_schema.model: the real schema file loads and is consistent; bad schemas are rejected."""
 import pytest
 
-from ehl_schema.model import STRUCTURE_TYPES, SchemaError, load_schema
+from ehl_schema.model import DEFAULT_SCHEMA, STRUCTURE_TYPES, SchemaError, load_schema
 
 MINI = """
 schema_version: 1
@@ -22,7 +22,7 @@ def test_real_schema_loads_and_is_consistent():
     for name, td in schema.types.items():
         if name in STRUCTURE_TYPES:
             continue
-        assert td.default_parent in schema.areas, name
+        assert td.default_parent in schema.areas or td.domain == "*", name
         assert all(p in schema.types for p in td.parent), name
 
 
@@ -80,4 +80,26 @@ def test_reserved_type_name_is_rejected(tmp_path):
     path = tmp_path / "s.yaml"
     path.write_text(MINI + "  Areas: {domain: sales, level: 3, parent: [Areas]}\n", encoding="utf-8")
     with pytest.raises(SchemaError, match="reserved"):
+        load_schema(path)
+
+
+def test_vibemind_types_and_area():
+    schema = load_schema()
+    assert schema.areas["Discourse"] == "sources"
+    assert (schema.types["Ideas"].domain, schema.types["Ideas"].level, schema.types["Ideas"].default_parent) == ("product", 3, "Roadmap")
+    assert (schema.types["Discourse"].domain, schema.types["Discourse"].level) == ("sources", 4)
+    hubs = schema.types["Hubs"]
+    assert (hubs.domain, hubs.level, hubs.parent, hubs.default_parent) == ("*", 3, ("Areas",), None)
+    assert schema.types["Requirements"].parent == ("Models", "Products", "Projects", "Areas")
+    assert schema.types["Content"].parent == ("Campaigns", "Brands", "Areas")
+    assert schema.types["Agent Notes"].parent == ("Brands", "Projects", "Agents", "Areas")
+
+
+def test_star_domain_needs_areas_as_only_parent(tmp_path):
+    line = "Hubs:               {domain: \"*\", level: 3, parent: [Areas]}"
+    original = DEFAULT_SCHEMA.read_text(encoding="utf-8")
+    assert line in original
+    path = tmp_path / "schema.yaml"
+    path.write_text(original.replace(line, line.replace("[Areas]", "[Agents, Areas]")), encoding="utf-8", newline="\n")
+    with pytest.raises(SchemaError, match="Hubs"):
         load_schema(path)

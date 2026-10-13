@@ -74,6 +74,7 @@ areas:        # area name (unique; note Areas/<name>) -> domain
   Chats: sources
   Voice memos: sources
   Agent notes: sources
+  Discourse: sources
   Topics: knowledge
   Studies: knowledge
   Data: knowledge
@@ -126,14 +127,15 @@ types:
   # marketing
   Brands:             {domain: marketing, level: 3, parent: [Areas], default_parent: Brand}
   Campaigns:          {domain: marketing, level: 3, parent: [Projects, Areas], default_parent: Campaigns, optional: [owner, project, product, when], statuses: [draft, scheduled, running, done]}
-  Content:            {domain: marketing, level: 4, parent: [Campaigns, Areas], default_parent: Content, optional: [owner, about, when], statuses: [draft, approved, published]}
+  Content:            {domain: marketing, level: 4, parent: [Campaigns, Brands, Areas], default_parent: Content, optional: [owner, about, when], statuses: [draft, approved, published]}
   Assets:             {domain: marketing, level: 4, parent: [Campaigns, Content, Areas], default_parent: Content, optional: [about, executed_by]}
   # product
   Products:           {domain: product, level: 3, parent: [Areas], default_parent: Products, optional: [owner]}
   Models:             {domain: product, level: 3, parent: [Brands, Products, Areas], default_parent: Products}
   Components:         {domain: product, level: 4, parent: [Models, Products, Areas], default_parent: Products}
   Feature Classes:    {domain: product, level: 4, parent: [Components, Models, Areas], default_parent: Products}
-  Requirements:       {domain: product, level: 3, parent: [Models, Products, Areas], default_parent: Requirements, optional: [product, owner, evidence], statuses: [proposed, in_review, approved, rejected, challenged, edited]}
+  Requirements:       {domain: product, level: 3, parent: [Models, Products, Projects, Areas], default_parent: Requirements, optional: [product, owner, evidence], statuses: [proposed, in_review, approved, rejected, challenged, edited]}
+  Ideas:              {domain: product, level: 3, parent: [Areas], default_parent: Roadmap, optional: [owner, product], statuses: [pending_approval, active, done, rejected]}
   Purchase Drivers:   {domain: product, level: 3, parent: [Projects, Purchase Drivers, Models, Areas], default_parent: Requirements, optional: [product, evidence]}
   Releases:           {domain: product, level: 3, parent: [Products, Areas], default_parent: Releases, optional: [product, when]}
   Incidents:          {domain: product, level: 4, parent: [Products, Systems, Areas], default_parent: Incidents, optional: [product, owner, when], statuses: [open, mitigated, resolved]}
@@ -160,9 +162,12 @@ types:
   Mails:              {domain: sources, level: 4, parent: [Areas], default_parent: Mails, required: [about], optional: [customer, project, when]}
   Chats:              {domain: sources, level: 4, parent: [Areas], default_parent: Chats, optional: [about, customer, project, when]}
   Voice Memos:        {domain: sources, level: 4, parent: [Areas], default_parent: Voice memos, builtin: true, optional: [about, when]}
-  Agent Notes:        {domain: sources, level: 4, parent: [Areas], default_parent: Agent notes, builtin: true, optional: [about, executed_by]}
+  Agent Notes:        {domain: sources, level: 4, parent: [Brands, Projects, Agents, Areas], default_parent: Agent notes, builtin: true, optional: [about, executed_by]}
+  Discourse:          {domain: sources, level: 4, parent: [Areas], default_parent: Discourse, optional: [about]}
   # knowledge
   Topics:             {domain: knowledge, level: 3, parent: [Areas], default_parent: Topics, builtin: true}
   Studies:            {domain: knowledge, level: 3, parent: [Areas], default_parent: Studies, optional: [about, evidence]}
   Data:               {domain: knowledge, level: 4, parent: [Areas], default_parent: Data, optional: [about]}
   Assumptions:        {domain: knowledge, level: 3, parent: [Areas], default_parent: Assumptions, optional: [about, evidence]}
+  # index notes kept by a curator; their domain is the domain of their parent area
+  Hubs:               {domain: "*", level: 3, parent: [Areas]}

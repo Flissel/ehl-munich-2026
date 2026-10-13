@@ -120,7 +120,10 @@ def _check(schema: Schema) -> None:
     for name, td in schema.types.items():
         if name in STRUCTURE_TYPES:
             continue
-        if td.domain not in schema.domains:
+        if td.domain == "*":
+            if td.parent != ("Areas",):
+                errors.append(f"type {name!r}: an index type (domain '*') must have parent [Areas] only")
+        elif td.domain not in schema.domains:
             errors.append(f"type {name!r}: unknown domain {td.domain!r}")
         if td.level not in (3, 4):
             errors.append(f"type {name!r}: level must be 3 or 4")

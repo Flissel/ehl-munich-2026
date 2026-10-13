@@ -1,6 +1,6 @@
 """Checks for ehl_schema.migrate on a small vault shaped like the EHL vault."""
 import pytest
-from helpers import write_note
+from helpers import valid_vault, write_note
 
 from ehl_schema.build import build
 from ehl_schema.lint import errors, lint
@@ -123,3 +123,11 @@ def test_rowboat_owned_agent_notes_are_left_alone(schema, vault):
     assert not any(p.startswith("Agent Notes/") and p != "Agent Notes/Vault Schema" for p in report.changes)
     apply(report, vault)
     assert errors(lint(schema, vault)) == []
+
+
+def test_migrate_leaves_hub_notes_alone(tmp_path, schema):
+    vault = valid_vault(tmp_path, schema)
+    write_note(vault, "Hubs/Agents", None, "# Agents\n\n- [[alpha]]\n")
+    report = plan(schema, vault)
+    assert "Hubs/Agents" not in report.changes
+    assert "Hubs/Agents" in report.unmapped

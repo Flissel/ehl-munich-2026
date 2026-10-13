@@ -76,3 +76,9 @@ def test_build_does_not_overwrite_a_human_note(schema, workdir):
 def test_build_without_notes_json(schema, tmp_path):
     (tmp_path / "knowledge").mkdir()
     assert build(schema, tmp_path, "EHL")["notes_json"] == "missing"
+
+
+def test_notes_json_skips_index_types(schema):
+    entries = notes_json(schema, [])
+    assert "Hubs" not in {e["type"] for e in entries}
+    assert "Ideas" in {e["type"] for e in entries}

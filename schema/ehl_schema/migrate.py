@@ -75,7 +75,7 @@ def plan(schema: Schema, vault: Path) -> Report:
     todo = []
     for path, note in notes.items():
         tname = schema.type_of_path(path)
-        if tname is None:
+        if tname is None or (tname not in STRUCTURE_TYPES and schema.types[tname].domain == "*"):
             report.unmapped.append(path)
         elif tname not in STRUCTURE_TYPES and note.error is None:
             todo.append((schema.types[tname].level, -len(near[path]), path))

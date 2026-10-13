@@ -67,7 +67,8 @@ def rules_body(schema: Schema) -> str:
     for name, td in schema.types.items():
         if name in STRUCTURE_TYPES:
             continue
-        lines.append(f"| {name} | {td.domain} | {td.level} | {', '.join(td.parent)} | {td.default_parent or ''} | "
+        domain = "from its parent area" if td.domain == "*" else td.domain
+        lines.append(f"| {name} | {domain} | {td.level} | {', '.join(td.parent)} | {td.default_parent or ''} | "
                      f"{', '.join(td.required) or '–'} | {', '.join(td.optional) or '–'} |")
     lines += ["", "## Relations", "", "| Key | Points to |", "|---|---|"]
     for name, rel in schema.relations.items():
@@ -138,7 +139,7 @@ def notes_json(schema: Schema, existing: list[dict]) -> list[dict]:
     by_type = {e["type"]: dict(e) for e in existing if isinstance(e, dict) and "type" in e}
     order = [e["type"] for e in existing if isinstance(e, dict) and "type" in e]
     for name, td in schema.types.items():
-        if name in STRUCTURE_TYPES or (td.builtin and name not in by_type):
+        if name in STRUCTURE_TYPES or td.domain == "*" or (td.builtin and name not in by_type):
             continue
         entry = by_type.get(name, {"type": name, "folder": name, "template": "", "extractionGuide": ""})
         if name not in by_type:
