@@ -90,6 +90,17 @@ python scripts/install.py --start
 Then open **Apps → Torque**. If you already use Rowboat, the demo keeps its data in `~/.rowboat-ehl`, so
 your own `~/.rowboat` stays untouched.
 
+To run our Rowboat on **another company's vault** instead, use a vault profile:
+
+```bash
+python scripts/install.py --profile vibemind --start
+```
+
+It works on `~/.rowboat` and leaves every existing note untouched: the folder rules in
+`schema/profiles/vibemind.yaml` place the notes in the hierarchy (`config/vault-map.json`), which the 3D brain
+graph reads. No BMW demo parts are set up (market data, Torque, 3D cars, RAG). Run it once without `--start`
+first; it backs the vault up to `~/.rowboat/knowledge.bak-<time>`.
+
 Team members setting up a development PC (forks, work-package branches) use [SETUP.md](SETUP.md) and
 `scripts/setup_pc.py` instead.
 

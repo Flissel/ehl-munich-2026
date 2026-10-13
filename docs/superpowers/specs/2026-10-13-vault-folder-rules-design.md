@@ -1,6 +1,6 @@
 # Vault folder rules: the VibeMind vault in the schema hierarchy
 
-**Date:** 2026-10-13 · **Status:** draft for review · **Builds on:**
+**Date:** 2026-10-13 · **Status:** implemented (plan 2026-10-13-vault-folder-rules-plan.md) · **Builds on:**
 `2026-10-12-vault-schema-design.md` (schema) and `2026-10-12-brain-graph-hierarchy-design.md` (graph)
 
 This is **part 1 of 2** of "bring the new Rowboat to VibeMind":
@@ -224,6 +224,11 @@ after every sync, so new notes from the writers appear within one sync interval.
   fallback and front matter precedence.
 - **Real run** (not in CI): `map` + `lint` on `~/.rowboat` after the backup; numbers per type and
   warnings reported; Rowboat started on `~/.rowboat`; the user checks the 3D graph.
+- **Real run 2026-10-13:** 574 notes placed (500 existing + 74 structure notes), 3 excluded (`Diary/`,
+  `Bewerbung/`, `Welcome`), lint 0 errors / 0 warnings. A diff against the backup shows only the new
+  `Company.md`, `Domains/`, `Areas/` and `Agent Notes/`. Types: Agents 227, Requirements 98, Assets 37,
+  Topics 30, Tasks 25, Discourse 24, Projects 18, Ideas 13, People 6, Workflows 6, Agent Notes 5, Hubs 4,
+  Content 3, Brands 2, Funding 1, KPIs 1, Systems 1.
 
 ## 12. Out of scope
 
