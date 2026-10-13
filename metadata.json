@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4V3TTNKRKBV5T3V849N0S09",
+  "strategy": "manual-commit",
+  "branch": "feat/vault-folder-rules",
+  "checkpoints_count": 3,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 1114,
+    "cache_creation_tokens": 14245434,
+    "cache_read_tokens": 223133334,
+    "output_tokens": 588981,
+    "api_call_count": 549,
+    "subagent_tokens": {
+      "input_tokens": 24,
+      "cache_creation_tokens": 131627,
+      "cache_read_tokens": 1138824,
+      "output_tokens": 1880,
+      "api_call_count": 12
+    }
+  }
+}
