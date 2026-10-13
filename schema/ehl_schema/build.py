@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .model import STRUCTURE_TYPES, Schema, TypeDef
 from .notes import note_text, slug, split
+from .profile import Profile
 
 log = logging.getLogger("ehl_schema.build")
 
@@ -22,7 +23,7 @@ def _front(schema: Schema, **fields) -> dict:
     return {**fields, "visibility": "team", "env": "prod", "managed_by": MANAGED, "schema_version": schema.version}
 
 
-def structure_notes(schema: Schema, company: str) -> dict[str, str]:
+def structure_notes(schema: Schema, company: str, profile: Profile | None = None) -> dict[str, str]:
     notes: dict[str, str] = {}
     domain_links = "\n".join(f"- [[{schema.domain_note(k)}]]" for k in schema.domains)
     notes["Company"] = note_text(
@@ -44,11 +45,11 @@ def structure_notes(schema: Schema, company: str) -> dict[str, str]:
     notes[RULES_NOTE] = note_text(
         _front(schema, id="agent-notes-vault-schema", type="Agent Notes", domain=td.domain, level=td.level,
                parent=f"[[{schema.area_note(td.default_parent)}]]"),
-        rules_body(schema))
+        rules_body(schema, profile))
     return notes
 
 
-def rules_body(schema: Schema) -> str:
+def rules_body(schema: Schema, profile: Profile | None = None) -> str:
     lines = [f"# Vault schema (v{schema.version})", "",
              "Generated from schema/vault-schema.yaml by `ehl-schema build`. Do not edit; change the schema file.", "",
              "## Front matter", "",
@@ -74,12 +75,24 @@ def rules_body(schema: Schema) -> str:
     for name, rel in schema.relations.items():
         target = "a date" if rel.kind == "date" else ("any note" if rel.targets is None else ", ".join(rel.targets))
         lines.append(f"| {name} | {target} |")
+    if profile is not None and profile.has_rules:
+        lines += ["", "## Folders in this vault", "",
+                  f"This vault ({profile.company}) keeps its own folders. A new note goes into the folder whose rule "
+                  "gives the type you need; the first matching rule wins. `*` is any text inside one folder name, "
+                  "`**` any sub-path, `{x}` one folder name.", "",
+                  "| Path pattern | Type | Parent |", "|---|---|---|"]
+        for rule in profile.rules:
+            lines.append(f"| `{rule.match}` | {rule.type} | {rule.parent or 'default area of the type'} |")
+        lines.append("| any other `<Type>/…` | the folder name | default area of the type |")
+        if profile.exclude_raw:
+            lines += ["", "Private, not part of the team graph: "
+                      + ", ".join(f"`{p}`" for p in profile.exclude_raw) + "."]
     return "\n".join(lines) + "\n"
 
 
-def write_structure(schema: Schema, vault: Path, company: str) -> int:
+def write_structure(schema: Schema, vault: Path, company: str, profile: Profile | None = None) -> int:
     written = 0
-    for path, text in structure_notes(schema, company).items():
+    for path, text in structure_notes(schema, company, profile).items():
         file = vault / f"{path}.md"
         if file.exists():
             old = file.read_text(encoding="utf-8")
@@ -155,8 +168,8 @@ def notes_json(schema: Schema, existing: list[dict]) -> list[dict]:
     return [by_type[name] for name in order]
 
 
-def build(schema: Schema, workdir: Path, company: str) -> dict:
-    written = write_structure(schema, workdir / "knowledge", company)
+def build(schema: Schema, workdir: Path, company: str, profile: Profile | None = None) -> dict:
+    written = write_structure(schema, workdir / "knowledge", company, profile)
     config = workdir / "config" / "notes.json"
     if not config.exists():
         log.warning("%s does not exist yet: start Rowboat once, then run build again", config)

@@ -16,7 +16,7 @@ def errors(issues: list[Issue]) -> list[Issue]:
     return [i for i in issues if i.severity == "error"]
 
 
-def lint(schema: Schema, vault: Path) -> list[Issue]:
+def lint(schema: Schema, vault: Path, profile=None) -> list[Issue]:
     notes, files = read_vault(vault)
     issues: list[Issue] = []
     ids: dict[str, str] = {}
