@@ -1,6 +1,6 @@
 """Checks for ehl_schema.lint."""
 import pytest
-from helpers import valid_vault, write_note
+from helpers import valid_vault, vibemind_like_vault, write_note, write_raw
 
 from ehl_schema.lint import errors, lint
 from ehl_schema.model import load_schema
@@ -124,3 +124,42 @@ def test_possible_duplicate_people(tmp_path, schema):
     issues = lint(schema, vault)
     assert {i.path for i in issues if i.code == "possible-duplicate"} == {"People/Felix Baumann",
                                                                           "People/Felix-Baumann"}
+
+
+def test_vibemind_vault_lints_clean_except_the_two_warnings(tmp_path, schema):
+    from ehl_schema.profile import load_profile
+
+    vault = vibemind_like_vault(tmp_path, schema)
+    issues = lint(schema, vault, load_profile("vibemind", schema))
+    assert errors(issues) == []
+    assert {(i.path, i.code) for i in issues} == {
+        ("Strange Folder/thing", "no-rule"),
+        ("Projects/TestCo - Orphan/Lonely", "rule-parent-missing"),
+    }
+
+
+def test_profile_lint_still_reports_broken_yaml_and_cycles(tmp_path, schema):
+    from ehl_schema.profile import load_profile
+
+    vault = vibemind_like_vault(tmp_path, schema)
+    write_raw(vault, "Agents/broken", "---\nfoo: [unclosed\n---\n# broken\n")
+    write_raw(vault, "Topics/Loop A", '---\nid: a\ntype: Topics\ndomain: knowledge\nlevel: 3\nparent: "[[Topics/Loop B]]"\n---\n')
+    write_raw(vault, "Topics/Loop B", '---\nid: b\ntype: Topics\ndomain: knowledge\nlevel: 3\nparent: "[[Topics/Loop A]]"\n---\n')
+    found = {(i.path, i.code) for i in errors(lint(schema, vault, load_profile("vibemind", schema)))}
+    assert ("Agents/broken", "bad-yaml") in found
+    assert any(code == "cycle" for _, code in found)
+
+
+def test_profile_lint_checks_parent_types_of_placed_notes(tmp_path, schema):
+    from ehl_schema.profile import load_profile
+
+    vault = vibemind_like_vault(tmp_path, schema)
+    profile_file = tmp_path / "bad.yaml"
+    profile_file.write_text("company: TestCo\nrules:\n  - {match: 'Videos/**', type: Assets, parent: 'Topics/AI'}\n",
+                            encoding="utf-8", newline="\n")
+    issues = lint(schema, vault, load_profile(str(profile_file), schema))
+    assert ("Videos/Demo Clip", "parent-type") in {(i.path, i.code) for i in errors(issues)}
+
+
+def test_ehl_lint_is_unchanged_without_profile(tmp_path, schema):
+    assert lint(schema, valid_vault(tmp_path, schema), None) == []
