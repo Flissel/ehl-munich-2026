@@ -11,12 +11,12 @@ settings, video links) carried over. Future updates are one script run, not a ha
 
 **Success criteria**
 
-- `vibemind-os/spaces/rowboat/rowboat/apps/x` is the exact tree of a recorded `Flissel/rowboat` commit; a script
+- `vibemind-os/spaces/rowboat/rowboat/apps/x` and `apps/harbor` are the exact trees of a recorded `Flissel/rowboat` commit; a script
   produced it and `UPSTREAM.md` names the commit.
 - `start_desktop.py` starts Rowboat in dev mode on `~/.rowboat` with the vault map refresh; the 3D graph shows the
   VibeMind hierarchy.
 - The plugin tab in Settings works as before (lists the catalog, previews, installs) against the same web app.
-- The web app `apps/rowboat`, `packages/openai-plugin-runtime` and every file outside `apps/x` and
+- The web app `apps/rowboat`, `packages/openai-plugin-runtime` and every file outside `apps/x`, `apps/harbor` and
   `spaces/rowboat/schema` stay byte-identical; the web app's `test:plugins` stays green.
 
 ## 2. Findings that shaped this design
@@ -28,6 +28,7 @@ settings, video links) carried over. Future updates are one script run, not a ha
 | VibeMind's own desktop changes: plugin settings (`3b282629` and follow-ups, Aug/Sep 2026: `lib/rowboat-plugin-api.ts`, `lib/rowboat-plugin-session.ts`, `hooks/usePlugins.ts`, `components/settings/plugin-settings.tsx` + 2 tests, tab in `settings-dialog.tsx`, script `test:plugins`), video links (`extensions/video-link.tsx` registered in `markdown-editor.tsx`), a tolerant file read in the graph build, `DialogTitle`/`DialogDescription` in Settings. All other differences are older upstream code (meeting/transcript) | Port exactly these; drop the rest |
 | `apps/rowboat/test/plugins/catalog-pin-guard.test.ts` reads `apps/x/apps/renderer/src/lib/rowboat-plugin-api.ts` | That file keeps its path and its catalog pin |
 | The plugin session reads `{signedIn, accessToken, config: {appUrl, …}}` from IPC `account:getRowboat`. At `72e9d8c` that channel returns `{signedIn, accessToken}`; service URLs come from `rowboat:getConfig` | The session must read both channels, or the plugin tab always says "unavailable" |
+| `apps/x` links packages of `apps/harbor` (`@rowboat/spaces-protocol`, `@rowboat/harbor` via `link:../../../harbor/...`); building runs `pnpm install` + `pnpm -r build` in `apps/harbor` first. The VibeMind copy has no `apps/harbor` | The sync copies `apps/harbor` too; `--install` builds it |
 | The renderer at `72e9d8c` already has zod, vitest, jsdom and testing-library | No new dependencies |
 | The vibemind-os checkout on the PC is on a detached HEAD with 184 uncommitted changes of other sessions; Vibemind_V1 uses a WORKBOARD claim protocol and several sessions commit to `master` | Work in a separate git worktree on branch `feat/rowboat-desktop-update`; claim on the board first; never touch the main checkout |
 
@@ -36,12 +37,12 @@ settings, video links) carried over. Future updates are one script run, not a ha
 - **D1 The fork is the source.** VibeMind's desktop changes live as commits on branch `vibemind` in
   `Flissel/rowboat`, on top of `ehl-schema-graph`. vibemind-os only holds a pinned copy. (Best practice for a
   downstream fork: patches in the fork, consumer pins an exact revision, the copy is never edited by hand.)
-- **D2 Only `apps/x` is replaced.** The web app and the plugin runtime stay; upstream has nothing newer for them.
+- **D2 Only `apps/x` and `apps/harbor` are replaced.** The web app and the plugin runtime stay; upstream has nothing newer for them.
 - **D3 The schema comes from the EHL repo the same way.** `schema/` (package, `vault-schema.yaml`, `profiles/`) is
   copied from a pinned `Flissel/ehl-munich-2026` commit to `vibemind-os/spaces/rowboat/schema/`. Changes to the
   schema or the VibeMind profile go to the EHL repo first.
 - **D4 Dev mode only.** No installer build, no signing. The installed Rowboat app stays as it is.
-- **D5 Separate branch in vibemind-os.** `feat/rowboat-desktop-update`, worked in its own worktree; the user decides
+- **D5 Separate branch in vibemind-os.** `feat/rowboat-desktop-update` from `origin/master` (Flissel/vibemind-os), worked in its own worktree; the user decides
   the merge.
 
 ## 4. Fork branch `vibemind` (Flissel/rowboat)
@@ -67,14 +68,14 @@ python spaces/rowboat/scripts/sync_desktop.py \
   --ehl <clone of Flissel/ehl-munich-2026> --ehl-ref <commit>
 ```
 
-1. **Guard against hand edits:** if `spaces/rowboat/rowboat/UPSTREAM.md` exists, the current `apps/x` and
+1. **Guard against hand edits:** if `spaces/rowboat/rowboat/UPSTREAM.md` exists, the current `apps/x`, `apps/harbor` and
    `spaces/rowboat/schema` must equal the trees of the commits it names (ignoring `node_modules`, `.venv`,
    `__pycache__`, `dist`). Otherwise stop and list the differing files.
-2. Export `apps/x` from `--fork-ref` and `schema` from `--ehl-ref` with `git archive` into a temp folder.
-3. Replace `spaces/rowboat/rowboat/apps/x` and `spaces/rowboat/schema` with them (ignored folders such as
+2. Export `apps/x` and `apps/harbor` from `--fork-ref` and `schema` from `--ehl-ref` with `git archive` into a temp folder.
+3. Replace `spaces/rowboat/rowboat/apps/x`, `apps/harbor` and `spaces/rowboat/schema` with them (ignored folders such as
    `node_modules` and `.venv` are kept so no reinstall is forced).
 4. **Guard against collateral changes:** `git status` of the vibemind-os worktree may show changes only under the
-   two target folders and `UPSTREAM.md`; otherwise stop.
+   three target folders and `UPSTREAM.md`; otherwise stop.
 5. Check that `apps/x/apps/renderer/src/lib/rowboat-plugin-api.ts` exists.
 6. Write `spaces/rowboat/rowboat/UPSTREAM.md`: fork URL, branch, commit; upstream base `72e9d8c`; EHL repo commit
    for `schema/`; the list of VibeMind patches (from `git log ehl-schema-graph..<ref>` of the fork); the rule
@@ -84,7 +85,7 @@ python spaces/rowboat/scripts/sync_desktop.py \
 
 `spaces/rowboat/scripts/start_desktop.py`:
 
-- `--install`: `pnpm install` in `apps/x`; create `spaces/rowboat/schema/.venv` and `pip install -e` the schema.
+- `--install`: `pnpm install` + `pnpm -r build` in `apps/harbor`, then `pnpm install` in `apps/x`; create `spaces/rowboat/schema/.venv` and `pip install -e` the schema.
 - Start: check that `apps/x/node_modules` and the schema venv exist **before** starting anything (clear message
   otherwise); run `ehl_schema.cli map --workdir ~/.rowboat --profile vibemind` once; then start `npm run dev` in
   `apps/x` with `ROWBOAT_WORKDIR=~/.rowboat` and `map --watch 60`; Ctrl+C stops both.
@@ -95,7 +96,7 @@ python spaces/rowboat/scripts/sync_desktop.py \
 
 | Case | Behaviour |
 |---|---|
-| `apps/x` or `schema` hand-edited since the last sync | Sync stops, lists the files; nothing is replaced |
+| `apps/x`, `apps/harbor` or `schema` hand-edited since the last sync | Sync stops, lists the files; nothing is replaced |
 | A change outside the targets would result | Sync stops before writing `UPSTREAM.md`; the worktree shows what happened |
 | `--fork-ref` / `--ehl-ref` unknown | Sync stops before touching anything |
 | Plugin web app unreachable or signed out | Plugin tab shows its existing "unavailable" / "signed out" states |
